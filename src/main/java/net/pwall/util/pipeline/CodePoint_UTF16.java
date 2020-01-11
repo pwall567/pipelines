@@ -39,12 +39,12 @@ public class CodePoint_UTF16 extends AbstractIntPipeline {
     }
 
     @Override
-    protected void internalAccept(int value) {
+    protected void acceptInt(int value) {
         if (Character.isBmpCodePoint(value))
-            forward(value);
+            emit(value);
         else {
-            forward(Character.highSurrogate(value));
-            forward(Character.lowSurrogate(value));
+            emit(Character.highSurrogate(value));
+            emit(Character.lowSurrogate(value));
         }
     }
 

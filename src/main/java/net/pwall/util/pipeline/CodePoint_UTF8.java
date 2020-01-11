@@ -39,23 +39,23 @@ public class CodePoint_UTF8 extends AbstractIntPipeline {
     }
 
     @Override
-    public void internalAccept(int value) {
+    public void acceptInt(int value) {
         if (value <= 0x7F)
-            forward(value);
+            emit(value);
         else if (value <= 0x7FF) {
-            forward(0xC0 | value >> 6);
-            forward(0x80 | (value & 0x3F));
+            emit(0xC0 | value >> 6);
+            emit(0x80 | (value & 0x3F));
         }
         else if (value <= 0xFFFF) {
-            forward(0xE0 | value >> 12);
-            forward(0x80 | ((value >> 6) & 0x3F));
-            forward(0x80 | (value & 0x3F));
+            emit(0xE0 | value >> 12);
+            emit(0x80 | ((value >> 6) & 0x3F));
+            emit(0x80 | (value & 0x3F));
         }
         else if (value <= 0x10FFFF) {
-            forward(0xF0 | value >> 18);
-            forward(0x80 | ((value >> 12) & 0x3F));
-            forward(0x80 | ((value >> 6) & 0x3F));
-            forward(0x80 | (value & 0x3F));
+            emit(0xF0 | value >> 18);
+            emit(0x80 | ((value >> 12) & 0x3F));
+            emit(0x80 | ((value >> 6) & 0x3F));
+            emit(0x80 | (value & 0x3F));
         }
         else
             throw new IllegalArgumentException("Illegal codepoint");

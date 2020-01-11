@@ -1,5 +1,5 @@
 /*
- * @(#) UTF16_CodePoint.java
+ * @(#) AbstractEncodingPipeline.java
  *
  * pipelines   Pipeline conversion library for Java
  * Copyright (c) 2020 Peter Wall
@@ -28,45 +28,27 @@ package net.pwall.util.pipeline;
 import java.util.function.IntConsumer;
 
 /**
- * An {@link IntPipeline} to convert UTF-16 to Unicode copepoints.
+ * An {@link IntPipeline} to convert one-to-one mapping encodings to Unicode copepoints.
  *
  * @author  Peter Wall
  */
-public class UTF16_CodePoint extends AbstractIntPipeline {
+public class AbstractEncodingPipeline extends AbstractIntPipeline {
 
-    private IntConsumer state;
-    private int highSurrogate;
+    private String table;
 
-    private final IntConsumer surrogate = this::terminal;
-    private final IntConsumer normal = i -> {
-        if (Character.isHighSurrogate((char)i)) {
-            highSurrogate = i;
-            state = surrogate;
-        }
-        else
-            emit(i);
-    };
-
-    public UTF16_CodePoint(IntConsumer codePointConsumer) {
+    public AbstractEncodingPipeline(IntConsumer codePointConsumer, String table) {
         super(codePointConsumer);
-        state = normal;
+        this.table = table;
     }
 
     @Override
-    protected void acceptInt(int value) {
-        state.accept(value);
-    }
-
-    @Override
-    public boolean isComplete() {
-        return state == normal;
-    }
-
-    private void terminal(int i) {
-        if (!Character.isLowSurrogate((char)i))
-            throw new IllegalArgumentException("Illegal character in surrogate sequence");
-        emit(Character.toCodePoint((char)highSurrogate, (char)i));
-        state = normal;
+    public void acceptInt(int value) {
+        if (value >= 0 && value <= 0x7F)
+            emit(value);
+        else if (value >= 0x80 && value <= 0xFF)
+            emit(table.charAt(value - 0x80));
+        else
+            throw new IllegalArgumentException("Illegal character");
     }
 
 }

@@ -39,7 +39,7 @@ public class UTF8_CodePoint extends AbstractIntPipeline {
     private final IntConsumer fourByte1 = i -> intermediate(i, fourByte2);
     private final IntConsumer normal = i -> {
         if (i == -1 || (i & 0x80) == 0)
-            forward(i);
+            emit(i);
         else if ((i & 0x40) == 0)
             throw new IllegalArgumentException("Illegal character in UTF-8");
         else if ((i & 0x20) == 0)
@@ -61,7 +61,7 @@ public class UTF8_CodePoint extends AbstractIntPipeline {
     }
 
     @Override
-    public void internalAccept(int value) {
+    public void acceptInt(int value) {
         state.accept(value);
     }
 
@@ -83,7 +83,7 @@ public class UTF8_CodePoint extends AbstractIntPipeline {
 
     private void terminal(int i) {
         checkTrailing(i);
-        forward((codePoint << 6) | (i & 0x3F));
+        emit((codePoint << 6) | (i & 0x3F));
         state = normal;
     }
 

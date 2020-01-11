@@ -63,7 +63,7 @@ public abstract class AbstractIntPipeline implements IntPipeline {
             close();
         }
         else
-            internalAccept(value);
+            acceptInt(value);
     }
 
     /**
@@ -91,8 +91,10 @@ public abstract class AbstractIntPipeline implements IntPipeline {
      * Close the pipeline.
      */
     public void close() {
+        if (!isComplete())
+            throw new IllegalStateException("Sequence not complete");
         setClosed(true);
-        forward(END_OF_DATA);
+        emit(END_OF_DATA);
     }
 
     /**
@@ -105,11 +107,11 @@ public abstract class AbstractIntPipeline implements IntPipeline {
     }
 
     /**
-     * Forward a value to the downstream {@link IntConsumer}.
+     * Emit a value to the downstream {@link IntConsumer}.
      *
      * @param   value   the value to be forwarded
      */
-    protected void forward(int value) {
+    protected void emit(int value) {
         downstream.accept(value);
     }
 
@@ -119,6 +121,6 @@ public abstract class AbstractIntPipeline implements IntPipeline {
      *
      * @param   value   the input value
      */
-    protected abstract void internalAccept(int value);
+    protected abstract void acceptInt(int value);
 
 }
