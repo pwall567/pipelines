@@ -25,102 +25,52 @@
 
 package net.pwall.util.pipeline;
 
-import java.util.function.IntConsumer;
-
 /**
- * Abstract base class for {@link IntPipeline} implementations.  Includes functionality for end of data testing, and
- * forwarding to a downstream {@link IntConsumer}.
+ * Abstract base class for {@link IntPipeline} implementations.
  *
  * @author  Peter Wall
+ * @param   <R>     the result type
  */
-public abstract class AbstractIntPipeline implements IntPipeline {
+public abstract class AbstractIntPipeline<R> extends AbstractIntAcceptor<R> implements IntPipeline<R> {
 
-    private IntConsumer downstream;
-    private boolean closed;
+    private IntAcceptor<R> downstream;
 
     /**
-     * Construct an {@code AbstractIntPipeline} with the given downstream {@link IntConsumer}.
+     * Construct an {@code AbstractIntPipeline} with the given downstream {@link IntAcceptor}.
      *
-     * @param   downstream  the {@link IntConsumer}
+     * @param   downstream  the {@link IntAcceptor}
      */
-    protected AbstractIntPipeline(IntConsumer downstream) {
+    protected AbstractIntPipeline(IntAcceptor<R> downstream) {
         this.downstream = downstream;
-        closed = false;
-    }
-
-    /**
-     * Accept an {@code int}.  Check for pipeline already closed, and handles end of data.
-     *
-     * @param   value   the input value
-     */
-    @Override
-    public void accept(int value) {
-        if (isClosed())
-            throw new IllegalStateException("Pipeline is closed");
-        if (value == END_OF_DATA) {
-            if (!isComplete())
-                throw new IllegalStateException("Unexpected end of data");
-            close();
-        }
-        else
-            acceptInt(value);
-    }
-
-    /**
-     * Return {@code true} if all sequences in the pipeline are complete, that is, the pipeline is not in the middle of
-     * a sequence requiring more data.
-     *
-     * @return  {@code true} if the pipeline is in the "complete" state
-     */
-    @Override
-    public boolean isComplete() {
-        return true;
-    }
-
-    /**
-     * Return {@code true} if the pipeline is closed, that is, an end of data marker has been received.
-     *
-     * @return  {@code true} if the pipeline is closed
-     */
-    @Override
-    public boolean isClosed() {
-        return closed;
     }
 
     /**
      * Close the pipeline.
      */
-    public void close() {
-        if (!isComplete())
-            throw new IllegalStateException("Sequence not complete");
-        setClosed(true);
-        emit(END_OF_DATA);
+    @Override
+    public void close() throws Exception {
+        downstream.close();
+        super.close();
     }
 
     /**
-     * Set the {@code closed} state of the pipeline.
-     *
-     * @param   closed  the new {@code closed} state
-     */
-    public void setClosed(boolean closed) {
-        this.closed = closed;
-    }
-
-    /**
-     * Emit a value to the downstream {@link IntConsumer}.
+     * Emit a value to the downstream {@link IntAcceptor}.
      *
      * @param   value   the value to be forwarded
      */
-    protected void emit(int value) {
+    @Override
+    public void emit(int value) throws Exception {
         downstream.accept(value);
     }
 
     /**
-     * Accept an {@code int}, after {@code closed} check and test for end of data.  Implementing classes must supply an
-     * implementation of this method.
+     * Get the result object (defaults to the result of the downstream acceptor).
      *
-     * @param   value   the input value
+     * @return  the result
      */
-    protected abstract void acceptInt(int value);
+    @Override
+    public R getResult() {
+        return downstream.getResult();
+    }
 
 }

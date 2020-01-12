@@ -1,5 +1,5 @@
 /*
- * @(#) TestIntPipeline.java
+ * @(#) AbstractIntAcceptor.java
  *
  * pipelines   Pipeline conversion library for Java
  * Copyright (c) 2020 Peter Wall
@@ -23,48 +23,37 @@
  * SOFTWARE.
  */
 
-package net.pwall.util.pipeline.test;
+package net.pwall.util.pipeline;
 
-import java.util.ArrayList;
-import java.util.List;
+/**
+ * Abstract implementation of {@link IntAcceptor}.
+ *
+ * @author  Peter Wall
+ * @param   <R>     the result type
+ */
+abstract public class AbstractIntAcceptor<R> extends BaseAbstractAcceptor<R> implements IntAcceptor<R> {
 
-import net.pwall.util.pipeline.IntPipeline;
-
-public class TestIntPipeline implements IntPipeline {
-
-    private List<Integer> list;
-    private boolean closed;
-
-    public TestIntPipeline() {
-        list = new ArrayList<>();
-    }
-
+    /**
+     * Accept an {@code int}.  Check for pipeline already closed, and handle end of data.
+     *
+     * @param   value   the input value
+     */
     @Override
-    public void accept(int value) {
+    public void accept(int value) throws Exception {
         if (isClosed())
-            throw new IllegalStateException("Pipeline is closed");
+            throw new IllegalStateException("Acceptor is closed");
         if (value == -1)
-            closed = true;
+            close();
         else
-            list.add(value);
+            acceptInt(value);
     }
 
-    @Override
-    public boolean isClosed() {
-        return closed;
-    }
-
-    @Override
-    public boolean isComplete() {
-        return true;
-    }
-
-    public int size() {
-        return list.size();
-    }
-
-    public int get(int index) {
-        return list.get(index);
-    }
+    /**
+     * Accept an {@code int}, after {@code closed} check and test for end of data.  Implementing classes must supply an
+     * implementation of this method.
+     *
+     * @param   value   the input value
+     */
+    abstract public void acceptInt(int value) throws Exception;
 
 }

@@ -25,14 +25,12 @@
 
 package net.pwall.util.pipeline;
 
-import java.util.function.IntConsumer;
-
 /**
  * An {@link IntPipeline} to convert Windows-1252 encoding to Unicode copepoints.
  *
  * @author  Peter Wall
  */
-public class Windows1252_CodePoint extends AbstractEncodingPipeline {
+public class Windows1252_CodePoint<R> extends EncodingPipeline<R> {
 
     private static final String table =
             "\u20AC\u0081\u201A\u0192\u201E\u2026\u2020\u2021\u02C6\u2030\u0160\u2039\u0152\u008D\u017D\u008F" +
@@ -44,8 +42,8 @@ public class Windows1252_CodePoint extends AbstractEncodingPipeline {
             "\u00E0\u00E1\u00E2\u00E3\u00E4\u00E5\u00E6\u00E7\u00E8\u00E9\u00EA\u00EB\u00EC\u00ED\u00EE\u00EF" +
             "\u00F0\u00F1\u00F2\u00F3\u00F4\u00F5\u00F6\u00F7\u00F8\u00F9\u00FA\u00FB\u00FC\u00FD\u00FE\u00FF";
 
-    public Windows1252_CodePoint(IntConsumer codePointConsumer) {
-        super(codePointConsumer, table);
+    public Windows1252_CodePoint(IntAcceptor<R> downstream) {
+        super(downstream, table);
     }
 
 }

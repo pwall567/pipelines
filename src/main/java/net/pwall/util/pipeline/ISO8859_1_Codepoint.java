@@ -25,14 +25,12 @@
 
 package net.pwall.util.pipeline;
 
-import java.util.function.IntConsumer;
-
 /**
  * An {@link IntPipeline} to convert ISO-8859-1 encoding to Unicode copepoints.
  *
  * @author  Peter Wall
  */
-public class ISO8859_1_Codepoint extends AbstractEncodingPipeline {
+public class ISO8859_1_Codepoint<R> extends EncodingPipeline<R> {
 
     private static final String table =
             "\u0080\u0081\u0082\u0083\u0084\u0085\u0086\u0087\u0088\u0089\u008A\u008B\u008C\u008D\u008E\u008F" +
@@ -44,8 +42,8 @@ public class ISO8859_1_Codepoint extends AbstractEncodingPipeline {
             "\u00E0\u00E1\u00E2\u00E3\u00E4\u00E5\u00E6\u00E7\u00E8\u00E9\u00EA\u00EB\u00EC\u00ED\u00EE\u00EF" +
             "\u00F0\u00F1\u00F2\u00F3\u00F4\u00F5\u00F6\u00F7\u00F8\u00F9\u00FA\u00FB\u00FC\u00FD\u00FE\u00FF";
 
-    public ISO8859_1_Codepoint(IntConsumer codePointConsumer) {
-        super(codePointConsumer, table);
+    public ISO8859_1_Codepoint(IntAcceptor<R> downstream) {
+        super(downstream, table);
     }
 
 }

@@ -25,14 +25,19 @@
 
 package net.pwall.util.pipeline;
 
-import java.util.function.IntConsumer;
-
 /**
  * An {@link IntPipeline} to convert UTF-8 to Unicode copepoints.
  *
  * @author  Peter Wall
  */
-public class UTF8_CodePoint extends AbstractIntPipeline {
+public class UTF8_CodePoint<R> extends AbstractIntPipeline<R> {
+
+    /**
+     * Local version of {@code IntConsumer} interface that allows exceptions on the {@code accept} method.
+     */
+    private interface IntConsumer {
+        void accept(int value) throws Exception;
+    }
 
     private final IntConsumer threeByte1 = i -> intermediate(i, this::terminal);
     private final IntConsumer fourByte2 = i -> intermediate(i, this::terminal);
@@ -55,13 +60,13 @@ public class UTF8_CodePoint extends AbstractIntPipeline {
     private IntConsumer state;
     private int codePoint;
 
-    public UTF8_CodePoint(IntConsumer codePointConsumer) {
-        super(codePointConsumer);
+    public UTF8_CodePoint(IntAcceptor<R> downstream) {
+        super(downstream);
         state = normal;
     }
 
     @Override
-    public void acceptInt(int value) {
+    public void acceptInt(int value) throws Exception {
         state.accept(value);
     }
 
@@ -81,7 +86,7 @@ public class UTF8_CodePoint extends AbstractIntPipeline {
         state = nextState;
     }
 
-    private void terminal(int i) {
+    private void terminal(int i) throws Exception {
         checkTrailing(i);
         emit((codePoint << 6) | (i & 0x3F));
         state = normal;

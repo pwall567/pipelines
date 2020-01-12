@@ -25,14 +25,19 @@
 
 package net.pwall.util.pipeline;
 
-import java.util.function.IntConsumer;
-
 /**
  * An {@link IntPipeline} to convert UTF-16 to Unicode copepoints.
  *
  * @author  Peter Wall
  */
-public class UTF16_CodePoint extends AbstractIntPipeline {
+public class UTF16_CodePoint<R> extends AbstractIntPipeline<R> {
+
+    /**
+     * Local version of {@code IntConsumer} interface that allows exceptions on the {@code accept} method.
+     */
+    private interface IntConsumer {
+        void accept(int value) throws Exception;
+    }
 
     private IntConsumer state;
     private int highSurrogate;
@@ -47,13 +52,13 @@ public class UTF16_CodePoint extends AbstractIntPipeline {
             emit(i);
     };
 
-    public UTF16_CodePoint(IntConsumer codePointConsumer) {
-        super(codePointConsumer);
+    public UTF16_CodePoint(IntAcceptor<R> downstream) {
+        super(downstream);
         state = normal;
     }
 
     @Override
-    protected void acceptInt(int value) {
+    public void acceptInt(int value) throws Exception {
         state.accept(value);
     }
 
@@ -62,7 +67,7 @@ public class UTF16_CodePoint extends AbstractIntPipeline {
         return state == normal;
     }
 
-    private void terminal(int i) {
+    private void terminal(int i) throws Exception {
         if (!Character.isLowSurrogate((char)i))
             throw new IllegalArgumentException("Illegal character in surrogate sequence");
         emit(Character.toCodePoint((char)highSurrogate, (char)i));

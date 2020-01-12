@@ -25,15 +25,21 @@
 
 package net.pwall.util.pipeline;
 
-import java.util.function.IntConsumer;
-
 /**
  * A pipeline that takes an integer value.
  *
+ *
  * @author  Peter Wall
+ * @param   <R>     the result type
  */
-public interface IntPipeline extends BasePipeline, IntConsumer {
+public interface IntPipeline<R> extends IntAcceptor<R> {
 
-    int END_OF_DATA = -1;
+    /**
+     * Emit a value, that is, forward a value to the downstream acceptor.
+     *
+     * @param   value   the value
+     * @throws  Exception if thrown by a {@code close()} method
+     */
+    void emit(int value) throws Exception;
 
 }

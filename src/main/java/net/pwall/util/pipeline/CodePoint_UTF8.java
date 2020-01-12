@@ -25,21 +25,19 @@
 
 package net.pwall.util.pipeline;
 
-import java.util.function.IntConsumer;
-
 /**
  * An {@link IntPipeline} to convert Unicode copepoints to UTF-8.
  *
  * @author  Peter Wall
  */
-public class CodePoint_UTF8 extends AbstractIntPipeline {
+public class CodePoint_UTF8<R> extends AbstractIntPipeline<R> {
 
-    public CodePoint_UTF8(IntConsumer byteConsumer) {
-        super(byteConsumer);
+    public CodePoint_UTF8(IntAcceptor<R> downstream) {
+        super(downstream);
     }
 
     @Override
-    public void acceptInt(int value) {
+    public void acceptInt(int value) throws Exception {
         if (value <= 0x7F)
             emit(value);
         else if (value <= 0x7FF) {

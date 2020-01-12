@@ -25,7 +25,6 @@
 
 package net.pwall.util.pipeline.test;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import net.pwall.util.pipeline.CodePoint_UTF16;
@@ -38,15 +37,14 @@ import static org.junit.Assert.assertEquals;
 public class TestReadingInputStream {
 
     @Test
-    public void shouldReadAndConvertExternalResource() throws IOException {
-        TestStringBuffer testStringBuffer = new TestStringBuffer(120);
-        IntPipeline pipe = new UTF8_CodePoint(new CodePoint_UTF16(testStringBuffer));
+    public void shouldReadAndConvertExternalResource() throws Exception {
+        IntPipeline<String> pipe = new UTF8_CodePoint<>(new CodePoint_UTF16<>(new TestStringBuilderAcceptor(120)));
         InputStream inputStream = TestReadingInputStream.class.getResourceAsStream("/test1.txt");
-        while (!testStringBuffer.isClosed())
+        while (!pipe.isClosed())
             pipe.accept(inputStream.read());
         assertEquals("The quick brown fox jumps over the lazy dog.\n\n" +
                 "And now for something completely different: \u2014 \u201C \u00C0 \u00C9 \u0130 \u00D4 \u00DC \u201D\n",
-                testStringBuffer.getString());
+                pipe.getResult());
     }
 
 }

@@ -25,6 +25,8 @@
 
 package net.pwall.util.pipeline.test;
 
+import java.util.List;
+
 import net.pwall.util.pipeline.UTF8_CodePoint;
 
 import org.junit.Test;
@@ -35,52 +37,52 @@ import static org.junit.Assert.assertTrue;
 public class UTF8CodePointTest {
 
     @Test
-    public void shouldPassThroughSingleChar() {
-        TestIntPipeline testIntPipeline = new TestIntPipeline();
-        UTF8_CodePoint pipe = new UTF8_CodePoint(testIntPipeline);
+    public void shouldPassThroughSingleChar() throws Exception {
+        UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new TestIntAcceptor());
         pipe.accept('A');
         assertTrue(pipe.isComplete());
-        assertEquals(1, testIntPipeline.size());
-        assertEquals('A', testIntPipeline.get(0));
+        List<Integer> result = pipe.getResult();
+        assertEquals(1, result.size());
+        assertEquals(Integer.valueOf('A'), result.get(0));
     }
 
     @Test
-    public void shouldPassThroughSingleCharPlusTerminator() {
-        TestIntPipeline testIntPipeline = new TestIntPipeline();
-        UTF8_CodePoint pipe = new UTF8_CodePoint(testIntPipeline);
+    public void shouldPassThroughSingleCharPlusTerminator() throws Exception {
+        UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new TestIntAcceptor());
         pipe.accept('A');
         pipe.accept(-1);
         assertTrue(pipe.isComplete());
         assertTrue(pipe.isClosed());
-        assertEquals(1, testIntPipeline.size());
-        assertEquals('A', testIntPipeline.get(0));
+        List<Integer> result = pipe.getResult();
+        assertEquals(1, result.size());
+        assertEquals(Integer.valueOf('A'), result.get(0));
     }
 
     @Test
-    public void shouldPassThroughTwoByteChars() {
-        TestIntPipeline testIntPipeline = new TestIntPipeline();
-        UTF8_CodePoint pipe = new UTF8_CodePoint(testIntPipeline);
+    public void shouldPassThroughTwoByteChars() throws Exception {
+        UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new TestIntAcceptor());
         pipe.accept(0xC2);
         assertFalse(pipe.isComplete());
         pipe.accept(0xA9);
         pipe.accept(0xC3);
         pipe.accept(0xB7);
         assertTrue(pipe.isComplete());
-        assertEquals(2, testIntPipeline.size());
-        assertEquals(0xA9, testIntPipeline.get(0));
-        assertEquals(0xF7, testIntPipeline.get(1));
+        List<Integer> result = pipe.getResult();
+        assertEquals(2, result.size());
+        assertEquals(Integer.valueOf(0xA9), result.get(0));
+        assertEquals(Integer.valueOf(0xF7), result.get(1));
     }
 
     @Test
-    public void shouldPassThroughThreeByteChars() {
-        TestIntPipeline testIntPipeline = new TestIntPipeline();
-        UTF8_CodePoint pipe = new UTF8_CodePoint(testIntPipeline);
+    public void shouldPassThroughThreeByteChars() throws Exception {
+        UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new TestIntAcceptor());
         pipe.accept(0xE2);
         pipe.accept(0x80);
         pipe.accept(0x94);
         assertTrue(pipe.isComplete());
-        assertEquals(1, testIntPipeline.size());
-        assertEquals(0x2014, testIntPipeline.get(0));
+        List<Integer> result = pipe.getResult();
+        assertEquals(1, result.size());
+        assertEquals(Integer.valueOf(0x2014), result.get(0));
     }
 
 }

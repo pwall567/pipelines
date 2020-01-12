@@ -25,21 +25,19 @@
 
 package net.pwall.util.pipeline;
 
-import java.util.function.IntConsumer;
-
 /**
  * An {@link IntPipeline} to convert Unicode copepoints to UTF-16.
  *
  * @author  Peter Wall
  */
-public class CodePoint_UTF16 extends AbstractIntPipeline {
+public class CodePoint_UTF16<R> extends AbstractIntPipeline<R> {
 
-    public CodePoint_UTF16(IntConsumer charConsumer) {
-        super(charConsumer);
+    public CodePoint_UTF16(IntAcceptor<R> downstream) {
+        super(downstream);
     }
 
     @Override
-    protected void acceptInt(int value) {
+    public void acceptInt(int value) throws Exception {
         if (Character.isBmpCodePoint(value))
             emit(value);
         else {

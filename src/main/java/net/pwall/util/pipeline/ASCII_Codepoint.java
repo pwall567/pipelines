@@ -25,21 +25,19 @@
 
 package net.pwall.util.pipeline;
 
-import java.util.function.IntConsumer;
-
 /**
  * An {@link IntPipeline} to convert ASCII encoding to Unicode copepoints.
  *
  * @author  Peter Wall
  */
-public class ASCII_Codepoint extends AbstractIntPipeline {
+public class ASCII_Codepoint<R> extends AbstractIntPipeline<R> {
 
-    public ASCII_Codepoint(IntConsumer codePointConsumer) {
-        super(codePointConsumer);
+    public ASCII_Codepoint(IntAcceptor<R> downstream) {
+        super(downstream);
     }
 
     @Override
-    public void acceptInt(int value) {
+    public void acceptInt(int value) throws Exception {
         if (value >= 0 && value <= 0x7F)
             emit(value);
         else

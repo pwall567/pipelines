@@ -25,13 +25,22 @@
 
 package net.pwall.util.pipeline;
 
-import java.util.function.Consumer;
-
 /**
  * A pipeline that takes a value of the specified type.
  *
  * @author  Peter Wall
- * @param   <T>     the input value type
+ * @param   <A>     the accepted (input) value type
+ * @param   <E>     the emitted (downstream) value type
+ * @param   <R>     the result type
  */
-public interface Pipeline<T> extends BasePipeline, Consumer<T> {
+public interface Pipeline<A, E, R> extends Acceptor<A, R> {
+
+    /**
+     * Emit a value, that is, forward a value to the downstream acceptor.
+     *
+     * @param   value   the value
+     * @throws  Exception if thrown by a {@code close()} method
+     */
+    void emit(E value) throws Exception;
+
 }

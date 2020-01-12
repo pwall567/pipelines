@@ -1,5 +1,5 @@
 /*
- * @(#) AbstractEncodingPipeline.java
+ * @(#) AbstractAcceptor.java
  *
  * pipelines   Pipeline conversion library for Java
  * Copyright (c) 2020 Peter Wall
@@ -25,30 +25,37 @@
 
 package net.pwall.util.pipeline;
 
-import java.util.function.IntConsumer;
-
 /**
- * An {@link IntPipeline} to convert one-to-one mapping encodings to Unicode copepoints.
+ * Abstract implementation of {@link Acceptor}.
  *
  * @author  Peter Wall
+ * @param   <A>     the accepted (input) value type
+ * @param   <R>     the result type
  */
-public class AbstractEncodingPipeline extends AbstractIntPipeline {
+abstract public class AbstractAcceptor<A, R> extends BaseAbstractAcceptor<R> implements Acceptor<A, R> {
 
-    private String table;
-
-    public AbstractEncodingPipeline(IntConsumer codePointConsumer, String table) {
-        super(codePointConsumer);
-        this.table = table;
-    }
-
+    /**
+     * Accept an object.  Check for pipeline already closed, and handle end of data.  This assumes that {@code null} is
+     * used to indicate end of data; if that is not the case this method must be overridden.
+     *
+     * @param   value   the input value
+     */
     @Override
-    public void acceptInt(int value) {
-        if (value >= 0 && value <= 0x7F)
-            emit(value);
-        else if (value >= 0x80 && value <= 0xFF)
-            emit(table.charAt(value - 0x80));
+    public void accept(A value) throws Exception {
+        if (isClosed())
+            throw new IllegalStateException("Acceptor is closed");
+        if (value == null)
+            close();
         else
-            throw new IllegalArgumentException("Illegal character");
+            acceptObject(value);
     }
+
+    /**
+     * Accept an {@code int}, after {@code closed} check and test for end of data.  Implementing classes must supply an
+     * implementation of this method.
+     *
+     * @param   value   the input value
+     */
+    abstract public void acceptObject(A value) throws Exception;
 
 }

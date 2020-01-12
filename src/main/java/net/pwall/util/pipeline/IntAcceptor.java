@@ -1,5 +1,5 @@
 /*
- * @(#) BasePipeline.java
+ * @(#) IntAcceptor.java
  *
  * pipelines   Pipeline conversion library for Java
  * Copyright (c) 2020 Peter Wall
@@ -26,25 +26,19 @@
 package net.pwall.util.pipeline;
 
 /**
- * The base interface for pipeline classes.
+ * An acceptor that takes an integer value.
  *
  * @author  Peter Wall
+ * @param   <R>     the result type
  */
-public interface BasePipeline {
+public interface IntAcceptor<R> extends BaseAcceptor<R> {
 
     /**
-     * Return {@code true} if all sequences in the pipeline are complete, that is, the pipeline is not in the middle of
-     * a sequence requiring more data.
+     * Accept a value.
      *
-     * @return  {@code true} if the pipeline is in the "complete" state
+     * @param   value   the value to be processed
+     * @throws  Exception if thrown by a {@code close()} method
      */
-    boolean isComplete();
-
-    /**
-     * Return {@code true} if the pipeline is closed.
-     *
-     * @return  {@code true} if the pipeline is closed
-     */
-    boolean isClosed();
+    void accept(int value) throws Exception;
 
 }

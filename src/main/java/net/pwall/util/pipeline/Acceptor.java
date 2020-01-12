@@ -1,5 +1,5 @@
 /*
- * @(#) TestStringBuffer.java
+ * @(#) Acceptor.java
  *
  * pipelines   Pipeline conversion library for Java
  * Copyright (c) 2020 Peter Wall
@@ -23,43 +23,23 @@
  * SOFTWARE.
  */
 
-package net.pwall.util.pipeline.test;
+package net.pwall.util.pipeline;
 
-import net.pwall.util.pipeline.IntPipeline;
+/**
+ * An acceptor that takes a value of the specified type.
+ *
+ * @author  Peter Wall
+ * @param   <A>     the accepted (input) value type
+ * @param   <R>     the result type
+ */
+public interface Acceptor<A, R> extends BaseAcceptor<R> {
 
-public class TestStringBuffer implements IntPipeline {
-
-    private StringBuilder sb;
-    private boolean closed;
-
-    public TestStringBuffer(int initialSize) {
-        sb = new StringBuilder(initialSize);
-        closed = false;
-    }
-
-    public String getString() {
-        return sb.toString();
-    }
-
-    @Override
-    public void accept(int value) {
-        if (isClosed())
-            throw new IllegalStateException("Pipeline is closed");
-        if (value == IntPipeline.END_OF_DATA) {
-            closed = true;
-        }
-        else
-            sb.append((char)value);
-    }
-
-    @Override
-    public boolean isComplete() {
-        return true;
-    }
-
-    @Override
-    public boolean isClosed() {
-        return closed;
-    }
+    /**
+     * Accept a value.
+     *
+     * @param   value   the value to be processed
+     * @throws  Exception if thrown by a {@code close()} method
+     */
+    void accept(A value) throws Exception;
 
 }

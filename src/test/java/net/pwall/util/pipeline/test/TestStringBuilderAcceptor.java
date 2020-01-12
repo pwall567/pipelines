@@ -1,5 +1,5 @@
 /*
- * @(#) CodePointUTF16Test.java
+ * @(#) TestStringBuffer.java
  *
  * pipelines   Pipeline conversion library for Java
  * Copyright (c) 2020 Peter Wall
@@ -25,35 +25,24 @@
 
 package net.pwall.util.pipeline.test;
 
-import java.util.List;
+import net.pwall.util.pipeline.AbstractIntAcceptor;
 
-import net.pwall.util.pipeline.CodePoint_UTF16;
+public class TestStringBuilderAcceptor extends AbstractIntAcceptor<String> {
 
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+    private StringBuilder sb;
 
-public class CodePointUTF16Test {
-
-    @Test
-    public void shouldPassThroughBMPCodePoint() throws Exception {
-        CodePoint_UTF16<List<Integer>> pipe = new CodePoint_UTF16<>(new TestIntAcceptor());
-        pipe.accept('A');
-        assertTrue(pipe.isComplete());
-        List<Integer> result = pipe.getResult();
-        assertEquals(1, result.size());
-        assertEquals(Integer.valueOf('A'), result.get(0));
+    public TestStringBuilderAcceptor(int initialSize) {
+        sb = new StringBuilder(initialSize);
     }
 
-    @Test
-    public void shouldExpandHighCodePointToSurrogates() throws Exception {
-        CodePoint_UTF16<List<Integer>> pipe = new CodePoint_UTF16<>(new TestIntAcceptor());
-        pipe.accept(0x1F602);
-        assertTrue(pipe.isComplete());
-        List<Integer> result = pipe.getResult();
-        assertEquals(2, result.size());
-        assertEquals(Integer.valueOf(0xD83D), result.get(0));
-        assertEquals(Integer.valueOf(0xDE02), result.get(1));
+    @Override
+    public void acceptInt(int value) {
+        sb.append((char)value);
+    }
+
+    @Override
+    public String getResult() {
+        return sb.toString();
     }
 
 }

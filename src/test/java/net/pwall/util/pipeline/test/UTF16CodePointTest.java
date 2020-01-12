@@ -25,6 +25,8 @@
 
 package net.pwall.util.pipeline.test;
 
+import java.util.List;
+
 import net.pwall.util.pipeline.UTF16_CodePoint;
 
 import org.junit.Test;
@@ -35,25 +37,27 @@ import static org.junit.Assert.assertTrue;
 public class UTF16CodePointTest {
 
     @Test
-    public void shouldPassThroughBMPCodePoint() {
-        TestIntPipeline testIntPipeline = new TestIntPipeline();
-        UTF16_CodePoint pipe = new UTF16_CodePoint(testIntPipeline);
+    public void shouldPassThroughBMPCodePoint() throws Exception {
+        TestIntAcceptor testIntPipeline = new TestIntAcceptor();
+        UTF16_CodePoint<List<Integer>> pipe = new UTF16_CodePoint<>(testIntPipeline);
         pipe.accept('A');
         assertTrue(pipe.isComplete());
-        assertEquals(1, testIntPipeline.size());
-        assertEquals('A', testIntPipeline.get(0));
+        List<Integer> result = pipe.getResult();
+        assertEquals(1, result.size());
+        assertEquals(Integer.valueOf('A'), result.get(0));
     }
 
     @Test
-    public void shouldConvertSurrogatePair() {
-        TestIntPipeline testIntPipeline = new TestIntPipeline();
-        UTF16_CodePoint pipe = new UTF16_CodePoint(testIntPipeline);
+    public void shouldConvertSurrogatePair() throws Exception {
+        TestIntAcceptor testIntPipeline = new TestIntAcceptor();
+        UTF16_CodePoint<List<Integer>> pipe = new UTF16_CodePoint<>(testIntPipeline);
         pipe.accept(0xD83D);
         assertFalse(pipe.isComplete());
         pipe.accept(0xDE02);
         assertTrue(pipe.isComplete());
-        assertEquals(1, testIntPipeline.size());
-        assertEquals(0x1F602, testIntPipeline.get(0));
+        List<Integer> result = pipe.getResult();
+        assertEquals(1, result.size());
+        assertEquals(Integer.valueOf(0x1F602), result.get(0));
     }
 
 }
