@@ -48,9 +48,7 @@ public class CodePointUTF8Test {
     @Test
     public void shouldPassThroughMultipleASCII() throws Exception {
         CodePoint_UTF8<List<Integer>> pipe = new CodePoint_UTF8<>(new TestIntAcceptor());
-        pipe.accept('A');
-        pipe.accept('B');
-        pipe.accept('C');
+        pipe.accept("ABC");
         assertTrue(pipe.isComplete());
         List<Integer> result = pipe.getResult();
         assertEquals(3, result.size());
