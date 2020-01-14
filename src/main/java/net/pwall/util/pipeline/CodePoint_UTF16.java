@@ -26,9 +26,10 @@
 package net.pwall.util.pipeline;
 
 /**
- * An {@link IntPipeline} to convert Unicode copepoints to UTF-16.
+ * An {@link IntPipeline} to convert Unicode code points to UTF-16.
  *
  * @author  Peter Wall
+ * @param   <R>     the pipeline result type
  */
 public class CodePoint_UTF16<R> extends AbstractIntPipeline<R> {
 

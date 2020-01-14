@@ -29,6 +29,7 @@ package net.pwall.util.pipeline;
  * The base interface for pipeline and acceptor classes.
  *
  * @author  Peter Wall
+ * @param   <R>     the result type
  */
 public interface BaseAcceptor<R> extends AutoCloseable {
 

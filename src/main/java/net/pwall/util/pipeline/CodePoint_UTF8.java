@@ -26,9 +26,10 @@
 package net.pwall.util.pipeline;
 
 /**
- * An {@link IntPipeline} to convert Unicode copepoints to UTF-8.
+ * An {@link IntPipeline} to convert Unicode code points to UTF-8.
  *
  * @author  Peter Wall
+ * @param   <R>     the pipeline result type
  */
 public class CodePoint_UTF8<R> extends AbstractIntPipeline<R> {
 
@@ -56,7 +57,7 @@ public class CodePoint_UTF8<R> extends AbstractIntPipeline<R> {
             emit(0x80 | (value & 0x3F));
         }
         else
-            throw new IllegalArgumentException("Illegal codepoint");
+            throw new IllegalArgumentException("Illegal code point");
     }
 
 }

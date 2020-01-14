@@ -1,5 +1,5 @@
 /*
- * @(#) ASCII_Codepoint.java
+ * @(#) AbstractEncodingPipeline.java
  *
  * pipelines   Pipeline conversion library for Java
  * Copyright (c) 2020 Peter Wall
@@ -26,20 +26,26 @@
 package net.pwall.util.pipeline;
 
 /**
- * An {@link IntPipeline} to convert ASCII encoding to Unicode copepoints.
+ * An {@link IntPipeline} to convert one-to-one mapping character encodings to Unicode code points.
  *
  * @author  Peter Wall
+ * @param   <R>     the pipeline result type
  */
-public class ASCII_Codepoint<R> extends AbstractIntPipeline<R> {
+public class DecodingPipeline<R> extends AbstractIntPipeline<R> {
 
-    public ASCII_Codepoint(IntAcceptor<R> downstream) {
+    private String table;
+
+    public DecodingPipeline(IntAcceptor<R> downstream, String table) {
         super(downstream);
+        this.table = table;
     }
 
     @Override
     public void acceptInt(int value) throws Exception {
         if (value >= 0 && value <= 0x7F)
             emit(value);
+        else if (value >= 0x80 && value <= 0xFF)
+            emit(table.charAt(value - 0x80));
         else
             throw new IllegalArgumentException("Illegal character");
     }
