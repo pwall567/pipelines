@@ -1,5 +1,5 @@
 /*
- * @(#) Pipeline.java
+ * @(#) IntObjectPipeline.java
  *
  * pipelines   Pipeline conversion library for Java
  * Copyright (c) 2020 Peter Wall
@@ -26,14 +26,14 @@
 package net.pwall.util.pipeline;
 
 /**
- * A pipeline that accepts and emits values of the specified types.
+ * A pipeline that takes an integer value and emits object values.
+ *
  *
  * @author  Peter Wall
- * @param   <A>     the accepted (input) value type
  * @param   <E>     the emitted (downstream) value type
  * @param   <R>     the result type
  */
-public interface Pipeline<A, E, R> extends Acceptor<A, R> {
+public interface IntObjectPipeline<E, R> extends IntAcceptor<R> {
 
     /**
      * Emit a value, that is, forward a value to the downstream acceptor.

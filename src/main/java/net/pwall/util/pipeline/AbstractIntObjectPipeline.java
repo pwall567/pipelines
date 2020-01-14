@@ -1,5 +1,5 @@
 /*
- * @(#) Pipeline.java
+ * @(#) AbstractIntObjectPipeline.java
  *
  * pipelines   Pipeline conversion library for Java
  * Copyright (c) 2020 Peter Wall
@@ -26,21 +26,53 @@
 package net.pwall.util.pipeline;
 
 /**
- * A pipeline that accepts and emits values of the specified types.
+ * Abstract base class for {@link IntObjectPipeline} implementations.
  *
  * @author  Peter Wall
- * @param   <A>     the accepted (input) value type
  * @param   <E>     the emitted (downstream) value type
  * @param   <R>     the result type
  */
-public interface Pipeline<A, E, R> extends Acceptor<A, R> {
+public abstract class AbstractIntObjectPipeline<E, R> extends AbstractIntAcceptor<R>
+        implements IntObjectPipeline<E, R> {
+
+    private Acceptor<E, R> downstream;
 
     /**
-     * Emit a value, that is, forward a value to the downstream acceptor.
+     * Construct an {@code AbstractIntObjectPipeline} with the given downstream {@link Acceptor}.
      *
-     * @param   value   the value
-     * @throws  Exception if thrown by a {@code close()} method
+     * @param   downstream  the {@link IntAcceptor}
      */
-    void emit(E value) throws Exception;
+    protected AbstractIntObjectPipeline(Acceptor<E, R> downstream) {
+        this.downstream = downstream;
+    }
+
+    /**
+     * Close the pipeline.
+     */
+    @Override
+    public void close() throws Exception {
+        downstream.close();
+        super.close();
+    }
+
+    /**
+     * Emit a value to the downstream {@link Acceptor}.
+     *
+     * @param   value   the value to be forwarded
+     */
+    @Override
+    public void emit(E value) throws Exception {
+        downstream.accept(value);
+    }
+
+    /**
+     * Get the result object (defaults to the result of the downstream acceptor).
+     *
+     * @return  the result
+     */
+    @Override
+    public R getResult() {
+        return downstream.getResult();
+    }
 
 }

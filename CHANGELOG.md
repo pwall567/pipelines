@@ -2,6 +2,13 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.4] - 2020-01-14
+### Changed
+- Minor changes to decoding pipelines
+### Added
+- `DecoderFactory`: Creates decoder for given charset
+- `IntObjectPipeline` and `AbstractIntObjectPipeline`
+
 ## [0.3] - 2020-01-13
 ### Changed
 - `IntAcceptor`: Added default methods to take string and byte array
