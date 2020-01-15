@@ -2,6 +2,12 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.5] - 2020-01-15
+### Changed
+- Changed pipelines to propagate "complete" state
+- Added default `getResult` method to `AbstractXxxAcceptor` - throws `UnsupportedOperationException`
+- Minor additions to JavaDoc
+
 ## [0.4] - 2020-01-14
 ### Changed
 - Minor changes to decoding pipelines

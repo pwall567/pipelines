@@ -73,7 +73,7 @@ public class UTF8_CodePoint<R> extends AbstractIntPipeline<R> {
 
     @Override
     public boolean isComplete() {
-        return state == normal;
+        return state == normal && super.isComplete();
     }
 
     private void startSequence(int i, IntConsumer nextState) {

@@ -37,6 +37,7 @@ abstract public class AbstractIntAcceptor<R> extends BaseAbstractAcceptor<R> imp
      * Accept an {@code int}.  Check for pipeline already closed, and handle end of data.
      *
      * @param   value   the input value
+     * @throws  Exception   if thrown by a {@code close()} method
      */
     @Override
     public void accept(int value) throws Exception {
@@ -52,8 +53,19 @@ abstract public class AbstractIntAcceptor<R> extends BaseAbstractAcceptor<R> imp
      * Accept an {@code int}, after {@code closed} check and test for end of data.  Implementing classes must supply an
      * implementation of this method.
      *
-     * @param   value   the input value
+     * @param   value       the input value
+     * @throws  Exception   if thrown by a {@code close()} method
      */
     abstract public void acceptInt(int value) throws Exception;
+
+    /**
+     * Get the result object (default implementation throws exception).
+     *
+     * @throws  UnsupportedOperationException   the acceptor does not have a result
+     */
+    @Override
+    public R getResult() {
+        throw new UnsupportedOperationException("Acceptor does not have a result");
+    }
 
 }

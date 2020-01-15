@@ -37,8 +37,8 @@ public interface Acceptor<A, R> extends BaseAcceptor<R> {
     /**
      * Accept a value.
      *
-     * @param   value   the value to be processed
-     * @throws  Exception if thrown by a {@code close()} method
+     * @param   value       the value to be processed
+     * @throws  Exception   if thrown by a {@code close()} method
      */
     void accept(A value) throws Exception;
 

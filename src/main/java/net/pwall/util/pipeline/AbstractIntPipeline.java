@@ -73,4 +73,15 @@ public abstract class AbstractIntPipeline<R> extends AbstractIntAcceptor<R> impl
         return downstream.getResult();
     }
 
+    /**
+     * Return {@code true} if all sequences in the input are complete, that is, the input is not in the middle of a
+     * sequence requiring more data.  The default implementation tests whether the downstream acceptor is complete.
+     *
+     * @return  {@code true} if the input is in the "complete" state
+     */
+    @Override
+    public boolean isComplete() {
+        return downstream.isComplete();
+    }
+
 }
