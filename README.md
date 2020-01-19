@@ -46,7 +46,7 @@ and invokes the abstract method `acceptObject()` for non-null values)
 checked exception, many of the method signatures in the library also include this exception)
 - `isClosed()`: returns `true` if the acceptor is closed
 - `getResult()`: returns the result (the default implementation throws an exception)
-- `isComplete(): `returns `true` if all many-to-one sequences are complete, for example, all the bytes in a UTF-8
+- `isComplete()`: returns `true` if all many-to-one sequences are complete, for example, all the bytes in a UTF-8
 multi-byte sequence have been received
 
 ### Pipeline interface
@@ -58,7 +58,7 @@ multi-byte sequence have been received
 ### IntXxxx classes and interfaces
 
 Because Java treats `int` more efficiently than the boxing class `Integer`, there are `IntXxxx` variants of many of the
-elements.
+classes and interfaces.
 And because many uses of `int` treat -1 as an end-of-data marker, this library also considers -1 as signifying end of
 data.
 That means that the `IntXxxx` classes include an `accept()` method that takes an `int`, performs the end-of-data test
