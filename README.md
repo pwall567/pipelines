@@ -142,7 +142,7 @@ Of course, all of this is also accessible from Kotlin:
 
 ```Kotlin
     fun readString(inputStream: InputStream): String {
-        val pipe: IntPipeline<String> = UTF8_CodePoint(CodePoint_UTF16(StringAcceptor()))
+        val pipe = UTF8_CodePoint(CodePoint_UTF16(StringAcceptor()))
         while (!pipe.isClosed)
             pipe.accept(inputStream.read())
         return pipe.result
