@@ -138,6 +138,25 @@ public class ReadString {
 }
 ```
 
+Of course, all of this is also accessible from Kotlin:
+
+```Kotlin
+    fun readString(inputStream: InputStream): String {
+        val pipe: IntPipeline<String> = UTF8_CodePoint(CodePoint_UTF16(StringAcceptor()))
+        while (!pipe.isClosed)
+            pipe.accept(inputStream.read())
+        return pipe.result
+    }
+
+    class StringAcceptor : AbstractIntAcceptor<String>() {
+        private val sb = StringBuilder()
+        override fun acceptInt(value: Int) {
+            sb.append(value.toChar())
+        }
+        override fun getResult() = sb.toString()
+    }
+```
+
 Peter Wall
 
 2020-01-19
