@@ -61,7 +61,7 @@ public class UTF8_CodePoint<R> extends AbstractIntPipeline<R> {
     private IntConsumer state;
     private int codePoint;
 
-    public UTF8_CodePoint(IntAcceptor<R> downstream) {
+    public UTF8_CodePoint(IntAcceptor<? extends R> downstream) {
         super(downstream);
         state = normal;
     }

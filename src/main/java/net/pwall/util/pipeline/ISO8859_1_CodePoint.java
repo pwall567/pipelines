@@ -1,5 +1,5 @@
 /*
- * @(#) ISO8859_1_Codepoint.java
+ * @(#) ISO8859_1_CodePoint.java
  *
  * pipelines   Pipeline conversion library for Java
  * Copyright (c) 2020 Peter Wall
@@ -43,7 +43,7 @@ public class ISO8859_1_CodePoint<R> extends DecodingPipeline<R> {
             "\u00E0\u00E1\u00E2\u00E3\u00E4\u00E5\u00E6\u00E7\u00E8\u00E9\u00EA\u00EB\u00EC\u00ED\u00EE\u00EF" +
             "\u00F0\u00F1\u00F2\u00F3\u00F4\u00F5\u00F6\u00F7\u00F8\u00F9\u00FA\u00FB\u00FC\u00FD\u00FE\u00FF";
 
-    public ISO8859_1_CodePoint(IntAcceptor<R> downstream) {
+    public ISO8859_1_CodePoint(IntAcceptor<? extends R> downstream) {
         super(downstream, table);
     }
 

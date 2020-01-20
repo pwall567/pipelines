@@ -1,5 +1,5 @@
 /*
- * @(#) AbstractEncodingPipeline.java
+ * @(#) DecodingPipeline.java
  *
  * pipelines   Pipeline conversion library for Java
  * Copyright (c) 2020 Peter Wall
@@ -35,7 +35,7 @@ public class DecodingPipeline<R> extends AbstractIntPipeline<R> {
 
     private String table;
 
-    public DecodingPipeline(IntAcceptor<R> downstream, String table) {
+    public DecodingPipeline(IntAcceptor<? extends R> downstream, String table) {
         super(downstream);
         this.table = table;
     }

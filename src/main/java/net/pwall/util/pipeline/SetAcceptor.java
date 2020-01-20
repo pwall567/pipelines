@@ -1,5 +1,5 @@
 /*
- * @(#) TestReadingInputStream.java
+ * @(#) SetAcceptor.java
  *
  * pipelines   Pipeline conversion library for Java
  * Copyright (c) 2020 Peter Wall
@@ -23,29 +23,43 @@
  * SOFTWARE.
  */
 
-package net.pwall.util.pipeline.test;
+package net.pwall.util.pipeline;
 
-import java.io.InputStream;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-import net.pwall.util.pipeline.CodePoint_UTF16;
-import net.pwall.util.pipeline.IntPipeline;
-import net.pwall.util.pipeline.StringAcceptor;
-import net.pwall.util.pipeline.UTF8_CodePoint;
+/**
+ * An {@link Acceptor} that creates a {@link Set} from a sequence of objects.
+ *
+ * @author  Peter Wall
+ */
+public class SetAcceptor<A> extends AbstractAcceptor<A, Set<A>> {
 
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+    public static final int DEFAULT_INITIAL_CAPACITY = 10;
 
-public class TestReadingInputStream {
+    private Set<A> set;
 
-    @Test
-    public void shouldReadAndConvertExternalResource() throws Exception {
-        IntPipeline<String> pipe = new UTF8_CodePoint<>(new CodePoint_UTF16<>(new StringAcceptor(120)));
-        InputStream inputStream = TestReadingInputStream.class.getResourceAsStream("/test1.txt");
-        while (!pipe.isClosed())
-            pipe.accept(inputStream.read());
-        assertEquals("The quick brown fox jumps over the lazy dog.\n\n" +
-                "And now for something completely different: \u2014 \u201C \u00C0 \u00C9 \u0130 \u00D4 \u00DC \u201D\n",
-                pipe.getResult());
+    public SetAcceptor(int initialCapacity) {
+        set = new HashSet<>(initialCapacity);
+    }
+
+    public SetAcceptor() {
+        this(DEFAULT_INITIAL_CAPACITY);
+    }
+
+    @Override
+    public void acceptObject(A value) {
+        set.add(value);
+    }
+
+    @Override
+    public Set<A> getResult() {
+        return Collections.unmodifiableSet(set);
+    }
+
+    public int getSize() {
+        return set.size();
     }
 
 }

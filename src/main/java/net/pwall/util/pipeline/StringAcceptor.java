@@ -1,5 +1,5 @@
 /*
- * @(#) TestReadingInputStream.java
+ * @(#) StringAcceptor.java
  *
  * pipelines   Pipeline conversion library for Java
  * Copyright (c) 2020 Peter Wall
@@ -23,29 +23,39 @@
  * SOFTWARE.
  */
 
-package net.pwall.util.pipeline.test;
+package net.pwall.util.pipeline;
 
-import java.io.InputStream;
+/**
+ * An {@link Acceptor} that creates a {@link String} from a sequence of {@code int} characters.
+ *
+ * @author  Peter Wall
+ */
+public class StringAcceptor extends AbstractIntAcceptor<String> {
 
-import net.pwall.util.pipeline.CodePoint_UTF16;
-import net.pwall.util.pipeline.IntPipeline;
-import net.pwall.util.pipeline.StringAcceptor;
-import net.pwall.util.pipeline.UTF8_CodePoint;
+    public static final int DEFAULT_INITIAL_CAPACITY = 20;
 
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+    private StringBuilder stringBuilder;
 
-public class TestReadingInputStream {
+    public StringAcceptor(int initialCapacity) {
+        stringBuilder = new StringBuilder(initialCapacity);
+    }
 
-    @Test
-    public void shouldReadAndConvertExternalResource() throws Exception {
-        IntPipeline<String> pipe = new UTF8_CodePoint<>(new CodePoint_UTF16<>(new StringAcceptor(120)));
-        InputStream inputStream = TestReadingInputStream.class.getResourceAsStream("/test1.txt");
-        while (!pipe.isClosed())
-            pipe.accept(inputStream.read());
-        assertEquals("The quick brown fox jumps over the lazy dog.\n\n" +
-                "And now for something completely different: \u2014 \u201C \u00C0 \u00C9 \u0130 \u00D4 \u00DC \u201D\n",
-                pipe.getResult());
+    public StringAcceptor() {
+        this(DEFAULT_INITIAL_CAPACITY);
+    }
+
+    @Override
+    public void acceptInt(int value) {
+        stringBuilder.append((char)value);
+    }
+
+    @Override
+    public String getResult() {
+        return stringBuilder.toString();
+    }
+
+    public int length() {
+        return stringBuilder.length();
     }
 
 }

@@ -35,14 +35,14 @@ package net.pwall.util.pipeline;
 public abstract class AbstractIntObjectPipeline<E, R> extends AbstractIntAcceptor<R>
         implements IntObjectPipeline<E, R> {
 
-    private Acceptor<E, R> downstream;
+    private Acceptor<? super E, ? extends R> downstream;
 
     /**
      * Construct an {@code AbstractIntObjectPipeline} with the given downstream {@link Acceptor}.
      *
      * @param   downstream  the {@link IntAcceptor}
      */
-    protected AbstractIntObjectPipeline(Acceptor<E, R> downstream) {
+    protected AbstractIntObjectPipeline(Acceptor<? super E, ? extends R> downstream) {
         this.downstream = downstream;
     }
 

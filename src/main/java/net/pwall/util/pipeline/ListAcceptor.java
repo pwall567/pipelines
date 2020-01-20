@@ -1,5 +1,5 @@
 /*
- * @(#) TestStringBuffer.java
+ * @(#) ListAcceptor.java
  *
  * pipelines   Pipeline conversion library for Java
  * Copyright (c) 2020 Peter Wall
@@ -23,26 +23,43 @@
  * SOFTWARE.
  */
 
-package net.pwall.util.pipeline.test;
+package net.pwall.util.pipeline;
 
-import net.pwall.util.pipeline.AbstractIntAcceptor;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class TestStringBuilderAcceptor extends AbstractIntAcceptor<String> {
+/**
+ * An {@link Acceptor} that creates a {@link List} from a sequence of objects.
+ *
+ * @author  Peter Wall
+ */
+public class ListAcceptor<A> extends AbstractAcceptor<A, List<A>> {
 
-    private StringBuilder sb;
+    public static final int DEFAULT_INITIAL_CAPACITY = 10;
 
-    public TestStringBuilderAcceptor(int initialSize) {
-        sb = new StringBuilder(initialSize);
+    private List<A> list;
+
+    public ListAcceptor(int initialCapacity) {
+        list = new ArrayList<>(initialCapacity);
+    }
+
+    public ListAcceptor() {
+        this(DEFAULT_INITIAL_CAPACITY);
     }
 
     @Override
-    public void acceptInt(int value) {
-        sb.append((char)value);
+    public void acceptObject(A value) {
+        list.add(value);
     }
 
     @Override
-    public String getResult() {
-        return sb.toString();
+    public List<A> getResult() {
+        return Collections.unmodifiableList(list);
+    }
+
+    public int getSize() {
+        return list.size();
     }
 
 }

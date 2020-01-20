@@ -2,6 +2,11 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.6] - 2020-01-20
+### Changed
+- Modified parameterised types on constructors etc. (use wildcards)
+- `ListAcceptor`, `SetAcceptor` and `StringAcceptor`
+
 ## [0.5] - 2020-01-15
 ### Changed
 - Changed pipelines to propagate "complete" state

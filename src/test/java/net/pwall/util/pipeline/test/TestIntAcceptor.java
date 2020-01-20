@@ -1,5 +1,5 @@
 /*
- * @(#) TestIntPipeline.java
+ * @(#) TestIntAcceptor.java
  *
  * pipelines   Pipeline conversion library for Java
  * Copyright (c) 2020 Peter Wall

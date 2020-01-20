@@ -53,7 +53,7 @@ public class UTF16_CodePoint<R> extends AbstractIntPipeline<R> {
             emit(i);
     };
 
-    public UTF16_CodePoint(IntAcceptor<R> downstream) {
+    public UTF16_CodePoint(IntAcceptor<? extends R> downstream) {
         super(downstream);
         state = normal;
     }

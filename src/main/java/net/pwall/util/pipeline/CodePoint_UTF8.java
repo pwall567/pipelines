@@ -33,7 +33,7 @@ package net.pwall.util.pipeline;
  */
 public class CodePoint_UTF8<R> extends AbstractIntPipeline<R> {
 
-    public CodePoint_UTF8(IntAcceptor<R> downstream) {
+    public CodePoint_UTF8(IntAcceptor<? extends R> downstream) {
         super(downstream);
     }
 

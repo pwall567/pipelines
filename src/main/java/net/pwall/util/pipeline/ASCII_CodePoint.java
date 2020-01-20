@@ -1,5 +1,5 @@
 /*
- * @(#) ASCII_Codepoint.java
+ * @(#) ASCII_CodePoint.java
  *
  * pipelines   Pipeline conversion library for Java
  * Copyright (c) 2020 Peter Wall
@@ -33,7 +33,7 @@ package net.pwall.util.pipeline;
  */
 public class ASCII_CodePoint<R> extends AbstractIntPipeline<R> {
 
-    public ASCII_CodePoint(IntAcceptor<R> downstream) {
+    public ASCII_CodePoint(IntAcceptor<? extends R> downstream) {
         super(downstream);
     }
 
