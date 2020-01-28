@@ -86,7 +86,7 @@ interface.
 | `CodePoint_UTF16`       | Unicode code points | UTF-16              |
 
 Unicode code points are 32-bit quantities containing the full range of Unicode values; UTF-16 refers to the 16-bit
-version of Unicode, with surrogate characters representing characters outside the "Basic Multilingual Plane".
+version of Unicode, with pairs of surrogate characters representing characters outside the "Basic Multilingual Plane".
 Because Java mostly works with 16-bit characters, the `CodePoint_UTF16` pipeline will frequently be needed in
 combination with the other classes.
 
@@ -157,6 +157,27 @@ Of course, all of this is also accessible from Kotlin:
     }
 ```
 
+## Dependency Specification
+
+The latest version of the library is 0.6, and it may be obtained from the Maven Central repository.
+
+### Maven
+```xml
+    <dependency>
+      <groupId>net.pwall.util</groupId>
+      <artifactId>pipelines</artifactId>
+      <version>0.6</version>
+    </dependency>
+```
+### Gradle
+```groovy
+    implementation 'net.pwall.util:pipelines:0.6'
+```
+### Gradle (kts)
+```kotlin
+    implementation("net.pwall.util:pipelines:0.6")
+```
+
 Peter Wall
 
-2020-01-19
+2020-01-28
