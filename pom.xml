@@ -5,7 +5,7 @@
 
   <groupId>net.pwall.util</groupId>
   <artifactId>pipelines</artifactId>
-  <version>0.6</version>
+  <version>0.7</version>
   <name>Pipelines Library</name>
   <description>Pipelines Library for Java</description>
   <packaging>jar</packaging>

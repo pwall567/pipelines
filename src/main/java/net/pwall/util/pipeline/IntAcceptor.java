@@ -55,15 +55,27 @@ public interface IntAcceptor<R> extends BaseAcceptor<R> {
     }
 
     /**
+     * Accept a section of a {@code byte} array as a sequence of integer values.
+     *
+     * @param   bytes   the {@code byte} array
+     * @param   offset  the starting offset
+     * @param   length  the length to accept
+     * @throws  Exception if thrown by a {@code close()} method
+     */
+    default void accept(byte[] bytes, int offset, int length) throws Exception {
+        for (int i = offset, n = offset + length; i < n; i++)
+            accept(bytes[i] & 0xFF);
+        close();
+    }
+
+    /**
      * Accept a {@code byte} array as a sequence of integer values.
      *
      * @param   bytes   the {@code byte} array
      * @throws  Exception if thrown by a {@code close()} method
      */
     default void accept(byte[] bytes) throws Exception {
-        for (byte b : bytes)
-            accept(b & 0xFF);
-        close();
+        accept(bytes, 0, bytes.length);
     }
 
 }

@@ -64,4 +64,14 @@ abstract public class BaseAbstractAcceptor<R> implements BaseAcceptor<R> {
         closed = true;
     }
 
+    /**
+     * Get the result object (default implementation throws exception).
+     *
+     * @throws  IllegalStateException   the acceptor does not have a result
+     */
+    @Override
+    public R getResult() {
+        throw new IllegalStateException("Acceptor does not have a result");
+    }
+
 }

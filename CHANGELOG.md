@@ -2,10 +2,18 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.7] - 2020-02-10
+### Added
+- `SwitchableDecoder`: Allows decoder to switch according to content
+### Changed
+- Moved code from `AbstractAcceptor` and `AbstractIntAcceptor` to `BaseAbstractAcceptor`
+- `IntAcceptor`: added accept byte range
+
 ## [0.6] - 2020-01-20
+### Added
+- `ListAcceptor`, `SetAcceptor` and `StringAcceptor`
 ### Changed
 - Modified parameterised types on constructors etc. (use wildcards)
-- `ListAcceptor`, `SetAcceptor` and `StringAcceptor`
 
 ## [0.5] - 2020-01-15
 ### Changed
