@@ -2,6 +2,11 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.8] - 2020-02-27
+### Changed
+- Improved documentation
+- `IntAcceptor`: added accept `InputStream`
+
 ## [0.7] - 2020-02-10
 ### Added
 - `SwitchableDecoder`: Allows decoder to switch according to content

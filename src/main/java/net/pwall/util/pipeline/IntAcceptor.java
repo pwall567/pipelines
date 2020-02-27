@@ -25,6 +25,8 @@
 
 package net.pwall.util.pipeline;
 
+import java.io.InputStream;
+
 /**
  * An acceptor that takes an integer value.  Includes default functions to cater for the common cases of strings or byte
  * arrays being used for integer values.
@@ -76,6 +78,21 @@ public interface IntAcceptor<R> extends BaseAcceptor<R> {
      */
     default void accept(byte[] bytes) throws Exception {
         accept(bytes, 0, bytes.length);
+    }
+
+    /**
+     * Accept an {@link InputStream} as a sequence of integer values.
+     *
+     * @param   inputStream     the {@link InputStream}
+     * @throws  Exception       is thrown byt the {@link InputStream} or by a {@code close()} method
+     */
+    default void accept(InputStream inputStream) throws Exception {
+        for (;;) {
+            int ch = inputStream.read();
+            accept(ch);
+            if (ch < 0)
+                break;
+        }
     }
 
 }

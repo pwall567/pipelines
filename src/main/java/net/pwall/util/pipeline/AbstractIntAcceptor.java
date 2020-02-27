@@ -34,7 +34,7 @@ package net.pwall.util.pipeline;
 abstract public class AbstractIntAcceptor<R> extends BaseAbstractAcceptor<R> implements IntAcceptor<R> {
 
     /**
-     * Accept an {@code int}.  Check for pipeline already closed, and handle end of data.
+     * Accept an {@code int}.  Check for acceptor already closed, and handle end of data.
      *
      * @param   value   the input value
      * @throws  Exception   if thrown by a {@code close()} method

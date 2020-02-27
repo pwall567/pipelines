@@ -26,7 +26,7 @@
 package net.pwall.util.pipeline;
 
 /**
- * A pipeline that takes an integer value and emits object values.
+ * A pipeline that takes integer values and emits object values.
  *
  *
  * @author  Peter Wall

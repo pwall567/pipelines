@@ -39,44 +39,36 @@ public class SwitchableDecoderTest {
 
     @Test
     public void shouldSwitchToUTF8() throws Exception {
-        StringAcceptor stringAcceptor = new StringAcceptor();
-        SwitchableDecoder<String> switchableDecoder = new SwitchableDecoder<>(stringAcceptor);
-        for (int i = 0, n = utf8String.length(); i < n; i++) {
-            char ch = utf8String.charAt(i);
-            if (ch == '|')
-                switchableDecoder.switchTo(stringAcceptor.getResult());
-            switchableDecoder.accept(ch);
-        }
-        switchableDecoder.close();
-        assertEquals("UTF-8|\u00A9\u00F7\u2014", switchableDecoder.getResult());
+        String result = pipeString(utf8String);
+        assertEquals("\u00A9\u00F7\u2014", result);
     }
 
     @Test
     public void shouldSwitchToISO88591() throws Exception {
-        StringAcceptor stringAcceptor = new StringAcceptor();
-        SwitchableDecoder<String> switchableDecoder = new SwitchableDecoder<>(stringAcceptor);
-        for (int i = 0, n = iso88591String.length(); i < n; i++) {
-            char ch = iso88591String.charAt(i);
-            if (ch == '|')
-                switchableDecoder.switchTo(stringAcceptor.getResult());
-            switchableDecoder.accept(ch);
-        }
-        switchableDecoder.close();
-        assertEquals("ISO-8859-1|\u00A9\u00F7\u00B5", switchableDecoder.getResult());
+        String result = pipeString(iso88591String);
+        assertEquals("\u00A9\u00F7\u00B5", result);
     }
 
     @Test
     public void shouldSwitchToWindows1252() throws Exception {
+        String result = pipeString(windows1252String);
+        assertEquals("\u00A9\u00F7\u20AC", result);
+    }
+
+    private String pipeString(String string) throws Exception {
         StringAcceptor stringAcceptor = new StringAcceptor();
         SwitchableDecoder<String> switchableDecoder = new SwitchableDecoder<>(stringAcceptor);
-        for (int i = 0, n = windows1252String.length(); i < n; i++) {
-            char ch = windows1252String.charAt(i);
-            if (ch == '|')
+        for (int i = 0, n = string.length(); i < n; i++) {
+            char ch = string.charAt(i);
+            if (ch == '|') {
                 switchableDecoder.switchTo(stringAcceptor.getResult());
-            switchableDecoder.accept(ch);
+                stringAcceptor.clear();
+            }
+            else
+                switchableDecoder.accept(ch);
         }
         switchableDecoder.close();
-        assertEquals("windows-1252|\u00A9\u00F7\u20AC", switchableDecoder.getResult());
+        return switchableDecoder.getResult();
     }
 
 }

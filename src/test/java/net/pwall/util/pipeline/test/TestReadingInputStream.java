@@ -48,4 +48,13 @@ public class TestReadingInputStream {
                 pipe.getResult());
     }
 
+    @Test
+    public void shouldReadAndConvertExternalResourceUsingAcceptInputStream() throws Exception {
+        IntPipeline<String> pipe = new UTF8_CodePoint<>(new CodePoint_UTF16<>(new StringAcceptor(120)));
+        pipe.accept(TestReadingInputStream.class.getResourceAsStream("/test1.txt"));
+        assertEquals("The quick brown fox jumps over the lazy dog.\n\n" +
+                "And now for something completely different: \u2014 \u201C \u00C0 \u00C9 \u0130 \u00D4 \u00DC \u201D\n",
+                pipe.getResult());
+    }
+
 }

@@ -36,7 +36,8 @@ abstract public class AbstractAcceptor<A, R> extends BaseAbstractAcceptor<R> imp
 
     /**
      * Accept an object.  Check for pipeline already closed, and handle end of data.  This assumes that {@code null} is
-     * used to indicate end of data; if that is not the case this method must be overridden.
+     * used to indicate end of data; if that is not the case this method must be overridden or an alternative
+     * implementation of {@link Acceptor} used.
      *
      * @param   value       the input value
      * @throws  Exception   if thrown by a {@code close()} method
@@ -52,7 +53,7 @@ abstract public class AbstractAcceptor<A, R> extends BaseAbstractAcceptor<R> imp
     }
 
     /**
-     * Accept an {@code int}, after {@code closed} check and test for end of data.  Implementing classes must supply an
+     * Accept a value, after {@code closed} check and test for end of data.  Implementing classes must supply an
      * implementation of this method.
      *
      * @param   value       the input value

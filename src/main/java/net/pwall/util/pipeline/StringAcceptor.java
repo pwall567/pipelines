@@ -58,4 +58,8 @@ public class StringAcceptor extends AbstractIntAcceptor<String> {
         return stringBuilder.length();
     }
 
+    public void clear() {
+        stringBuilder.setLength(0);
+    }
+
 }
