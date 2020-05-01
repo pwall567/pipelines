@@ -57,4 +57,10 @@ public interface BaseAcceptor<R> extends AutoCloseable {
         return true;
     }
 
+    /**
+     * Flush the acceptor (required by some implementations - default is a no-operation).
+     */
+    default void flush() {
+    }
+
 }

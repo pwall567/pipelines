@@ -48,6 +48,7 @@ checked exception, many of the method signatures in the library also include thi
 - `getResult()`: returns the result (the default implementation throws an exception)
 - `isComplete()`: returns `true` if all many-to-one sequences are complete, for example, all the bytes in a UTF-8
 multi-byte sequence have been received
+- `flush()`: instructs buffering acceptors to flush data to their output
 
 ### Pipeline interface
 
@@ -159,25 +160,25 @@ Of course, all of this is also accessible from Kotlin:
 
 ## Dependency Specification
 
-The latest version of the library is 0.8, and it may be obtained from the Maven Central repository.
+The latest version of the library is 0.9, and it may be obtained from the Maven Central repository.
 
 ### Maven
 ```xml
     <dependency>
       <groupId>net.pwall.util</groupId>
       <artifactId>pipelines</artifactId>
-      <version>0.8</version>
+      <version>0.9</version>
     </dependency>
 ```
 ### Gradle
 ```groovy
-    implementation 'net.pwall.util:pipelines:0.8'
+    implementation 'net.pwall.util:pipelines:0.9'
 ```
 ### Gradle (kts)
 ```kotlin
-    implementation("net.pwall.util:pipelines:0.8")
+    implementation("net.pwall.util:pipelines:0.9")
 ```
 
 Peter Wall
 
-2020-02-27
+2020-05-01

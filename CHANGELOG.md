@@ -2,6 +2,11 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.9] - 2020-05-01
+### Changed
+- `BaseAcceptor`: added `flush()`
+- `AbstractPipeline`, `AbstractIntPipeline`, `AbstractIntObjectPipeline`: added `flush()`
+
 ## [0.8] - 2020-02-27
 ### Changed
 - Improved documentation

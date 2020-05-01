@@ -35,7 +35,7 @@ package net.pwall.util.pipeline;
  */
 abstract public class AbstractPipeline<A, E, R> extends AbstractAcceptor<A, R> implements Pipeline<A, E, R> {
 
-    private Acceptor<? super E, ? extends R> downstream;
+    private final Acceptor<? super E, ? extends R> downstream;
 
     /**
      * Construct an {@code AbstractPipeline} with the given downstream {@link Acceptor}.
@@ -84,6 +84,14 @@ abstract public class AbstractPipeline<A, E, R> extends AbstractAcceptor<A, R> i
     @Override
     public boolean isComplete() {
         return downstream.isComplete();
+    }
+
+    /**
+     * Propagate the flush operation to the downstream acceptor.
+     */
+    @Override
+    public void flush() {
+        downstream.flush();
     }
 
 }
