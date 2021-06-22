@@ -1,8 +1,8 @@
 /*
- * @(#) AbstractIntObjectPipeline.java
+ * @(#) AbstractObjectIntPipeline.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020 Peter Wall
+ * Copyright (c) 2021 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,20 +29,20 @@ package net.pwall.util.pipeline;
  * Abstract base class for {@link IntObjectPipeline} implementations.
  *
  * @author  Peter Wall
- * @param   <E>     the emitted (downstream) value type
+ * @param   <A>     the accepted (input) value type
  * @param   <R>     the result type
  */
-public abstract class AbstractIntObjectPipeline<E, R> extends AbstractIntAcceptor<R>
-        implements IntObjectPipeline<E, R> {
+public abstract class AbstractObjectIntPipeline<A, R> extends AbstractAcceptor<A, R>
+        implements ObjectIntPipeline<A, R> {
 
-    private final Acceptor<? super E, ? extends R> downstream;
+    private final IntAcceptor<? extends R> downstream;
 
     /**
-     * Construct an {@code AbstractIntObjectPipeline} with the given downstream {@link Acceptor}.
+     * Construct an {@code AbstractObjectIntPipeline} with the given downstream {@link IntAcceptor}.
      *
-     * @param   downstream  the {@link Acceptor}
+     * @param   downstream  the {@link IntAcceptor}
      */
-    protected AbstractIntObjectPipeline(Acceptor<? super E, ? extends R> downstream) {
+    protected AbstractObjectIntPipeline(IntAcceptor<? extends R> downstream) {
         this.downstream = downstream;
     }
 
@@ -56,12 +56,12 @@ public abstract class AbstractIntObjectPipeline<E, R> extends AbstractIntAccepto
     }
 
     /**
-     * Emit a value to the downstream {@link Acceptor}.
+     * Emit a value to the downstream {@link IntAcceptor}.
      *
      * @param   value   the value to be forwarded
      */
     @Override
-    public void emit(E value) throws Exception {
+    public void emit(int value) throws Exception {
         downstream.accept(value);
     }
 

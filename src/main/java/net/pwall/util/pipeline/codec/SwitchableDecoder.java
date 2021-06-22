@@ -18,7 +18,7 @@ import java.nio.charset.Charset;
  */
 public class SwitchableDecoder<R> extends AbstractIntPipeline<R> {
 
-    private IntAcceptor<R> downstream;
+    private final IntAcceptor<R> downstream;
     private IntPipeline<R> delegate;
 
     public SwitchableDecoder(IntAcceptor<R> downstream) {

@@ -1,8 +1,8 @@
 /*
- * @(#) DecodingPipeline.java
+ * @(#) ObjectIntPipeline.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020 Peter Wall
+ * Copyright (c) 2021 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,28 +26,20 @@
 package net.pwall.util.pipeline;
 
 /**
- * An {@link IntPipeline} to convert one-to-one mapping character encodings to Unicode code points.
+ * A pipeline that takes object values and emits integer values.
  *
  * @author  Peter Wall
- * @param   <R>     the pipeline result type
+ * @param   <A>     the accepted (input) value type
+ * @param   <R>     the result type
  */
-public class DecodingPipeline<R> extends AbstractIntPipeline<R> {
+public interface ObjectIntPipeline<A, R> extends Acceptor<A, R> {
 
-    private String table;
-
-    public DecodingPipeline(IntAcceptor<? extends R> downstream, String table) {
-        super(downstream);
-        this.table = table;
-    }
-
-    @Override
-    public void acceptInt(int value) throws Exception {
-        if (value >= 0 && value <= 0x7F)
-            emit(value);
-        else if (value >= 0x80 && value <= 0xFF)
-            emit(table.charAt(value - 0x80));
-        else
-            throw new IllegalArgumentException("Illegal character");
-    }
+    /**
+     * Emit a value, that is, forward a value to the downstream acceptor.
+     *
+     * @param   value   the value
+     * @throws  Exception if thrown by a {@code close()} method
+     */
+    void emit(int value) throws Exception;
 
 }
