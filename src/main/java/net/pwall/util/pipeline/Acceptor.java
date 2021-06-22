@@ -25,6 +25,10 @@
 
 package net.pwall.util.pipeline;
 
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.stream.Stream;
+
 /**
  * An acceptor that takes a value of the specified type.
  *
@@ -41,5 +45,25 @@ public interface Acceptor<A, R> extends BaseAcceptor<R> {
      * @throws  Exception   if thrown by a {@code close()} method
      */
     void accept(A value) throws Exception;
+
+    default void accept(Iterator<A> iterator) throws Exception {
+        while (iterator.hasNext())
+            accept(iterator.next());
+        close();
+    }
+
+    default void accept(Enumeration<A> enumeration) throws Exception {
+        while (enumeration.hasMoreElements())
+            accept(enumeration.nextElement());
+        close();
+    }
+
+    default void accept(Iterable<A> iterable) throws Exception {
+        accept(iterable.iterator());
+    }
+
+    default void accept(Stream<A> stream) throws Exception {
+        accept(stream.iterator());
+    }
 
 }

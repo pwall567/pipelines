@@ -26,6 +26,7 @@
 package net.pwall.util.pipeline;
 
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 /**
  * An acceptor that takes an integer value.  Includes default functions to cater for the common cases of strings or byte
@@ -47,8 +48,8 @@ public interface IntAcceptor<R> extends BaseAcceptor<R> {
     /**
      * Accept a {@link CharSequence} (e.g. {@link String}) as a sequence of integer values.
      *
-     * @param   cs      the {@link CharSequence}
-     * @throws  Exception if thrown by a {@code close()} method
+     * @param   cs          the {@link CharSequence}
+     * @throws  Exception   if thrown by a {@code close()} method
      */
     default void accept(CharSequence cs) throws Exception {
         for (int i = 0, n = cs.length(); i < n; i++)
@@ -59,10 +60,10 @@ public interface IntAcceptor<R> extends BaseAcceptor<R> {
     /**
      * Accept a section of a {@code byte} array as a sequence of integer values.
      *
-     * @param   bytes   the {@code byte} array
-     * @param   offset  the starting offset
-     * @param   length  the length to accept
-     * @throws  Exception if thrown by a {@code close()} method
+     * @param   bytes       the {@code byte} array
+     * @param   offset      the starting offset
+     * @param   length      the length to accept
+     * @throws  Exception   if thrown by a {@code close()} method
      */
     default void accept(byte[] bytes, int offset, int length) throws Exception {
         for (int i = offset, n = offset + length; i < n; i++)
@@ -73,8 +74,8 @@ public interface IntAcceptor<R> extends BaseAcceptor<R> {
     /**
      * Accept a {@code byte} array as a sequence of integer values.
      *
-     * @param   bytes   the {@code byte} array
-     * @throws  Exception if thrown by a {@code close()} method
+     * @param   bytes       the {@code byte} array
+     * @throws  Exception   if thrown by a {@code close()} method
      */
     default void accept(byte[] bytes) throws Exception {
         accept(bytes, 0, bytes.length);
@@ -84,7 +85,7 @@ public interface IntAcceptor<R> extends BaseAcceptor<R> {
      * Accept an {@link InputStream} as a sequence of integer values.
      *
      * @param   inputStream     the {@link InputStream}
-     * @throws  Exception       is thrown byt the {@link InputStream} or by a {@code close()} method
+     * @throws  Exception       if thrown by the {@link InputStream} or by a {@code close()} method
      */
     default void accept(InputStream inputStream) throws Exception {
         for (;;) {
@@ -93,6 +94,17 @@ public interface IntAcceptor<R> extends BaseAcceptor<R> {
             if (ch < 0)
                 break;
         }
+    }
+
+    /**
+     * Accept a {@link ByteBuffer} as a sequence of integer values.
+     *
+     * @param   byteBuffer      the {@link ByteBuffer}
+     * @throws  Exception       if thrown byt the {@link ByteBuffer} or by a {@code close()} method
+     */
+    default void accept(ByteBuffer byteBuffer) throws Exception {
+        while (byteBuffer.hasRemaining())
+            accept(byteBuffer.get());
     }
 
 }
