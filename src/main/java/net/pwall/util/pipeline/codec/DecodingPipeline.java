@@ -23,7 +23,11 @@
  * SOFTWARE.
  */
 
-package net.pwall.util.pipeline;
+package net.pwall.util.pipeline.codec;
+
+import net.pwall.util.pipeline.AbstractIntPipeline;
+import net.pwall.util.pipeline.IntAcceptor;
+import net.pwall.util.pipeline.IntPipeline;
 
 /**
  * An {@link IntPipeline} to convert one-to-one mapping character encodings to Unicode code points.

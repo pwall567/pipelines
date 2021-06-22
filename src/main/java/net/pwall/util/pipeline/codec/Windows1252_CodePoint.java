@@ -23,7 +23,10 @@
  * SOFTWARE.
  */
 
-package net.pwall.util.pipeline;
+package net.pwall.util.pipeline.codec;
+
+import net.pwall.util.pipeline.IntAcceptor;
+import net.pwall.util.pipeline.IntPipeline;
 
 /**
  * An {@link IntPipeline} to convert Windows-1252 encoding to Unicode code points.

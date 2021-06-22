@@ -1,6 +1,10 @@
-package net.pwall.util.pipeline;
+package net.pwall.util.pipeline.codec;
 
 import java.nio.charset.Charset;
+
+import net.pwall.util.pipeline.AbstractIntPipeline;
+import net.pwall.util.pipeline.IntAcceptor;
+import net.pwall.util.pipeline.IntPipeline;
 
 /**
  * A switchable decoder that allows the encoding of an input stream to be determined from the data in the early part of

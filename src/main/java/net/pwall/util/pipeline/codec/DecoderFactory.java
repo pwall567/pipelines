@@ -23,9 +23,12 @@
  * SOFTWARE.
  */
 
-package net.pwall.util.pipeline;
+package net.pwall.util.pipeline.codec;
 
 import java.nio.charset.Charset;
+
+import net.pwall.util.pipeline.AbstractIntPipeline;
+import net.pwall.util.pipeline.IntAcceptor;
 
 /**
  * Factory class to get decoder pipeline objects for a given encoding.
