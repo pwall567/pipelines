@@ -2,9 +2,10 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## [Unreleased]
+## [1.0] - 2021-08-02
 ### Added
 - `ObjectIntPipeline`, `AbstractObjectIntPipeline`
+- several utility classes
 ### Changed
 - All: implemented new package layout, with subpackages for codec, buffer etc. (**BREAKING CHANGE**)
 - `Acceptor`, `IntAcceptor`: added/modified helper methods (**BREAKING CHANGE** - helper method functionality change)
