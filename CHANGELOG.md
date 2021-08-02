@@ -2,6 +2,13 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [Unreleased]
+### Added
+- `ObjectIntPipeline`, `AbstractObjectIntPipeline`
+### Changed
+- All: implemented new package layout, with subpackages for codec, buffer etc. (**BREAKING CHANGE**)
+- `Acceptor`, `IntAcceptor`: added/modified helper methods (**BREAKING CHANGE** - helper method functionality change)
+
 ## [0.9] - 2020-05-01
 ### Changed
 - `BaseAcceptor`: added `flush()`

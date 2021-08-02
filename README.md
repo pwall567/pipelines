@@ -1,23 +1,29 @@
 # pipelines
 
-Pipeline library for Java
+Pipeline library for Java.
 
-A collection of pipeline classes that take an input (frequently an `int` value) and produce a another value.
+This library enables the construction of "pipelines", in which data (frequently in the form of `int` values) is pumped
+in at one end and values are emitted at the other.
 The conversion may be one-to-one, one-to-many or many-to-one.
+
 A frequent use is for character encoding (conversion of bytes to characters and _vice versa_) and several classes are
 provided to perform such conversions.
 
 ## Background
 
-This project was born from a requirement for a mechanism to process a stream of characters, and output the results as
-they become available.
-The specific task was to process JSON data without aggregating the entire input into a string.
-Processing the data a character at a time allows data to become available to the application sooner, and avoids the need
-to allocate a buffer sufficiently large to hold the largest possible input.
+This project was born from a requirement for a mechanism to process a stream of characters, and outputting results as
+they became available.
+The specific task was to process JSON data as each element was completed, without waiting until the entire input had
+been read into a buffer.
 
-But the JSON data in this case was not in character form, it was a stream of bytes.
-That meant decoding from a character set (usually UTF-8) - another many-to-one pipeline process.
-Thus was born the generalised pipeline library.
+But the JSON data in this case was not in character form; it was a stream of bytes.
+That meant decoding from a character set (usually UTF-8) &ndash; another many-to-one pipeline process.
+Thus was born the generalised pipeline library &ndash; a simple mechanism for connecting the output of one process to
+input of the next, without concern for the one-to-many or many-to-one characteristics of any step in the chain.
+
+The JSON pipeline ends up looking something like this:
+
+&emsp;_bytes_&emsp;&rArr;&emsp;{ **UTF-8 decoder** }&emsp;&rArr;&emsp;_characters_&emsp;&rArr;&emsp;{ **JSON processor** }&emsp;&rArr;&emsp;_objects_
 
 I considered using the Java `Consumer` and `IntConsumer` interfaces for the objects that accept input from the original
 source or from the previous element of the pipeline, but I found I needed additional functionality beyond the simple
@@ -105,10 +111,10 @@ relationship.
 A dotted line represents a secondary `implements` relationship, where a class both extends a base class and implements
 an interface.
 
-![Class Diagram](doc/dia/pipeline.png "UML Class Diagram")
+![Class Diagram](doc/dia/pipeline10.png "UML Class Diagram")
 
 The diagram was produced by [Dia](https://wiki.gnome.org/Apps/Dia/); the diagram file is at
-[doc/dia/pipeline.dia](doc/dia/pipeline.dia).
+[doc/dia/pipeline10.dia](doc/dia/pipeline10.dia).
 
 ## Example
 
@@ -117,7 +123,7 @@ To accept bytes in UTF-8 and aggregate them into a `String`:
 ```Java
 public class ReadString {
 
-    public String read(InputStream inputStream) throws Exception {
+    public String read(InputStream inputStream) {
         IntPipeline<String> pipe = new UTF8_CodePoint<>(new CodePoint_UTF16<>(new StringAcceptor()));
         while (!pipe.isClosed())
             pipe.accept(inputStream.read());
