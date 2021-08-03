@@ -1,5 +1,5 @@
 /*
- * @(#) AbstractObjectIntPipeline.java
+ * @(#) BasePipeline.java
  *
  * pipelines   Pipeline conversion library for Java
  * Copyright (c) 2021 Peter Wall
@@ -26,56 +26,52 @@
 package net.pwall.pipeline;
 
 /**
- * Abstract base class for {@link IntObjectPipeline} implementations.
+ * Base interface for pipeline classes.
  *
  * @author  Peter Wall
- * @param   <A>     the accepted (input) value type
  * @param   <R>     the result type
  */
-public abstract class AbstractObjectIntPipeline<A, R> extends AbstractAcceptor<A, R>
-        implements ObjectIntPipeline<A, R> {
-
-    private final IntAcceptor<? extends R> downstream;
+public interface BasePipeline<R> extends BaseAcceptor<R> {
 
     /**
-     * Construct an {@code AbstractObjectIntPipeline} with the given downstream {@link IntAcceptor}.
+     * Get the downstream {@link BaseAcceptor}.
      *
-     * @param   downstream  the {@link IntAcceptor}
+     * @return      the {@link BaseAcceptor}
      */
-    protected AbstractObjectIntPipeline(IntAcceptor<? extends R> downstream) {
-        this.downstream = downstream;
-    }
-
-    @Override
-    public IntAcceptor<? extends R> getDownstream() {
-        return downstream;
-    }
+    BaseAcceptor<? extends R> getDownstream();
 
     /**
-     * Close the pipeline.
-     */
-    @Override
-    public void close() throws Exception {
-        downstream.close();
-        super.close();
-    }
-
-    /**
-     * Emit a value to the downstream {@link IntAcceptor}.
+     * Return {@code true} if all sequences in the input to this stage of the pipeline are complete, that is, the input
+     * is not in the middle of a sequence requiring more data.  This should be overridden by pipeline stages that
+     * process complex sequences of input.
      *
-     * @param   value   the value to be forwarded
+     * @return  {@code true} if the input is in the "complete" state
      */
-    @Override
-    public void emit(int value) throws Exception {
-        downstream.accept(value);
+    default boolean isStageComplete() {
+        return true;
     }
 
     /**
-     * Propagate the flush operation to the downstream acceptor.
+     * Return {@code true} if all sequences in the input are complete, both for the current stage and for the downstream
+     * stages.
+     *
+     * @return  {@code true} if the input is in the "complete" state
      */
     @Override
-    public void flush() {
-        downstream.flush();
+    default boolean isComplete() {
+        return isStageComplete() && getDownstream().isComplete();
+    }
+
+    /**
+     * Get the result object (defaults to the result of the downstream acceptor).
+     *
+     * @return  the result
+     */
+    @Override
+    default R getResult() {
+        if (!isComplete())
+            throw new IllegalStateException("Sequence is not complete");
+        return getDownstream().getResult();
     }
 
 }

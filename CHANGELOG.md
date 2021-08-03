@@ -2,10 +2,19 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [2.0] - 2021-08-03
+### Added
+- `BasePipeline`: new interface implemented by all pipelines
+### Changed
+- pipeline classes: implement new interface
+- `BaseAbstractAcceptor`: removed `getResult()` (it was always overridden)
+- `Fold`: bug fix (didn't return result)
+
 ## [1.0] - 2021-08-02
 ### Added
 - `ObjectIntPipeline`, `AbstractObjectIntPipeline`
 - several utility classes
+
 ### Changed
 - All: implemented new package layout, with subpackages for codec, buffer etc. (**BREAKING CHANGE**)
 - `Acceptor`, `IntAcceptor`: added/modified helper methods (**BREAKING CHANGE** - helper method functionality change)

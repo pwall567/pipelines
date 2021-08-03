@@ -1,5 +1,9 @@
 # pipelines
 
+[![Build Status](https://travis-ci.com/pwall567/pipelines.svg?branch=master)](https://travis-ci.org/pwall567/pipelines)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Maven Central](https://img.shields.io/maven-central/v/net.pwall.util/pipelines?label=Maven%20Central)](https://search.maven.org/search?q=g:%22net.pwall.util%22%20AND%20a:%22pipelines%22)
+
 Pipeline library for Java.
 
 This library enables the construction of "pipelines", in which data (frequently in the form of `int` values) is pumped
@@ -11,8 +15,8 @@ provided to perform such conversions.
 
 ## Background
 
-This project was born from a requirement for a mechanism to process a stream of characters, and outputting results as
-they became available.
+This project was born from a requirement for a mechanism to process a stream of characters, outputting results as they
+became available.
 The specific task was to process JSON data as each element was completed, without waiting until the entire input had
 been read into a buffer.
 
@@ -40,7 +44,7 @@ The classes and interfaces use the following naming convention for their paramet
 - `<A>`: the type that the class/interface accepts
 - `<E>`: the type that the class/interface emits
 - `<R>`: the "result" type (the pipeline may have a result type which gets propagated to the first element of the
-pipeline; instances that don't need a result can use `Void`)
+pipeline; instances that don't need a result can use `Void` &ndash; `Unit` in Kotlin)
 
 ### Acceptor interface
 
@@ -88,7 +92,7 @@ interface.
 | `ISO8859_1_CodePoint`   | ISO-8859-1          | Unicode code points |
 | `ISO8859_15_CodePoint`  | ISO-8859-15         | Unicode code points |
 | `Windows1252_CodePoint` | Windows-1252        | Unicode code points |
-| `ASCII_CodePoint`       | Windows-1252        | Unicode code points |
+| `ASCII_CodePoint`       | ASCII               | Unicode code points |
 | `CodePoint_UTF8`        | Unicode code points | UTF-8               |
 | `CodePoint_UTF16`       | Unicode code points | UTF-16              |
 
@@ -102,7 +106,7 @@ combination with the other classes.
 The collection of classes rapidly grew to a large number, and to keep track of the whole library a class diagram is
 helpful.
 
-The following is a class diagram in UML form - or rather a rough approximation of UML.
+The following is a class diagram in UML form &ndash; or rather, a rough approximation of UML.
 In this diagram, the same rectangular block is used to represent an `interface` and a `class`.
 An `interface`, like an `abstract class`, has its name in _italics_.
 
@@ -110,11 +114,12 @@ A solid line indicating inheritance is used both for both an `extends` relations
 relationship.
 A dotted line represents a secondary `implements` relationship, where a class both extends a base class and implements
 an interface.
+Lines that cross do not interact.
 
-![Class Diagram](doc/dia/pipeline10.png "UML Class Diagram")
+![Class Diagram](doc/dia/pipeline20.png "UML Class Diagram")
 
 The diagram was produced by [Dia](https://wiki.gnome.org/Apps/Dia/); the diagram file is at
-[doc/dia/pipeline10.dia](doc/dia/pipeline10.dia).
+[doc/dia/pipeline20.dia](doc/dia/pipeline20.dia).
 
 ## Example
 
@@ -166,25 +171,25 @@ Of course, all of this is also accessible from Kotlin:
 
 ## Dependency Specification
 
-The latest version of the library is 1.0, and it may be obtained from the Maven Central repository.
+The latest version of the library is 2.0, and it may be obtained from the Maven Central repository.
 
 ### Maven
 ```xml
     <dependency>
       <groupId>net.pwall.util</groupId>
       <artifactId>pipelines</artifactId>
-      <version>1.0</version>
+      <version>2.0</version>
     </dependency>
 ```
 ### Gradle
 ```groovy
-    implementation 'net.pwall.util:pipelines:1.0'
+    implementation 'net.pwall.util:pipelines:2.0'
 ```
 ### Gradle (kts)
 ```kotlin
-    implementation("net.pwall.util:pipelines:1.0")
+    implementation("net.pwall.util:pipelines:2.0")
 ```
 
 Peter Wall
 
-2021-08-02
+2021-08-03

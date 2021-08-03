@@ -2,7 +2,7 @@
  * @(#) Pipeline.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020 Peter Wall
+ * Copyright (c) 2020, 2021 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ package net.pwall.pipeline;
  * @param   <E>     the emitted (downstream) value type
  * @param   <R>     the result type
  */
-public interface Pipeline<A, E, R> extends Acceptor<A, R> {
+public interface Pipeline<A, E, R> extends Acceptor<A, R>, BasePipeline<R> {
 
     /**
      * Emit a value, that is, forward a value to the downstream acceptor.

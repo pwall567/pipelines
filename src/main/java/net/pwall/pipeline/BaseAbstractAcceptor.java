@@ -2,7 +2,7 @@
  * @(#) BaseAbstractAcceptor.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020 Peter Wall
+ * Copyright (c) 2020, 2021 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -62,16 +62,6 @@ abstract public class BaseAbstractAcceptor<R> implements BaseAcceptor<R> {
         if (!isComplete())
             throw new IllegalStateException("Sequence not complete");
         closed = true;
-    }
-
-    /**
-     * Get the result object (default implementation throws exception).
-     *
-     * @throws  IllegalStateException   the acceptor does not have a result
-     */
-    @Override
-    public R getResult() {
-        throw new IllegalStateException("Acceptor does not have a result");
     }
 
 }

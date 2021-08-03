@@ -42,4 +42,9 @@ public class Fold<A> extends AbstractAcceptor<A, A> {
         result = function.apply(result, value);
     }
 
+    @Override
+    public A getResult() {
+        return result;
+    }
+
 }

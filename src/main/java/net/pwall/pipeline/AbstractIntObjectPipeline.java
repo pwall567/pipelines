@@ -2,7 +2,7 @@
  * @(#) AbstractIntObjectPipeline.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020 Peter Wall
+ * Copyright (c) 2020, 2021 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,6 +46,11 @@ public abstract class AbstractIntObjectPipeline<E, R> extends AbstractIntAccepto
         this.downstream = downstream;
     }
 
+    @Override
+    public Acceptor<? super E, ? extends R> getDownstream() {
+        return downstream;
+    }
+
     /**
      * Close the pipeline.
      */
@@ -63,27 +68,6 @@ public abstract class AbstractIntObjectPipeline<E, R> extends AbstractIntAccepto
     @Override
     public void emit(E value) throws Exception {
         downstream.accept(value);
-    }
-
-    /**
-     * Get the result object (defaults to the result of the downstream acceptor).
-     *
-     * @return  the result
-     */
-    @Override
-    public R getResult() {
-        return downstream.getResult();
-    }
-
-    /**
-     * Return {@code true} if all sequences in the input are complete, that is, the input is not in the middle of a
-     * sequence requiring more data.  The default implementation tests whether the downstream acceptor is complete.
-     *
-     * @return  {@code true} if the input is in the "complete" state
-     */
-    @Override
-    public boolean isComplete() {
-        return downstream.isComplete();
     }
 
     /**

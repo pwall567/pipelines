@@ -2,7 +2,7 @@
  * @(#) UTF8CodePointTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020 Peter Wall
+ * Copyright (c) 2020, 2021 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@ import net.pwall.pipeline.test.TestIntAcceptor;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 public class UTF8CodePointTest {
@@ -84,6 +85,15 @@ public class UTF8CodePointTest {
         List<Integer> result = pipe.getResult();
         assertEquals(1, result.size());
         assertEquals(Integer.valueOf(0x2014), result.get(0));
+    }
+
+    @Test
+    public void shouldFailOnGetResultWhenPipelineNotComplete() throws Exception {
+        UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new TestIntAcceptor());
+        pipe.accept(0xE2);
+        assertFalse(pipe.isComplete());
+        IllegalStateException e = assertThrows(IllegalStateException.class, pipe::getResult);
+        assertEquals("Sequence is not complete", e.getMessage());
     }
 
 }

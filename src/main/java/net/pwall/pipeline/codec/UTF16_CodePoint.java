@@ -2,7 +2,7 @@
  * @(#) UTF16_CodePoint.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020 Peter Wall
+ * Copyright (c) 2020, 2021 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -68,8 +68,8 @@ public class UTF16_CodePoint<R> extends AbstractIntPipeline<R> {
     }
 
     @Override
-    public boolean isComplete() {
-        return state == normal && super.isComplete();
+    public boolean isStageComplete() {
+        return state == normal;
     }
 
     private void terminal(int i) throws Exception {

@@ -32,7 +32,7 @@ package net.pwall.pipeline;
  * @param   <A>     the accepted (input) value type
  * @param   <R>     the result type
  */
-public interface ObjectIntPipeline<A, R> extends Acceptor<A, R> {
+public interface ObjectIntPipeline<A, R> extends Acceptor<A, R>, BasePipeline<R> {
 
     /**
      * Emit a value, that is, forward a value to the downstream acceptor.
