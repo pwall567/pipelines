@@ -2,11 +2,15 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [2.1] - 2021-08-04
+### Added
+- `URIEncoder`, `URIDecoder`: new encode/decode classes
+
 ## [2.0] - 2021-08-03
 ### Added
 - `BasePipeline`: new interface implemented by all pipelines
 ### Changed
-- pipeline classes: implement new interface
+- pipeline classes: implement new interface (possible breaking change)
 - `BaseAbstractAcceptor`: removed `getResult()` (it was always overridden)
 - `Fold`: bug fix (didn't return result)
 
