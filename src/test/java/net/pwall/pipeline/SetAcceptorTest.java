@@ -1,5 +1,5 @@
 /*
- * @(#) BaseAcceptor.java
+ * @(#) SetAcceptorTest.java
  *
  * pipelines   Pipeline conversion library for Java
  * Copyright (c) 2020 Peter Wall
@@ -25,45 +25,25 @@
 
 package net.pwall.pipeline;
 
-/**
- * The base interface for pipeline and acceptor classes.
- *
- * @author  Peter Wall
- * @param   <R>     the result type
- */
-public interface BaseAcceptor<R> extends AutoCloseable {
+import java.util.HashSet;
+import java.util.Set;
 
-    /**
-     * Return {@code true} if the pipeline is closed.
-     *
-     * @return  {@code true} if the pipeline is closed
-     */
-    boolean isClosed();
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
-    /**
-     * Get the result of the acceptor.  The default implementation throws an exception.
-     *
-     * @return  the result
-     * @throws  UnsupportedOperationException   in all cases
-     */
-    default R getResult() {
-        throw new UnsupportedOperationException("No result possible");
-    }
+public class SetAcceptorTest {
 
-    /**
-     * Return {@code true} if all sequences in the input are complete, that is, the input is not in the middle of a
-     * sequence requiring more data.  This should be overridden by acceptors that process complex sequences of input.
-     *
-     * @return  {@code true} if the input is in the "complete" state
-     */
-    default boolean isComplete() {
-        return true;
-    }
-
-    /**
-     * Flush the acceptor (required by some implementations - default is a no-operation).
-     */
-    default void flush() {
+    @Test
+    public void shouldBuildSetFromSequence() throws Exception {
+        SetAcceptor<String> setAcceptor = new SetAcceptor<>();
+        setAcceptor.accept("Hello");
+        setAcceptor.accept("World!");
+        setAcceptor.close();
+        assertEquals(2, setAcceptor.getSize());
+        Set<String> expected = new HashSet<>();
+        expected.add("Hello");
+        expected.add("World!");
+        assertEquals(expected, setAcceptor.getResult());
     }
 
 }

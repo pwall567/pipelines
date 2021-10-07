@@ -58,4 +58,15 @@ abstract public class AbstractIntAcceptor<R> extends BaseAbstractAcceptor<R> imp
      */
     abstract public void acceptInt(int value) throws Exception;
 
+    /**
+     * Accept a sequence of {@code int} values, supplied as {@code vararg} parameters.
+     *
+     * @param   values      the input values
+     * @throws  Exception   if thrown by a {@code close()} method
+     */
+    public void accept(int ... values) throws Exception {
+        for (int value : values)
+            accept(value);
+    }
+
 }

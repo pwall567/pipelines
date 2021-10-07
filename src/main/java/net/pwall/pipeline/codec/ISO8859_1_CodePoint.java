@@ -36,7 +36,7 @@ import net.pwall.pipeline.IntPipeline;
  */
 public class ISO8859_1_CodePoint<R> extends DecodingPipeline<R> {
 
-    private static final String table =
+    static final String table =
             "\u0080\u0081\u0082\u0083\u0084\u0085\u0086\u0087\u0088\u0089\u008A\u008B\u008C\u008D\u008E\u008F" +
             "\u0090\u0091\u0092\u0093\u0094\u0095\u0096\u0097\u0098\u0099\u009A\u009B\u009C\u009D\u009E\u009F" +
             "\u00A0\u00A1\u00A2\u00A3\u00A4\u00A5\u00A6\u00A7\u00A8\u00A9\u00AA\u00AB\u00AC\u00AD\u00AE\u00AF" +

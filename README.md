@@ -1,6 +1,6 @@
 # pipelines
 
-[![Build Status](https://travis-ci.com/pwall567/pipelines.svg?branch=master)](https://travis-ci.org/pwall567/pipelines)
+[![Build Status](https://travis-ci.com/pwall567/pipelines.svg?branch=master)](https://travis-ci.com/github/pwall567/pipelines)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Maven Central](https://img.shields.io/maven-central/v/net.pwall.util/pipelines?label=Maven%20Central)](https://search.maven.org/search?q=g:%22net.pwall.util%22%20AND%20a:%22pipelines%22)
 
@@ -95,11 +95,48 @@ interface.
 | `ASCII_CodePoint`       | ASCII               | Unicode code points |
 | `CodePoint_UTF8`        | Unicode code points | UTF-8               |
 | `CodePoint_UTF16`       | Unicode code points | UTF-16              |
+| `CodePoint_ISO8859_1`   | Unicode code points | ISO-8859-1          |
+| `CodePoint_ISO8859_15`  | Unicode code points | ISO-8859-15         |
 
 Unicode code points are 32-bit quantities containing the full range of Unicode values; UTF-16 refers to the 16-bit
 version of Unicode, with pairs of surrogate characters representing characters outside the "Basic Multilingual Plane".
 Because Java mostly works with 16-bit characters, the `CodePoint_UTF16` pipeline will frequently be needed in
 combination with the other classes.
+
+### `SwitchableDecoder` and `DynamicDecoder`
+
+Of particular interest are the `SwitchableDecoder` and `DynamicDecoder` classes.
+`SwitchableDecoder` is designed for the case where the file itself contains the character set specification &ndash; for
+example, an XML file starts with a prolog line:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<example>data</example>
+```
+
+`SwitchableDecoder` starts reading the file in ASCII mode, ASCII being the common subset of most of the generally-used
+character sets.
+When the reading process recognises an explicit character set definition, it can switch to the specified character set.
+
+`DynamicDecoder` takes this a step further &ndash; it attempts to determine the character set from the content of the
+input stream.
+In some cases, such as UTF-16LE (little-endian) or UTF-16BE (big-endian), examination of the first few bytes will allow
+the decoder to make a quick determination.
+But for UTF-8, ISO-8859-1 and Windows-1252, which account for the majority of character encoding in the English-speaking
+world, the most frequently-used characters are identical, and it is only when a special character is encountered that
+the decoder can attempt to infer the character set being used.
+
+`DynamicDecoder` will check whether a special character sequence is valid UTF-8, and if so, it wil switch to that
+character set for the remainder of the stream.
+If the character sequence is not valid UTF-8, the decoder will switch to Windows-1252 (which is in effect a superset of
+ISO-8859-1, so that character set will be covered too).
+
+Since `DynamicDecoder` extends `SwitchableDecoder`, the ability to switch explicitly on receipt of an indication in the
+text is always possible.
+
+### `DynamicReader`
+
+To simplify the use of `DynamicDecoder`, `DynamicReader` implements the `Reader` interface, applying the
+`DynamicDecoder` to a supplied `InputStream`.
 
 ## Class Diagram
 
@@ -116,10 +153,10 @@ A dotted line represents a secondary `implements` relationship, where a class bo
 an interface.
 Lines that cross do not interact.
 
-![Class Diagram](doc/dia/pipeline20.png "UML Class Diagram")
+![Class Diagram](doc/dia/pipeline30.png "UML Class Diagram")
 
 The diagram was produced by [Dia](https://wiki.gnome.org/Apps/Dia/); the diagram file is at
-[doc/dia/pipeline20.dia](doc/dia/pipeline20.dia).
+[doc/dia/pipeline30.dia](doc/dia/pipeline30.dia).
 
 ## Example
 
@@ -171,25 +208,25 @@ Of course, all of this is also accessible from Kotlin:
 
 ## Dependency Specification
 
-The latest version of the library is 2.1, and it may be obtained from the Maven Central repository.
+The latest version of the library is 3.0, and it may be obtained from the Maven Central repository.
 
 ### Maven
 ```xml
     <dependency>
       <groupId>net.pwall.util</groupId>
       <artifactId>pipelines</artifactId>
-      <version>2.1</version>
+      <version>3.0</version>
     </dependency>
 ```
 ### Gradle
 ```groovy
-    implementation 'net.pwall.util:pipelines:2.1'
+    implementation 'net.pwall.util:pipelines:3.0'
 ```
 ### Gradle (kts)
 ```kotlin
-    implementation("net.pwall.util:pipelines:2.1")
+    implementation("net.pwall.util:pipelines:3.0")
 ```
 
 Peter Wall
 
-2021-08-04
+2021-10-07

@@ -61,4 +61,16 @@ abstract public class AbstractAcceptor<A, R> extends BaseAbstractAcceptor<R> imp
      */
     abstract public void acceptObject(A value) throws Exception;
 
+    /**
+     * Accept a sequence of values, supplied as {@code vararg} parameters.
+     *
+     * @param   values      the input values
+     * @throws  Exception   if thrown by a {@code close()} method
+     */
+    @SafeVarargs
+    public final void accept(A ... values) throws Exception {
+        for (A value : values)
+            accept(value);
+    }
+
 }

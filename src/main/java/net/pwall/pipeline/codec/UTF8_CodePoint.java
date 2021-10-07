@@ -37,6 +37,8 @@ import net.pwall.pipeline.IntPipeline;
  */
 public class UTF8_CodePoint<R> extends AbstractIntPipeline<R> {
 
+    // TODO consider allowing a "lenient" mode - don't throw exception on invalid/incomplete sequence
+
     /**
      * Local version of {@code IntConsumer} interface that allows exceptions on the {@code accept} method.
      */

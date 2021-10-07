@@ -2,6 +2,19 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [3.0] - 2021-10-07
+### Added
+- `EncodingPipeline`: encoder for 8-bit character sets
+- `DynamicDecoder`: decoder that chooses the mapping based on data content
+- `DynamicReader`: an implementation of `Reader` that uses `DynamicDecoder`
+- `ByteArrayAcceptor`: accumulates characters into a byte array
+- `AppendableAcceptor`: forwards characters to an `Appendable`
+- `Pipelines`: static functions
+- several new encoder and decoder classes
+### Changed
+- `BaseAcceptor`: added default implementation for `getResult()`
+- `AbstractAcceptor`, `AbstractIntAcceptor`: added `vararg` versions of `accept()`
+
 ## [2.1] - 2021-08-04
 ### Added
 - `URIEncoder`, `URIDecoder`: new encode/decode classes
@@ -18,7 +31,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Added
 - `ObjectIntPipeline`, `AbstractObjectIntPipeline`
 - several utility classes
-
 ### Changed
 - All: implemented new package layout, with subpackages for codec, buffer etc. (**BREAKING CHANGE**)
 - `Acceptor`, `IntAcceptor`: added/modified helper methods (**BREAKING CHANGE** - helper method functionality change)

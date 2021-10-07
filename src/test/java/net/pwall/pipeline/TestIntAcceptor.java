@@ -1,5 +1,5 @@
 /*
- * @(#) BaseAcceptor.java
+ * @(#) TestIntAcceptor.java
  *
  * pipelines   Pipeline conversion library for Java
  * Copyright (c) 2020 Peter Wall
@@ -25,45 +25,26 @@
 
 package net.pwall.pipeline;
 
-/**
- * The base interface for pipeline and acceptor classes.
- *
- * @author  Peter Wall
- * @param   <R>     the result type
- */
-public interface BaseAcceptor<R> extends AutoCloseable {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-    /**
-     * Return {@code true} if the pipeline is closed.
-     *
-     * @return  {@code true} if the pipeline is closed
-     */
-    boolean isClosed();
+public class TestIntAcceptor extends AbstractIntAcceptor<List<Integer>> {
 
-    /**
-     * Get the result of the acceptor.  The default implementation throws an exception.
-     *
-     * @return  the result
-     * @throws  UnsupportedOperationException   in all cases
-     */
-    default R getResult() {
-        throw new UnsupportedOperationException("No result possible");
+    private final List<Integer> list;
+
+    public TestIntAcceptor() {
+        list = new ArrayList<>();
     }
 
-    /**
-     * Return {@code true} if all sequences in the input are complete, that is, the input is not in the middle of a
-     * sequence requiring more data.  This should be overridden by acceptors that process complex sequences of input.
-     *
-     * @return  {@code true} if the input is in the "complete" state
-     */
-    default boolean isComplete() {
-        return true;
+    @Override
+    public void acceptInt(int value) {
+        list.add(value);
     }
 
-    /**
-     * Flush the acceptor (required by some implementations - default is a no-operation).
-     */
-    default void flush() {
+    @Override
+    public List<Integer> getResult() {
+        return Collections.unmodifiableList(list);
     }
 
 }
