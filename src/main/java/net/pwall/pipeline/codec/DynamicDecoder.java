@@ -25,6 +25,8 @@
 
 package net.pwall.pipeline.codec;
 
+import java.nio.charset.Charset;
+
 import net.pwall.pipeline.IntAcceptor;
 
 /**
@@ -44,11 +46,34 @@ public class DynamicDecoder<R> extends SwitchableDecoder<R> {
     private final int[] buffer;
     private int index;
 
+    /**
+     * Construct a {@code DynamicDecoder} with the specified downstream {@link IntAcceptor}.
+     *
+     * @param   downstream  the downstream {@link IntAcceptor}
+     */
     public DynamicDecoder(IntAcceptor<? extends R> downstream) {
+        this(downstream, null);
+    }
+
+    /**
+     * Construct a {@code DynamicDecoder} with the specified downstream {@link IntAcceptor}, switching immediately to
+     * the specified {@link Charset} if specified.  This bypasses much of the functionality of the
+     * {@code DynamicDecoder}, but allowing the {@link Charset} to be specified in this way simplifies the creation of a
+     * decoder in those cases where the encoding may be, but is not always, known in advance.
+     *
+     * @param   downstream  the downstream {@link IntAcceptor}
+     * @param   charset     the {@link Charset} if known, or {@code null} to allow dynamic encoding determination
+     */
+    public DynamicDecoder(IntAcceptor<? extends R> downstream, Charset charset) {
         super(downstream);
         buffer = new int[4];
         index = 0;
-        state = State.INITIAL;
+        if (charset == null)
+            state = State.INITIAL;
+        else {
+            delegate = DecoderFactory.getDecoder(charset, downstream);
+            state = State.DELEGATED;
+        }
     }
 
     /**
@@ -343,6 +368,26 @@ public class DynamicDecoder<R> extends SwitchableDecoder<R> {
         for (int i = 0; i < index; i++)
             delegate.accept(buffer[i]);
         index = 0;
+    }
+
+    /**
+     * Switch to the nominated character set.
+     *
+     * @param   charset     the {@link Charset}
+     * @throws  Exception   if thrown by a {@code close()} method
+     */
+    public void switchTo(Charset charset) throws Exception {
+        switchTo(DecoderFactory.getDecoder(charset, getDownstream()));
+    }
+
+    /**
+     * Switch to the nominated character set.
+     *
+     * @param   charsetName the character set name
+     * @throws  Exception   if thrown by a {@code close()} method
+     */
+    public void switchTo(String charsetName) throws Exception {
+        switchTo(DecoderFactory.getDecoder(charsetName, getDownstream()));
     }
 
     private void delegateToUTF8(int value) throws Exception {

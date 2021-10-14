@@ -41,10 +41,28 @@ public class DynamicReader extends Reader {
     private final char[] overflow;
     private int overflowIndex;
 
+    /**
+     * Construct a {@code DynamicReader} for the supplied {@link InputStream}.
+     *
+     * @param   inputStream     the {@link InputStream}
+     */
     public DynamicReader(InputStream inputStream) {
+        this(inputStream, null);
+    }
+
+    /**
+     * Construct a {@code DynamicReader} for the supplied {@link InputStream}, switching immediately to the specified
+     * {@link Charset} if specified.  This bypasses much of the functionality of the {@link DynamicDecoder}, but
+     * allowing the {@link Charset} to be specified in this way simplifies the creation of a {@code DynamicReader} in
+     * those cases where the encoding may be, but is not always, known in advance.
+     *
+     * @param   inputStream     the {@link InputStream}
+     * @param   charset         the {@link Charset} if known, or {@code null} to allow dynamic encoding determination
+     */
+    public DynamicReader(InputStream inputStream, Charset charset) {
         this.inputStream = inputStream;
         charAcceptor = new CharAcceptor();
-        pipeline = new DynamicDecoder<>(new CodePoint_UTF16<>(charAcceptor));
+        pipeline = new DynamicDecoder<>(new CodePoint_UTF16<>(charAcceptor), charset);
         overflow = new char[8];
         overflowIndex = 0;
     }

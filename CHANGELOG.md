@@ -2,6 +2,10 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [3.1] - 2021-10-14
+### Changed
+- `DynamicDecoder`, `DynamicReader`: added ability to pre-select encoding
+
 ## [3.0] - 2021-10-07
 ### Added
 - `EncodingPipeline`: encoder for 8-bit character sets
