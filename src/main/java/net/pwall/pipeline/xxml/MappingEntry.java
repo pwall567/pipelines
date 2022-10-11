@@ -2,7 +2,7 @@
  * @(#) MappingEntry.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2022 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -51,6 +51,21 @@ public class MappingEntry implements Comparable<MappingEntry> {
     @Override
     public int compareTo(MappingEntry o) {
         return string.compareTo(o.string);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!(obj instanceof MappingEntry))
+            return false;
+        MappingEntry other = (MappingEntry)obj;
+        return codePoint == other.codePoint && string.equals(other.string);
+    }
+
+    @Override
+    public int hashCode() {
+        return codePoint ^ string.hashCode();
     }
 
 }

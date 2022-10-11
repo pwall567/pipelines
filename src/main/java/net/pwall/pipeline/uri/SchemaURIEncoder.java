@@ -1,8 +1,8 @@
 /*
- * @(#) EncoderBase.java
+ * @(#) SchemaURIEncoder.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2022 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,34 +23,34 @@
  * SOFTWARE.
  */
 
-package net.pwall.pipeline.xxml;
+package net.pwall.pipeline.uri;
 
-import net.pwall.pipeline.AbstractIntPipeline;
 import net.pwall.pipeline.IntAcceptor;
+import net.pwall.pipeline.codec.EncoderBase;
+import static net.pwall.pipeline.uri.URIEncoder.isUnreservedURI;
+import static net.pwall.util.IntOutput.output2Hex;
 
 /**
- * Base class for XML and HTML encoders.
+ * URI encoder for use with JSON Schema URI fragment - encode text using URI percent-encoding, leaving dollar sign
+ * unencoded.
  *
  * @author  Peter Wall
  * @param   <R>     the pipeline result type
  */
-public abstract class EncoderBase<R> extends AbstractIntPipeline<R> {
+public class SchemaURIEncoder<R> extends EncoderBase<R> {
 
-    private static final String hexChars = "0123456789ABCDEF";
-
-    public EncoderBase(IntAcceptor<? extends R> downstream) {
+    public SchemaURIEncoder(IntAcceptor<? extends R> downstream) {
         super(downstream);
     }
 
-    protected void emit(String string) throws Exception {
-        for (int i = 0, n = string.length(); i < n; i++)
-            emit(string.charAt(i));
-    }
-
-    protected void emitHex(int i) throws Exception {
-        if (i > 0xF)
-            emitHex(i >>> 4);
-        emit(hexChars.charAt(i & 0xF));
+    @Override
+    public void acceptInt(int value) throws Exception {
+        if (!(isUnreservedURI(value) || value == '$')) {
+            emit('%');
+            output2Hex(value, this::safeEmit);
+        }
+        else
+            emit(value);
     }
 
 }

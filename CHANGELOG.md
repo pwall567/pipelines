@@ -2,6 +2,13 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [3.2] - 2022-10-11
+### Added
+- `SchemaURIEncoder`: allows dollar sign as unencoded character
+### Changed
+- `EncoderBase`: changed to use `IntOutput` library (and moved to different package)
+- `pom.xml`: added dependency on `IntOutput`
+
 ## [3.1] - 2021-10-14
 ### Changed
 - `DynamicDecoder`, `DynamicReader`: added ability to pre-select encoding

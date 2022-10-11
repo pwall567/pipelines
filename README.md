@@ -138,6 +138,23 @@ text is always possible.
 To simplify the use of `DynamicDecoder`, `DynamicReader` implements the `Reader` interface, applying the
 `DynamicDecoder` to a supplied `InputStream`.
 
+## Escaping Strings
+
+The library also includes functions for "escaping" strings for use in HTML, XML _etc_.
+The following pipeline classes are available, all of them taking Unicode characters and emitting a sanitised form of the
+input:
+
+- `HTMLEncoder`: encodes `<` as `&amp;lt;`, `&amp;` as `&amp;amp;` _etc._
+- `XMLEncoder`: as above, but for the more limited set of XML escaped characters
+- `URIEncoder`: encodes special characters, _e.g._ `&amp;` as `%26`, for use in a URI
+- `SchemaURIEncoder`: as above, but allows `$` to pass through unencoded (for encoding JSON Schema URI fragments)
+
+And the following classes perform the reverse function, taking the "escaped" form and converting back to the original:
+
+- `HTMLDecoder`
+- `XMLDecoder`
+- `URIDecoder` (there is no need for a separate `SchemaURIDecoder`)
+
 ## Class Diagram
 
 The collection of classes rapidly grew to a large number, and to keep track of the whole library a class diagram is
@@ -208,25 +225,25 @@ Of course, all of this is also accessible from Kotlin:
 
 ## Dependency Specification
 
-The latest version of the library is 3.1, and it may be obtained from the Maven Central repository.
+The latest version of the library is 3.2, and it may be obtained from the Maven Central repository.
 
 ### Maven
 ```xml
     <dependency>
       <groupId>net.pwall.util</groupId>
       <artifactId>pipelines</artifactId>
-      <version>3.1</version>
+      <version>3.2</version>
     </dependency>
 ```
 ### Gradle
 ```groovy
-    implementation 'net.pwall.util:pipelines:3.1'
+    implementation 'net.pwall.util:pipelines:3.2'
 ```
 ### Gradle (kts)
 ```kotlin
-    implementation("net.pwall.util:pipelines:3.1")
+    implementation("net.pwall.util:pipelines:3.2")
 ```
 
 Peter Wall
 
-2021-10-14
+2022-10-11

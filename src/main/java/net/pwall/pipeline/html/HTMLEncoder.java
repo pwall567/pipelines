@@ -2,7 +2,7 @@
  * @(#) HTMLEncoder.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2022 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ package net.pwall.pipeline.html;
 
 import net.pwall.pipeline.IntAcceptor;
 import net.pwall.pipeline.xxml.MappingEntry;
-import net.pwall.pipeline.xxml.EncoderBase;
+import net.pwall.pipeline.codec.EncoderBase;
 
 /**
  * HTML encoder - encode text using HTML escaping.

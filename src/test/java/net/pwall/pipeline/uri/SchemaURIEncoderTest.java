@@ -1,8 +1,8 @@
 /*
- * @(#) XMLEncoder.java
+ * @(#) SchemaURIEncoderTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021, 2022 Peter Wall
+ * Copyright (c) 2022 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,42 +23,31 @@
  * SOFTWARE.
  */
 
-package net.pwall.pipeline.xml;
+package net.pwall.pipeline.uri;
 
-import net.pwall.pipeline.IntAcceptor;
-import net.pwall.pipeline.codec.EncoderBase;
+import org.junit.Test;
 
-/**
- * XML encoder - encode text using XML escaping.
- *
- * @author  Peter Wall
- * @param   <R>     the pipeline result type
- */
-public class XMLEncoder<R> extends EncoderBase<R> {
+import net.pwall.pipeline.IntPipeline;
+import net.pwall.pipeline.StringAcceptor;
+import static org.junit.Assert.assertEquals;
 
-    public XMLEncoder(IntAcceptor<? extends R> downstream) {
-        super(downstream);
+public class SchemaURIEncoderTest {
+
+    @Test
+    public void shouldEncodeSchemaFragmentWithDollarSignUnmodified() throws Exception {
+        IntPipeline<String> pipeline1 = new SchemaURIEncoder<>(new StringAcceptor());
+        pipeline1.accept("$ref");
+        assertEquals("$ref", pipeline1.getResult());
     }
 
-    @Override
-    public void acceptInt(int value) throws Exception {
-        if (value == '"')
-            emit("&quot;");
-        else if (value == '&')
-            emit("&amp;");
-        else if (value == '\'')
-            emit("&apos;");
-        else if (value == '<')
-            emit("&lt;");
-        else if (value == '>')
-            emit("&gt;");
-        else if (value >= ' ' && value < 0x7F)
-            emit(value);
-        else {
-            emit("&#x");
-            emitHex(value);
-            emit(';');
-        }
+    @Test
+    public void shouldEncodeReservedCharacters() throws Exception {
+        IntPipeline<String> pipeline1 = new SchemaURIEncoder<>(new StringAcceptor());
+        pipeline1.accept("Hello, World!");
+        assertEquals("Hello%2C%20World%21", pipeline1.getResult());
+        IntPipeline<String> pipeline2 = new SchemaURIEncoder<>(new StringAcceptor());
+        pipeline2.accept("a more-complicated string: a/b+c%e.(???)");
+        assertEquals("a%20more-complicated%20string%3A%20a%2Fb%2Bc%25e.%28%3F%3F%3F%29", pipeline2.getResult());
     }
 
 }

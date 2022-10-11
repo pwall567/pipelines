@@ -2,7 +2,7 @@
  * @(#) URIEncoder.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2022 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,9 @@
 
 package net.pwall.pipeline.uri;
 
-import net.pwall.pipeline.AbstractIntPipeline;
 import net.pwall.pipeline.IntAcceptor;
+import net.pwall.pipeline.codec.EncoderBase;
+import static net.pwall.util.IntOutput.output2Hex;
 
 /**
  * URI encoder - encode text using URI percent-encoding.
@@ -34,10 +35,7 @@ import net.pwall.pipeline.IntAcceptor;
  * @author  Peter Wall
  * @param   <R>     the pipeline result type
  */
-public class URIEncoder<R> extends AbstractIntPipeline<R> {
-
-    private static final char[] hexChars =
-            new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+public class URIEncoder<R> extends EncoderBase<R> {
 
     private final boolean encodeSpaceAsPlus;
 
@@ -47,8 +45,7 @@ public class URIEncoder<R> extends AbstractIntPipeline<R> {
     }
 
     public URIEncoder(IntAcceptor<? extends R> downstream) {
-        super(downstream);
-        this.encodeSpaceAsPlus = false;
+        this(false, downstream);
     }
 
     @Override
@@ -57,8 +54,7 @@ public class URIEncoder<R> extends AbstractIntPipeline<R> {
             emit('+');
         else if (!isUnreservedURI(value)) {
             emit('%');
-            emit(hexChars[(value >> 4) & 0xF]);
-            emit(hexChars[value & 0xF]);
+            output2Hex(value, this::safeEmit);
         }
         else
             emit(value);
