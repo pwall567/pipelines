@@ -2,7 +2,7 @@
  * @(#) DynamicDecoderTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ public class DynamicDecoderTest {
     private static final String resume = "R\u00E9sum\u00E9";
 
     @Test
-    public void shouldAcceptUnlabelledStreamOfBytes() throws Exception {
+    public void shouldAcceptUnlabelledStreamOfBytes() {
         DynamicDecoder<String> dd = new DynamicDecoder<>(new StringAcceptor());
         CharSequencePipeline<String> pipeline = new CharSequencePipeline<>(dd);
         pipeline.accept(testString1);
@@ -49,7 +49,7 @@ public class DynamicDecoderTest {
     }
 
     @Test
-    public void shouldAcceptStringWithUTF8ByteOrderMark() throws Exception {
+    public void shouldAcceptStringWithUTF8ByteOrderMark() {
         DynamicDecoder<String> dd = new DynamicDecoder<>(new StringAcceptor());
         CharSequencePipeline<String> pipeline = new CharSequencePipeline<>(dd);
         pipeline.accept(utf8BOM, testString1);
@@ -59,7 +59,7 @@ public class DynamicDecoderTest {
     }
 
     @Test
-    public void shouldRecogniseUTF8InUnlabelledString() throws Exception {
+    public void shouldRecogniseUTF8InUnlabelledString() {
         DynamicDecoder<String> dd = new DynamicDecoder<>(new StringAcceptor());
         CharSequencePipeline<String> pipeline = new CharSequencePipeline<>(dd);
         pipeline.accept(utf8EuroSign);
@@ -69,7 +69,7 @@ public class DynamicDecoderTest {
     }
 
     @Test
-    public void shouldRecogniseWindows1252InUnlabelledString() throws Exception {
+    public void shouldRecogniseWindows1252InUnlabelledString() {
         DynamicDecoder<String> dd = new DynamicDecoder<>(new StringAcceptor());
         CharSequencePipeline<String> pipeline = new CharSequencePipeline<>(dd);
         pipeline.accept(windows1252EuroSign);
@@ -90,7 +90,7 @@ public class DynamicDecoderTest {
     }
 
     @Test
-    public void shouldRecogniseUTF16LEString() throws Exception {
+    public void shouldRecogniseUTF16LEString() {
         DynamicDecoder<String> dd = new DynamicDecoder<>(new StringAcceptor());
         for (int i = 0, n = testString1.length(); i < n; i++)
             dd.accept(testString1.charAt(i), 0);
@@ -100,7 +100,7 @@ public class DynamicDecoderTest {
     }
 
     @Test
-    public void shouldRecogniseUTF16BEString() throws Exception {
+    public void shouldRecogniseUTF16BEString() {
         DynamicDecoder<String> dd = new DynamicDecoder<>(new StringAcceptor());
         for (int i = 0, n = testString1.length(); i < n; i++)
             dd.accept(0, testString1.charAt(i));
@@ -110,7 +110,7 @@ public class DynamicDecoderTest {
     }
 
     @Test
-    public void shouldRecogniseUTF32LEString() throws Exception {
+    public void shouldRecogniseUTF32LEString() {
         DynamicDecoder<String> dd = new DynamicDecoder<>(new StringAcceptor());
         for (int i = 0, n = testString1.length(); i < n; i++)
             dd.accept(testString1.charAt(i), 0, 0, 0);
@@ -120,7 +120,7 @@ public class DynamicDecoderTest {
     }
 
     @Test
-    public void shouldRecogniseUTF32BEString() throws Exception {
+    public void shouldRecogniseUTF32BEString() {
         DynamicDecoder<String> dd = new DynamicDecoder<>(new StringAcceptor());
         for (int i = 0, n = testString1.length(); i < n; i++)
             dd.accept(0, 0, 0, testString1.charAt(i));

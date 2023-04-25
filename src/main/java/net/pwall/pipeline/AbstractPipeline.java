@@ -2,7 +2,7 @@
  * @(#) AbstractPipeline.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020, 2021 Peter Wall
+ * Copyright (c) 2020, 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,12 +46,19 @@ abstract public class AbstractPipeline<A, E, R> extends AbstractAcceptor<A, R> i
         this.downstream = downstream;
     }
 
+    /**
+     * Get the downstream {@link Acceptor}
+     *
+     * @return  the {@link Acceptor}
+     */
     public Acceptor<? super E, ? extends R> getDownstream() {
         return downstream;
     }
 
     /**
      * Close the pipeline.
+     *
+     * @throws  Exception   if thrown by the downstream or superclass {@code close()} functions
      */
     @Override
     public void close() throws Exception {
@@ -65,7 +72,7 @@ abstract public class AbstractPipeline<A, E, R> extends AbstractAcceptor<A, R> i
      * @param   value   the value to be forwarded
      */
     @Override
-    public void emit(E value) throws Exception {
+    public void emit(E value) {
         downstream.accept(value);
     }
 

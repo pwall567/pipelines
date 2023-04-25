@@ -2,7 +2,7 @@
  * @(#) BaseAbstractAcceptor.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020, 2021 Peter Wall
+ * Copyright (c) 2020, 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -55,7 +55,7 @@ abstract public class BaseAbstractAcceptor<R> implements BaseAcceptor<R> {
     /**
      * Close the acceptor.  Throws an exception if the acceptor is not in the "complete" state.
      *
-     * @throws  Exception   if the acceptor is not in the "complete" state
+     * @throws  IllegalStateException   if the acceptor is not in the "complete" state
      */
     @Override
     public void close() throws Exception {

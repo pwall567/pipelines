@@ -2,7 +2,7 @@
  * @(#) ListAcceptorTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020 Peter Wall
+ * Copyright (c) 2020, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,11 +33,11 @@ import static org.junit.Assert.assertEquals;
 public class ListAcceptorTest {
 
     @Test
-    public void shouldBuildListFromSequence() throws Exception {
+    public void shouldBuildListFromSequence() {
         ListAcceptor<String> listAcceptor = new ListAcceptor<>();
         listAcceptor.accept("Hello");
         listAcceptor.accept("World!");
-        listAcceptor.close();
+        listAcceptor.safeClose();
         assertEquals(2, listAcceptor.getSize());
         List<String> list = listAcceptor.getResult();
         assertEquals("Hello", list.get(0));

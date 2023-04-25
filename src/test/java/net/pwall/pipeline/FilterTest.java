@@ -2,7 +2,7 @@
  * @(#) FilterTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import static org.junit.Assert.assertEquals;
 public class FilterTest {
 
     @Test
-    public void shouldFilterObjectsByPredicate() throws Exception {
+    public void shouldFilterObjectsByPredicate() {
         ListAcceptor<String> listAcceptor = new ListAcceptor<>();
         Filter<String, List<String>> filter = new Filter<>(listAcceptor, a -> a.startsWith("A"));
         filter.accept("Abc");

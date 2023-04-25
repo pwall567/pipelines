@@ -2,7 +2,7 @@
  * @(#) CodePointUTF16Test.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020 Peter Wall
+ * Copyright (c) 2020, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 public class CodePointUTF16Test {
 
     @Test
-    public void shouldPassThroughBMPCodePoint() throws Exception {
+    public void shouldPassThroughBMPCodePoint() {
         CodePoint_UTF16<List<Integer>> pipe = new CodePoint_UTF16<>(new TestIntAcceptor());
         pipe.accept('A');
         assertTrue(pipe.isComplete());
@@ -46,7 +46,7 @@ public class CodePointUTF16Test {
     }
 
     @Test
-    public void shouldExpandHighCodePointToSurrogates() throws Exception {
+    public void shouldExpandHighCodePointToSurrogates() {
         CodePoint_UTF16<List<Integer>> pipe = new CodePoint_UTF16<>(new TestIntAcceptor());
         pipe.accept(0x1F602);
         assertTrue(pipe.isComplete());

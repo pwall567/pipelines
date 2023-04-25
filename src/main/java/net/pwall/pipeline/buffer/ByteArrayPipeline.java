@@ -2,7 +2,7 @@
  * @(#) ByteArrayPipeline.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -50,10 +50,9 @@ public class ByteArrayPipeline<R> extends AbstractObjectIntPipeline<byte[], R> {
      * downstream {@link IntAcceptor}.
      *
      * @param   value       the input value
-     * @throws  Exception   if thrown by the downstream {@link IntAcceptor}
      */
     @Override
-    public void acceptObject(byte[] value) throws Exception {
+    public void acceptObject(byte[] value) {
         for (byte b : value)
             emit(b);
     }
@@ -66,13 +65,12 @@ public class ByteArrayPipeline<R> extends AbstractObjectIntPipeline<byte[], R> {
      * @param   offset      the offset from the start of the buffer
      * @param   length      the length (number of bytes) to process
      * @throws  IllegalStateException   if the {@code ByteArrayPipeline} has already been closed
-     * @throws  Exception   if thrown by the downstream {@link IntAcceptor} or by a {@code close()} method
      */
-    public void accept(byte[] value, int offset, int length) throws Exception {
+    public void accept(byte[] value, int offset, int length) {
         if (isClosed())
             throw new IllegalStateException("Acceptor is closed");
         if (value == null)
-            close();
+            safeClose();
         else
             acceptObject(value, offset, length);
     }
@@ -84,9 +82,8 @@ public class ByteArrayPipeline<R> extends AbstractObjectIntPipeline<byte[], R> {
      * @param   value       the input value
      * @param   offset      the offset from the start of the buffer
      * @param   length      the length (number of bytes) to process
-     * @throws  Exception   if thrown by the downstream {@link IntAcceptor}
      */
-    public void acceptObject(byte[] value, int offset, int length) throws Exception {
+    public void acceptObject(byte[] value, int offset, int length) {
         for (int i = offset, n = offset + length; i < n; i++)
             emit(value[i]);
     }

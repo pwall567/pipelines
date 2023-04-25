@@ -2,7 +2,7 @@
  * @(#) CharBufferPipeline.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -52,10 +52,9 @@ public class CharBufferPipeline<R> extends AbstractObjectIntPipeline<CharBuffer,
      * downstream {@link IntAcceptor}.
      *
      * @param   value       the input value
-     * @throws  Exception   if thrown by the downstream {@link IntAcceptor}
      */
     @Override
-    public void acceptObject(CharBuffer value) throws Exception {
+    public void acceptObject(CharBuffer value) {
         while (value.hasRemaining())
             emit(value.get());
     }

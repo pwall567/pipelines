@@ -2,7 +2,7 @@
  * @(#) CharSequencePipelineTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import static org.junit.Assert.assertEquals;
 public class CharSequencePipelineTest {
 
     @Test
-    public void shouldProcessCharSequence() throws Exception {
+    public void shouldProcessCharSequence() {
         String str = "Awake! for Morning in the Bowl of Night";
         CharSequencePipeline<String> csb = new CharSequencePipeline<>(new StringAcceptor());
         csb.accept(str);

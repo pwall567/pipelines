@@ -2,7 +2,7 @@
  * @(#) EncoderBase.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021, 2022 Peter Wall
+ * Copyright (c) 2021, 2022, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,11 +25,8 @@
 
 package net.pwall.pipeline.codec;
 
-import java.util.function.IntConsumer;
-
 import net.pwall.pipeline.AbstractIntPipeline;
 import net.pwall.pipeline.IntAcceptor;
-import net.pwall.pipeline.IntPipeline;
 import net.pwall.util.IntOutput;
 
 /**
@@ -48,9 +45,8 @@ public abstract class EncoderBase<R> extends AbstractIntPipeline<R> {
      * Emit a string.
      *
      * @param   string      the string
-     * @throws  Exception   if thrown by the downstream function
      */
-    protected void emit(String string) throws Exception {
+    protected void emit(String string) {
         for (int i = 0, n = string.length(); i < n; i++)
             emit(string.charAt(i));
     }
@@ -61,28 +57,7 @@ public abstract class EncoderBase<R> extends AbstractIntPipeline<R> {
      * @param   i       the integer
      */
     protected void emitHex(int i) {
-        IntOutput.outputIntHex(i, this::safeEmit);
-    }
-
-    /**
-     * Emit a character, wrapping any exception in a {@link RuntimeException}.  This is needed because the
-     * {@link IntConsumer#accept(int)} function required as a parameter by
-     * {@link IntOutput#outputIntHex(int, IntConsumer)} (and others) does not declare any exceptions, so the default
-     * {@link IntPipeline#emit(int)} function can not be used.
-     *
-     * @param   ch      the character
-     * @throws  RuntimeException    if the downstream function throws an exception
-     */
-    protected void safeEmit(int ch) {
-        try {
-            emit(ch);
-        }
-        catch (RuntimeException e) {
-            throw e;
-        }
-        catch (Exception e) {
-            throw new RuntimeException("Error in downstream emit function", e);
-        }
+        IntOutput.outputIntHex(i, this::emit);
     }
 
 }

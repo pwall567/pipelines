@@ -2,7 +2,7 @@
  * @(#) ByteArrayAcceptor.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,7 +42,7 @@ public class ByteArrayAcceptor extends AbstractIntAcceptor<byte[]> {
     }
 
     @Override
-    public void acceptInt(int value) throws Exception {
+    public void acceptInt(int value) {
         int len = byteArray.length;
         if (index >= len) {
             int newLen = len + Math.min(len, 4096);

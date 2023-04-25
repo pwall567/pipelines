@@ -1,8 +1,8 @@
 /*
- * @(#) ByteBufferPipeline.java
+ * @(#) PipelinesTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021, 2023 Peter Wall
+ * Copyright (c) 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,40 +23,21 @@
  * SOFTWARE.
  */
 
-package net.pwall.pipeline.buffer;
+package net.pwall.pipeline;
 
-import java.nio.ByteBuffer;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
-import net.pwall.pipeline.AbstractObjectIntPipeline;
-import net.pwall.pipeline.IntAcceptor;
+public class PipelinesTest {
 
-/**
- * A pipeline that takes {@link ByteBuffer}s and emits each {@code byte} as an {@code int}.
- *
- * @author  Peter Wall
- * @param   <R>     the result type
- */
-public class ByteBufferPipeline<R> extends AbstractObjectIntPipeline<ByteBuffer, R> {
-
-    /**
-     * Construct a {@code ByteBufferPipeline} with the given downstream {@link IntAcceptor}.
-     *
-     * @param   downstream  the {@link IntAcceptor}
-     */
-    public ByteBufferPipeline(IntAcceptor<? extends R> downstream) {
-        super(downstream);
-    }
-
-    /**
-     * Accept a {@link ByteBuffer}, after {@code closed} check and test for end of data.  Emit each byte to the
-     * downstream {@link IntAcceptor}.
-     *
-     * @param   value       the input value
-     */
-    @Override
-    public void acceptObject(ByteBuffer value) {
-        while (value.hasRemaining())
-            emit(value.get());
+    @Test
+    public void shouldOutputInteger() {
+        StringAcceptor stringAcceptor = new StringAcceptor();
+        Pipelines.acceptInt(stringAcceptor, 123456);
+        assertEquals("123456", stringAcceptor.getResult());
+        stringAcceptor.clear();
+        Pipelines.acceptInt(stringAcceptor, -22334455);
+        assertEquals("-22334455", stringAcceptor.getResult());
     }
 
 }

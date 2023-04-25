@@ -39,7 +39,7 @@ import static org.junit.Assert.assertTrue;
 public class UTF8CodePointTest {
 
     @Test
-    public void shouldPassThroughSingleChar() throws Exception {
+    public void shouldPassThroughSingleChar() {
         UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new TestIntAcceptor());
         pipe.accept('A');
         assertTrue(pipe.isComplete());
@@ -49,7 +49,7 @@ public class UTF8CodePointTest {
     }
 
     @Test
-    public void shouldPassThroughSingleCharPlusTerminator() throws Exception {
+    public void shouldPassThroughSingleCharPlusTerminator() {
         UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new TestIntAcceptor());
         pipe.accept('A');
         pipe.accept(-1);
@@ -61,7 +61,7 @@ public class UTF8CodePointTest {
     }
 
     @Test
-    public void shouldPassThroughTwoByteChars() throws Exception {
+    public void shouldPassThroughTwoByteChars() {
         UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new TestIntAcceptor());
         pipe.accept(0xC2);
         assertFalse(pipe.isComplete());
@@ -76,7 +76,7 @@ public class UTF8CodePointTest {
     }
 
     @Test
-    public void shouldPassThroughThreeByteChars() throws Exception {
+    public void shouldPassThroughThreeByteChars() {
         UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new TestIntAcceptor());
         pipe.accept(0xE2);
         pipe.accept(0x80);
@@ -88,7 +88,7 @@ public class UTF8CodePointTest {
     }
 
     @Test
-    public void shouldFailOnGetResultWhenPipelineNotComplete() throws Exception {
+    public void shouldFailOnGetResultWhenPipelineNotComplete() {
         UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new TestIntAcceptor());
         pipe.accept(0xE2);
         assertFalse(pipe.isComplete());
@@ -97,7 +97,7 @@ public class UTF8CodePointTest {
     }
 
     @Test
-    public void shouldReadByteBuffer() throws Exception {
+    public void shouldReadByteBuffer() {
         ByteBuffer byteBuffer = ByteBuffer.allocate(256);
         byteBuffer.put((byte)'A');
         byteBuffer.put((byte)' ');

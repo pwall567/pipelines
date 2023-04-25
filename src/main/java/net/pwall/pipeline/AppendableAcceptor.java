@@ -2,7 +2,7 @@
  * @(#) AppendableAcceptor.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,8 @@
 
 package net.pwall.pipeline;
 
+import java.io.IOException;
+
 public class AppendableAcceptor<R> extends AbstractIntAcceptor<R> {
 
     private final Appendable appendable;
@@ -38,11 +40,15 @@ public class AppendableAcceptor<R> extends AbstractIntAcceptor<R> {
      * {@link Appendable} as a {@code char}.
      *
      * @param   value       the input value
-     * @throws  Exception   if thrown by the {@link Appendable} or by a {@code close()} method
      */
     @Override
-    public void acceptInt(int value) throws Exception {
-        appendable.append((char)value);
+    public void acceptInt(int value) {
+        try {
+            appendable.append((char)value);
+        }
+        catch (IOException ioe) {
+            throw new RuntimeException("Exception in append function", ioe);
+        }
     }
 
 }

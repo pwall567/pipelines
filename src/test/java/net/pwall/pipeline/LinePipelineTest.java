@@ -2,7 +2,7 @@
  * @(#) LinePipelineTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import static org.junit.Assert.assertEquals;
 public class LinePipelineTest {
 
     @Test
-    public void shouldSplitTextOnNewlines() throws Exception {
+    public void shouldSplitTextOnNewlines() {
         String input = "abc\ndef\nghi\n";
         ListAcceptor<String> listAcceptor = new ListAcceptor<>();
         try (LinePipeline<List<String>> pipeline = new LinePipeline<>(listAcceptor)) {
@@ -47,7 +47,7 @@ public class LinePipelineTest {
     }
 
     @Test
-    public void shouldSplitTextOnCRLF() throws Exception {
+    public void shouldSplitTextOnCRLF() {
         String input = "abc\r\ndef\r\nghi\r\n";
         ListAcceptor<String> listAcceptor = new ListAcceptor<>();
         try (LinePipeline<List<String>> pipeline = new LinePipeline<>(listAcceptor)) {
@@ -61,7 +61,7 @@ public class LinePipelineTest {
     }
 
     @Test
-    public void shouldAllowMissingLineTerminatorAtEnd() throws Exception {
+    public void shouldAllowMissingLineTerminatorAtEnd() {
         String input = "abc\nde";
         ListAcceptor<String> listAcceptor = new ListAcceptor<>();
         try (LinePipeline<List<String>> pipeline = new LinePipeline<>(listAcceptor)) {

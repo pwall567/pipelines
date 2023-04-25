@@ -2,7 +2,7 @@
  * @(#) SchemaURIEncoder.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2022 Peter Wall
+ * Copyright (c) 2022, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,10 +44,10 @@ public class SchemaURIEncoder<R> extends EncoderBase<R> {
     }
 
     @Override
-    public void acceptInt(int value) throws Exception {
+    public void acceptInt(int value) {
         if (!(isUnreservedURI(value) || value == '$')) {
             emit('%');
-            output2Hex(value, this::safeEmit);
+            output2Hex(value, this::emit);
         }
         else
             emit(value);

@@ -2,7 +2,7 @@
  * @(#) UTF16_CodePoint.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020, 2021 Peter Wall
+ * Copyright (c) 2020, 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,8 @@
 
 package net.pwall.pipeline.codec;
 
+import java.util.function.IntConsumer;
+
 import net.pwall.pipeline.AbstractIntPipeline;
 import net.pwall.pipeline.IntAcceptor;
 import net.pwall.pipeline.IntPipeline;
@@ -36,13 +38,6 @@ import net.pwall.pipeline.IntPipeline;
  * @param   <R>     the pipeline result type
  */
 public class UTF16_CodePoint<R> extends AbstractIntPipeline<R> {
-
-    /**
-     * Local version of {@code IntConsumer} interface that allows exceptions on the {@code accept} method.
-     */
-    private interface IntConsumer {
-        void accept(int value) throws Exception;
-    }
 
     private IntConsumer state;
     private int highSurrogate;
@@ -63,7 +58,7 @@ public class UTF16_CodePoint<R> extends AbstractIntPipeline<R> {
     }
 
     @Override
-    public void acceptInt(int value) throws Exception {
+    public void acceptInt(int value) {
         state.accept(value);
     }
 
@@ -72,7 +67,7 @@ public class UTF16_CodePoint<R> extends AbstractIntPipeline<R> {
         return state == normal;
     }
 
-    private void terminal(int i) throws Exception {
+    private void terminal(int i){
         if (!Character.isLowSurrogate((char)i))
             throw new IllegalArgumentException("Illegal character in surrogate sequence");
         emit(Character.toCodePoint((char)highSurrogate, (char)i));

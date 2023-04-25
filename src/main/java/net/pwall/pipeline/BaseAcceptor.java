@@ -2,7 +2,7 @@
  * @(#) BaseAcceptor.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020 Peter Wall
+ * Copyright (c) 2020, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -64,6 +64,24 @@ public interface BaseAcceptor<R> extends AutoCloseable {
      * Flush the acceptor (required by some implementations - default is a no-operation).
      */
     default void flush() {
+    }
+
+    /**
+     * Close the acceptor, reporting any exceptions as a {@link RuntimeException}.  This avoids having to declare
+     * exceptions on each method.
+     *
+     * @throws  RuntimeException    if thrown by {@code close()} method
+     */
+    default void safeClose() {
+        try {
+            close();
+        }
+        catch (RuntimeException re) {
+            throw re; // don't wrap it we don't have to
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Exception in close function", e);
+        }
     }
 
 }

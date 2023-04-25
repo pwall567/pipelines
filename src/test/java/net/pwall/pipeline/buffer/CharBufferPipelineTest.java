@@ -2,7 +2,7 @@
  * @(#) CharBufferPipelineTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ import static org.junit.Assert.assertEquals;
 public class CharBufferPipelineTest {
 
     @Test
-    public void shouldProcessByteBuffer() throws Exception {
+    public void shouldProcessByteBuffer() {
         String str = "'Tis all a Chequer-board of Nights and Days";
         int n = str.length();
         CharBuffer charBuffer = CharBuffer.allocate(n);

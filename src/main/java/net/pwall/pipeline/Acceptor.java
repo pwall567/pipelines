@@ -2,7 +2,7 @@
  * @(#) Acceptor.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020 Peter Wall
+ * Copyright (c) 2020, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@ package net.pwall.pipeline;
 
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
@@ -36,23 +37,21 @@ import java.util.stream.Stream;
  * @param   <A>     the accepted (input) value type
  * @param   <R>     the result type
  */
-public interface Acceptor<A, R> extends BaseAcceptor<R> {
+public interface Acceptor<A, R> extends BaseAcceptor<R>, Consumer<A> {
 
     /**
      * Accept a value.
      *
      * @param   value       the value to be processed
-     * @throws  Exception   if thrown by the implementing code
      */
-    void accept(A value) throws Exception;
+    void accept(A value);
 
     /**
      * Accept a set of values from an {@link Iterator}.
      *
      * @param   iterator    the {@link Iterator}
-     * @throws  Exception   if thrown by the implementing code
      */
-    default void accept(Iterator<? extends A> iterator) throws Exception {
+    default void accept(Iterator<? extends A> iterator) {
         while (iterator.hasNext())
             accept(iterator.next());
     }
@@ -61,9 +60,8 @@ public interface Acceptor<A, R> extends BaseAcceptor<R> {
      * Accept a set of values from an {@link Enumeration}.
      *
      * @param   enumeration the {@link Enumeration}
-     * @throws  Exception   if thrown by the implementing code
      */
-    default void accept(Enumeration<? extends A> enumeration) throws Exception {
+    default void accept(Enumeration<? extends A> enumeration) {
         while (enumeration.hasMoreElements())
             accept(enumeration.nextElement());
     }
@@ -72,9 +70,8 @@ public interface Acceptor<A, R> extends BaseAcceptor<R> {
      * Accept a set of values from an {@link Iterable}.
      *
      * @param   iterable    the {@link Iterable}
-     * @throws  Exception   if thrown by the implementing code
      */
-    default void accept(Iterable<? extends A> iterable) throws Exception {
+    default void accept(Iterable<? extends A> iterable) {
         accept(iterable.iterator());
     }
 
@@ -82,9 +79,8 @@ public interface Acceptor<A, R> extends BaseAcceptor<R> {
      * Accept a set of values from a {@link Stream}.
      *
      * @param   stream      the {@link Stream}
-     * @throws  Exception   if thrown by the implementing code
      */
-    default void accept(Stream<? extends A> stream) throws Exception {
+    default void accept(Stream<? extends A> stream) {
         accept(stream.iterator());
     }
 

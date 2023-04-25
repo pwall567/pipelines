@@ -35,6 +35,11 @@ source or from the previous element of the pipeline, but I found I needed additi
 So this library defines an `Acceptor` interface; the `Pipeline` interface extends `Acceptor` and adds an `emit` function
 to forward data to the downstream object.
 
+**POSSIBLE BREAKING CHANGE** From version 4.0, the `Acceptor` interface extends `Consumer` and the `IntAcceptor`
+interface extends `IntConsumer`.
+This has been made possible by dropping the checked exception on most method calls, and introducing a `safeClose()`
+method which invokes `close()` and wraps any exception in a `RuntimeException`.
+
 ## Concepts
 
 ### Parameterised Types
@@ -52,8 +57,10 @@ This defines a small number of functions:
 
 - `accept(value)`: accept a value (the implementation in `AbstractAcceptor` tests for `null` as an end-of-data marker,
 and invokes the abstract method `acceptObject()` for non-null values)
-- `close()`: inherited from the `AutoCloseable` interface (unfortunately, because the inherited signature specifies a
-checked exception, many of the method signatures in the library also include this exception)
+- `close()`: inherited from the `AutoCloseable` interface
+- `safeClose()`: because the `close()` method signature in `AutoCloseable` declares a checked exception, it is not
+possible to use it in other methods without requiring them to also declare the exception, so `safeClose()` invokes
+`close()` and wraps any exceptions in a `RuntimeException`
 - `isClosed()`: returns `true` if the acceptor is closed
 - `getResult()`: returns the result (the default implementation throws an exception)
 - `isComplete()`: returns `true` if all many-to-one sequences are complete, for example, all the bytes in a UTF-8
@@ -125,7 +132,7 @@ But for UTF-8, ISO-8859-1 and Windows-1252, which account for the majority of ch
 world, the most frequently-used characters are identical, and it is only when a special character is encountered that
 the decoder can attempt to infer the character set being used.
 
-`DynamicDecoder` will check whether a special character sequence is valid UTF-8, and if so, it wil switch to that
+`DynamicDecoder` will check whether a special character sequence is valid UTF-8, and if so, it will switch to that
 character set for the remainder of the stream.
 If the character sequence is not valid UTF-8, the decoder will switch to Windows-1252 (which is in effect a superset of
 ISO-8859-1, so that character set will be covered too).
@@ -170,10 +177,10 @@ A dotted line represents a secondary `implements` relationship, where a class bo
 an interface.
 Lines that cross do not interact.
 
-![Class Diagram](doc/dia/pipeline31.png "UML Class Diagram")
+![Class Diagram](doc/dia/pipeline40.png "UML Class Diagram")
 
 The diagram was produced by [Dia](https://wiki.gnome.org/Apps/Dia/); the diagram file is at
-[doc/dia/pipeline31.dia](doc/dia/pipeline31.dia).
+[doc/dia/pipeline40.dia](doc/dia/pipeline40.dia).
 
 ## Example
 
@@ -225,25 +232,25 @@ Of course, all of this is also accessible from Kotlin:
 
 ## Dependency Specification
 
-The latest version of the library is 3.2, and it may be obtained from the Maven Central repository.
+The latest version of the library is 4.0, and it may be obtained from the Maven Central repository.
 
 ### Maven
 ```xml
     <dependency>
       <groupId>net.pwall.util</groupId>
       <artifactId>pipelines</artifactId>
-      <version>3.2</version>
+      <version>4.0</version>
     </dependency>
 ```
 ### Gradle
 ```groovy
-    implementation 'net.pwall.util:pipelines:3.2'
+    implementation 'net.pwall.util:pipelines:4.0'
 ```
 ### Gradle (kts)
 ```kotlin
-    implementation("net.pwall.util:pipelines:3.2")
+    implementation("net.pwall.util:pipelines:4.0")
 ```
 
 Peter Wall
 
-2022-10-11
+2023-04-25

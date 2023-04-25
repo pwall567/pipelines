@@ -2,7 +2,7 @@
  * @(#) URIEncoderTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ import static org.junit.Assert.assertEquals;
 public class URIEncoderTest {
 
     @Test
-    public void shouldEncodePlainStringUnmodified() throws Exception {
+    public void shouldEncodePlainStringUnmodified() {
         IntPipeline<String> pipeline1 = new URIEncoder<>(new StringAcceptor());
         pipeline1.accept("plain");
         assertEquals("plain", pipeline1.getResult());
@@ -44,7 +44,7 @@ public class URIEncoderTest {
     }
 
     @Test
-    public void shouldEncodeReservedCharacters() throws Exception {
+    public void shouldEncodeReservedCharacters() {
         IntPipeline<String> pipeline1 = new URIEncoder<>(new StringAcceptor());
         pipeline1.accept("Hello, World!");
         assertEquals("Hello%2C%20World%21", pipeline1.getResult());
@@ -54,7 +54,7 @@ public class URIEncoderTest {
     }
 
     @Test
-    public void shouldEncodeSpaceAsPlusWhenSelected() throws Exception {
+    public void shouldEncodeSpaceAsPlusWhenSelected() {
         IntPipeline<String> pipeline1 = new URIEncoder<>(true, new StringAcceptor());
         pipeline1.accept("Hello, World!");
         assertEquals("Hello%2C+World%21", pipeline1.getResult());

@@ -2,7 +2,7 @@
  * @(#) ByteBufferPipelineTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ import static org.junit.Assert.assertEquals;
 public class ByteBufferPipelineTest {
 
     @Test
-    public void shouldProcessByteBuffer() throws Exception {
+    public void shouldProcessByteBuffer() {
         String str = "Awake! for Morning in the Bowl of Night";
         int n = str.length();
         ByteBuffer byteBuffer = ByteBuffer.allocate(n);

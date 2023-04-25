@@ -2,7 +2,7 @@
  * @(#) HTMLDecoderTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ import static org.junit.Assert.assertEquals;
 public class HTMLDecoderTest {
 
     @Test
-    public void shouldDecodePlainStringUnmodified() throws Exception {
+    public void shouldDecodePlainStringUnmodified() {
         IntPipeline<String> pipeline1 = new HTMLDecoder<>(new StringAcceptor());
         pipeline1.accept("plain");
         assertEquals("plain", pipeline1.getResult());
@@ -44,7 +44,7 @@ public class HTMLDecoderTest {
     }
 
     @Test
-    public void shouldDecodeSpecialCharacters() throws Exception {
+    public void shouldDecodeSpecialCharacters() {
         IntPipeline<String> pipeline1 = new HTMLDecoder<>(new StringAcceptor());
         pipeline1.accept("&lt;div&gt;hello&lt;/div&gt;");
         assertEquals("<div>hello</div>", pipeline1.getResult());
@@ -54,7 +54,7 @@ public class HTMLDecoderTest {
     }
 
     @Test
-    public void shouldDecodeNamedSpecialCharacters() throws Exception {
+    public void shouldDecodeNamedSpecialCharacters() {
         IntPipeline<String> pipeline1 = new HTMLDecoder<>(new StringAcceptor());
         pipeline1.accept("&lt;div&gt;&iexcl;hol&aacute;!&lt;/div&gt;");
         assertEquals("<div>\u00A1hol\u00E1!</div>", pipeline1.getResult());
@@ -64,7 +64,7 @@ public class HTMLDecoderTest {
     }
 
     @Test
-    public void shouldDecodeNonstandardSpecialCharacters() throws Exception {
+    public void shouldDecodeNonstandardSpecialCharacters() {
         IntPipeline<String> pipeline1 = new HTMLDecoder<>(new StringAcceptor());
         pipeline1.accept("&lt;div&gt;M&#x101;ori&#x7;&lt;/div&gt;");
         assertEquals("<div>M\u0101ori\u0007</div>", pipeline1.getResult());

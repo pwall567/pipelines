@@ -2,7 +2,7 @@
  * @(#) XMLEncoderTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ import static org.junit.Assert.assertEquals;
 public class XMLEncoderTest {
 
     @Test
-    public void shouldEncodePlainStringUnmodified() throws Exception {
+    public void shouldEncodePlainStringUnmodified() {
         IntPipeline<String> pipeline1 = new XMLEncoder<>(new StringAcceptor());
         pipeline1.accept("plain");
         assertEquals("plain", pipeline1.getResult());
@@ -44,7 +44,7 @@ public class XMLEncoderTest {
     }
 
     @Test
-    public void shouldEncodeSpecialCharacters() throws Exception {
+    public void shouldEncodeSpecialCharacters() {
         IntPipeline<String> pipeline1 = new XMLEncoder<>(new StringAcceptor());
         pipeline1.accept("<div>hello</div>");
         assertEquals("&lt;div&gt;hello&lt;/div&gt;", pipeline1.getResult());
@@ -55,7 +55,7 @@ public class XMLEncoderTest {
     }
 
     @Test
-    public void shouldEncodeNonstandardSpecialCharacters() throws Exception {
+    public void shouldEncodeNonstandardSpecialCharacters() {
         IntPipeline<String> pipeline1 = new XMLEncoder<>(new StringAcceptor());
         pipeline1.accept("<div>\u00A1hol\u00E1!</div>");
         assertEquals("&lt;div&gt;&#xA1;hol&#xE1;!&lt;/div&gt;", pipeline1.getResult());

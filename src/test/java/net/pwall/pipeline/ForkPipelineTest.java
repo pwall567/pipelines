@@ -2,7 +2,7 @@
  * @(#) ForkPipelineTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import static org.junit.Assert.assertEquals;
 public class ForkPipelineTest {
 
     @Test
-    public void shouldForkPipeline() throws Exception {
+    public void shouldForkPipeline() {
         ListAcceptor<String> listAcceptor1 = new ListAcceptor<>();
         Filter<String, List<String>> filter1 = new Filter<>(listAcceptor1, a -> a.startsWith("A"));
         ListAcceptor<String> listAcceptor2 = new ListAcceptor<>();

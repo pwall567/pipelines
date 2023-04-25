@@ -2,10 +2,14 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## [Unreleased]
+## [4.0] - 2023-04-25
 ### Added
 - `SchemaURIEncoder`: allows dollar sign as unencoded character
 ### Changed
+- `BaseAcceptor`: added `safeClose()`
+- many classes: removed checked exception and switch to use `safeClose()`
+- `Acceptor`: now extends `Consumer`
+- `IntAcceptor`: now extends `IntConsumer`
 - `EncoderBase`: changed to use `IntOutput` library (and moved to different package)
 - `pom.xml`: added dependency on `IntOutput`
 - `IntAcceptor`: added more default methods

@@ -2,7 +2,7 @@
  * @(#) ByteArrayPipelineTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import static org.junit.Assert.assertEquals;
 public class ByteArrayPipelineTest {
 
     @Test
-    public void shouldProcessByteArray() throws Exception {
+    public void shouldProcessByteArray() {
         String str = "The quick brown etc.";
         int n = str.length();
         byte[] bytes = new byte[n];
@@ -45,7 +45,7 @@ public class ByteArrayPipelineTest {
     }
 
     @Test
-    public void shouldProcessByteArrayUsingOffsetAndLength() throws Exception {
+    public void shouldProcessByteArrayUsingOffsetAndLength() {
         String str = "The quick brown etc.";
         int n = str.length();
         byte[] bytes = new byte[n];

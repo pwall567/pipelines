@@ -2,7 +2,7 @@
  * @(#) AbstractIntAcceptor.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020 Peter Wall
+ * Copyright (c) 2020, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,14 +37,13 @@ abstract public class AbstractIntAcceptor<R> extends BaseAbstractAcceptor<R> imp
      * Accept an {@code int}.  Check for acceptor already closed, and handle end of data.
      *
      * @param   value   the input value
-     * @throws  Exception   if thrown by a {@code close()} method
      */
     @Override
-    public void accept(int value) throws Exception {
+    public void accept(int value) {
         if (isClosed())
             throw new IllegalStateException("Acceptor is closed");
         if (value == -1)
-            close();
+            safeClose();
         else
             acceptInt(value);
     }
@@ -54,17 +53,15 @@ abstract public class AbstractIntAcceptor<R> extends BaseAbstractAcceptor<R> imp
      * implementation of this method.
      *
      * @param   value       the input value
-     * @throws  Exception   if thrown by a {@code close()} method
      */
-    abstract public void acceptInt(int value) throws Exception;
+    abstract public void acceptInt(int value);
 
     /**
      * Accept a sequence of {@code int} values, supplied as {@code vararg} parameters.
      *
      * @param   values      the input values
-     * @throws  Exception   if thrown by a {@code close()} method
      */
-    public void accept(int ... values) throws Exception {
+    public void accept(int ... values) {
         for (int value : values)
             accept(value);
     }

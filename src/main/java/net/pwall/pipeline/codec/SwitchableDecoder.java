@@ -1,8 +1,8 @@
 /*
- * @(#) UTF8_CodePoint.java
+ * @(#) SwitchableDecoder.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -63,10 +63,9 @@ public class SwitchableDecoder<R> extends AbstractIntPipeline<R> {
      * if present, otherwise emit it directly (with no conversion).
      *
      * @param   value       the input value
-     * @throws  Exception   if thrown by a {@code close()} method
      */
     @Override
-    public void acceptInt(int value) throws Exception {
+    public void acceptInt(int value) {
         if (delegate != null)
             delegate.accept(value);
         else
@@ -88,9 +87,8 @@ public class SwitchableDecoder<R> extends AbstractIntPipeline<R> {
      * Switch to the specified delegate.
      *
      * @param   delegate    the new delegate
-     * @throws  Exception   if thrown by downstream
      */
-    public void switchTo(IntAcceptor<? extends R> delegate) throws Exception {
+    public void switchTo(IntAcceptor<? extends R> delegate) {
         this.delegate = delegate;
     }
 
@@ -98,9 +96,8 @@ public class SwitchableDecoder<R> extends AbstractIntPipeline<R> {
      * Switch to the nominated character set.
      *
      * @param   charset     the {@link Charset}
-     * @throws  Exception   if thrown by downstream
      */
-    public void switchTo(Charset charset) throws Exception {
+    public void switchTo(Charset charset) {
         switchTo(DecoderFactory.getDecoder(charset, getDownstream()));
     }
 
@@ -108,9 +105,8 @@ public class SwitchableDecoder<R> extends AbstractIntPipeline<R> {
      * Switch to the nominated character set.
      *
      * @param   charsetName the character set name
-     * @throws  Exception   if thrown by downstream
      */
-    public void switchTo(String charsetName) throws Exception {
+    public void switchTo(String charsetName) {
         switchTo(DecoderFactory.getDecoder(charsetName, getDownstream()));
     }
 

@@ -2,7 +2,7 @@
  * @(#) AbstractAcceptor.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020 Peter Wall
+ * Copyright (c) 2020, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,14 +40,13 @@ abstract public class AbstractAcceptor<A, R> extends BaseAbstractAcceptor<R> imp
      * implementation of {@link Acceptor} used.
      *
      * @param   value       the input value
-     * @throws  Exception   if thrown by a {@code close()} method
      */
     @Override
-    public void accept(A value) throws Exception {
+    public void accept(A value) {
         if (isClosed())
             throw new IllegalStateException("Acceptor is closed");
         if (value == null)
-            close();
+            safeClose();
         else
             acceptObject(value);
     }
@@ -57,18 +56,16 @@ abstract public class AbstractAcceptor<A, R> extends BaseAbstractAcceptor<R> imp
      * implementation of this method.
      *
      * @param   value       the input value
-     * @throws  Exception   if thrown by a {@code close()} method
      */
-    abstract public void acceptObject(A value) throws Exception;
+    abstract public void acceptObject(A value);
 
     /**
      * Accept a sequence of values, supplied as {@code vararg} parameters.
      *
      * @param   values      the input values
-     * @throws  Exception   if thrown by a {@code close()} method
      */
     @SafeVarargs
-    public final void accept(A ... values) throws Exception {
+    public final void accept(A ... values) {
         for (A value : values)
             accept(value);
     }

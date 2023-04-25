@@ -2,7 +2,7 @@
  * @(#) AbstractObjectIntPipeline.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,6 +46,11 @@ public abstract class AbstractObjectIntPipeline<A, R> extends AbstractAcceptor<A
         this.downstream = downstream;
     }
 
+    /**
+     * Get the downstream {@link IntAcceptor}
+     *
+     * @return  the {@link IntAcceptor}
+     */
     @Override
     public IntAcceptor<? extends R> getDownstream() {
         return downstream;
@@ -53,6 +58,8 @@ public abstract class AbstractObjectIntPipeline<A, R> extends AbstractAcceptor<A
 
     /**
      * Close the pipeline.
+     *
+     * @throws  Exception   if thrown by the downstream or superclass {@code close()} functions
      */
     @Override
     public void close() throws Exception {
@@ -66,7 +73,7 @@ public abstract class AbstractObjectIntPipeline<A, R> extends AbstractAcceptor<A
      * @param   value   the value to be forwarded
      */
     @Override
-    public void emit(int value) throws Exception {
+    public void emit(int value) {
         downstream.accept(value);
     }
 

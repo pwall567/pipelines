@@ -2,7 +2,7 @@
  * @(#) DecodingPipeline.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020 Peter Wall
+ * Copyright (c) 2020, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ public class DecodingPipeline<R> extends AbstractIntPipeline<R> {
     }
 
     @Override
-    public void acceptInt(int value) throws Exception {
+    public void acceptInt(int value) {
         if (value >= 0 && value <= 0x7F)
             emit(value);
         else if (value >= 0x80 && value <= 0xFF)

@@ -2,7 +2,7 @@
  * @(#) CharSequencePipeline.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -50,10 +50,9 @@ public class CharSequencePipeline<R> extends AbstractObjectIntPipeline<CharSeque
      * downstream {@link IntAcceptor}.
      *
      * @param   value       the input value
-     * @throws  Exception   if thrown by the downstream {@link IntAcceptor}
      */
     @Override
-    public void acceptObject(CharSequence value) throws Exception {
+    public void acceptObject(CharSequence value) {
         for (int i = 0, n = value.length(); i < n; i++)
             emit(value.charAt(i));
     }

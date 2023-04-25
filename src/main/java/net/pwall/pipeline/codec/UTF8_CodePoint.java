@@ -2,7 +2,7 @@
  * @(#) UTF8_CodePoint.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020, 2021 Peter Wall
+ * Copyright (c) 2020, 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,8 @@
 
 package net.pwall.pipeline.codec;
 
+import java.util.function.IntConsumer;
+
 import net.pwall.pipeline.AbstractIntPipeline;
 import net.pwall.pipeline.IntAcceptor;
 import net.pwall.pipeline.IntPipeline;
@@ -38,13 +40,6 @@ import net.pwall.pipeline.IntPipeline;
 public class UTF8_CodePoint<R> extends AbstractIntPipeline<R> {
 
     // TODO consider allowing a "lenient" mode - don't throw exception on invalid/incomplete sequence
-
-    /**
-     * Local version of {@code IntConsumer} interface that allows exceptions on the {@code accept} method.
-     */
-    private interface IntConsumer {
-        void accept(int value) throws Exception;
-    }
 
     private final IntConsumer threeByte1 = i -> intermediate(i, this::terminal);
     private final IntConsumer fourByte2 = i -> intermediate(i, this::terminal);
@@ -73,7 +68,7 @@ public class UTF8_CodePoint<R> extends AbstractIntPipeline<R> {
     }
 
     @Override
-    public void acceptInt(int value) throws Exception {
+    public void acceptInt(int value) {
         state.accept(value);
     }
 
@@ -93,7 +88,7 @@ public class UTF8_CodePoint<R> extends AbstractIntPipeline<R> {
         state = nextState;
     }
 
-    private void terminal(int i) throws Exception {
+    private void terminal(int i) {
         checkTrailing(i);
         emit((codePoint << 6) | (i & 0x3F));
         state = normal;

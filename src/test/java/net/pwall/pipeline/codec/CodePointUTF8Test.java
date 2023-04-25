@@ -2,7 +2,7 @@
  * @(#) CodePointUTF8Test.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020 Peter Wall
+ * Copyright (c) 2020, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 public class CodePointUTF8Test {
 
     @Test
-    public void shouldPassThroughASCII() throws Exception {
+    public void shouldPassThroughASCII() {
         CodePoint_UTF8<List<Integer>> pipe = new CodePoint_UTF8<>(new TestIntAcceptor());
         pipe.accept('A');
         assertTrue(pipe.isComplete());
@@ -46,7 +46,7 @@ public class CodePointUTF8Test {
     }
 
     @Test
-    public void shouldPassThroughMultipleASCII() throws Exception {
+    public void shouldPassThroughMultipleASCII() {
         CodePoint_UTF8<List<Integer>> pipe = new CodePoint_UTF8<>(new TestIntAcceptor());
         pipe.accept("ABC");
         assertTrue(pipe.isComplete());
@@ -58,7 +58,7 @@ public class CodePointUTF8Test {
     }
 
     @Test
-    public void shouldPassThroughTwoByteChars() throws Exception {
+    public void shouldPassThroughTwoByteChars() {
         CodePoint_UTF8<List<Integer>> pipe = new CodePoint_UTF8<>(new TestIntAcceptor());
         pipe.accept(0xA9);
         pipe.accept(0xF7);
@@ -72,7 +72,7 @@ public class CodePointUTF8Test {
     }
 
     @Test
-    public void shouldPassThroughThreeByteChars() throws Exception {
+    public void shouldPassThroughThreeByteChars() {
         CodePoint_UTF8<List<Integer>> pipe = new CodePoint_UTF8<>(new TestIntAcceptor());
         pipe.accept(0x2014);
         assertTrue(pipe.isComplete());

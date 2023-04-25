@@ -2,7 +2,7 @@
  * @(#) UTF16CodePointTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020 Peter Wall
+ * Copyright (c) 2020, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ import static org.junit.Assert.assertTrue;
 public class UTF16CodePointTest {
 
     @Test
-    public void shouldPassThroughBMPCodePoint() throws Exception {
+    public void shouldPassThroughBMPCodePoint() {
         TestIntAcceptor testIntPipeline = new TestIntAcceptor();
         UTF16_CodePoint<List<Integer>> pipe = new UTF16_CodePoint<>(testIntPipeline);
         pipe.accept('A');
@@ -48,7 +48,7 @@ public class UTF16CodePointTest {
     }
 
     @Test
-    public void shouldConvertSurrogatePair() throws Exception {
+    public void shouldConvertSurrogatePair() {
         TestIntAcceptor testIntPipeline = new TestIntAcceptor();
         UTF16_CodePoint<List<Integer>> pipe = new UTF16_CodePoint<>(testIntPipeline);
         pipe.accept(0xD83D);
