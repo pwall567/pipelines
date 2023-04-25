@@ -2,6 +2,14 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [Unreleased]
+### Added
+- `SchemaURIEncoder`: allows dollar sign as unencoded character
+### Changed
+- `EncoderBase`: changed to use `IntOutput` library (and moved to different package)
+- `pom.xml`: added dependency on `IntOutput`
+- `IntAcceptor`: added more default methods
+
 ## [3.2] - 2022-10-11
 ### Added
 - `SchemaURIEncoder`: allows dollar sign as unencoded character

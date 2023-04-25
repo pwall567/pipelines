@@ -47,7 +47,7 @@ public interface BaseAcceptor<R> extends AutoCloseable {
      * @throws  UnsupportedOperationException   in all cases
      */
     default R getResult() {
-        throw new UnsupportedOperationException("No result possible");
+        throw new UnsupportedOperationException("No result defined");
     }
 
     /**

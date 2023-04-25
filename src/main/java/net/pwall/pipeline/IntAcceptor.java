@@ -27,6 +27,7 @@ package net.pwall.pipeline;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 
 /**
  * An acceptor that takes an integer value.  Includes default functions to cater for the common cases of strings or byte
@@ -54,6 +55,29 @@ public interface IntAcceptor<R> extends BaseAcceptor<R> {
     default void accept(CharSequence cs) throws Exception {
         for (int i = 0, n = cs.length(); i < n; i++)
             accept(cs.charAt(i));
+    }
+
+    /**
+     * Accept a section of a {@code char} array as a sequence of integer values.
+     *
+     * @param   chars       the {@code char} array
+     * @param   offset      the starting offset
+     * @param   length      the length to accept
+     * @throws  Exception   if thrown by a {@code close()} method
+     */
+    default void accept(char[] chars, int offset, int length) throws Exception {
+        for (int i = offset, n = offset + length; i < n; i++)
+            accept(chars[i]);
+    }
+
+    /**
+     * Accept a {@code char} array as a sequence of integer values.
+     *
+     * @param   chars       the {@code char} array
+     * @throws  Exception   if thrown by a {@code close()} method
+     */
+    default void accept(char[] chars) throws Exception {
+        accept(chars, 0, chars.length);
     }
 
     /**
@@ -87,11 +111,22 @@ public interface IntAcceptor<R> extends BaseAcceptor<R> {
      */
     default void accept(InputStream inputStream) throws Exception {
         for (;;) {
-            int ch = inputStream.read();
-            if (ch < 0)
+            int b = inputStream.read();
+            if (b < 0)
                 break;
-            accept(ch);
+            accept(b & 0xFF);
         }
+    }
+
+    /**
+     * Accept a {@link CharBuffer} as a sequence of integer values.
+     *
+     * @param   charBuffer      the {@link CharBuffer}
+     * @throws  Exception       if thrown byt the {@link CharBuffer} or by a {@code close()} method
+     */
+    default void accept(CharBuffer charBuffer) throws Exception {
+        while (charBuffer.hasRemaining())
+            accept(charBuffer.get());
     }
 
     /**
@@ -102,7 +137,7 @@ public interface IntAcceptor<R> extends BaseAcceptor<R> {
      */
     default void accept(ByteBuffer byteBuffer) throws Exception {
         while (byteBuffer.hasRemaining())
-            accept(byteBuffer.get());
+            accept(byteBuffer.get() & 0xFF);
     }
 
 }

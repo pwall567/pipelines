@@ -86,7 +86,7 @@ The library includes several character set encoding and decoding classes, all of
 interface.
 
 | Class                   | Accepts             | Emits               |
-| ----------------------- | ------------------- | ------------------- |
+|-------------------------|---------------------|---------------------|
 | `UTF8_CodePoint`        | UTF-8               | Unicode code points |
 | `UTF16_CodePoint`       | UTF-16              | Unicode code points |
 | `ISO8859_1_CodePoint`   | ISO-8859-1          | Unicode code points |
@@ -170,10 +170,10 @@ A dotted line represents a secondary `implements` relationship, where a class bo
 an interface.
 Lines that cross do not interact.
 
-![Class Diagram](doc/dia/pipeline30.png "UML Class Diagram")
+![Class Diagram](doc/dia/pipeline31.png "UML Class Diagram")
 
 The diagram was produced by [Dia](https://wiki.gnome.org/Apps/Dia/); the diagram file is at
-[doc/dia/pipeline30.dia](doc/dia/pipeline30.dia).
+[doc/dia/pipeline31.dia](doc/dia/pipeline31.dia).
 
 ## Example
 

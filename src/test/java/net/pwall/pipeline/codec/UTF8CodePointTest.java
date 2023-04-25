@@ -2,7 +2,7 @@
  * @(#) UTF8CodePointTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020, 2021 Peter Wall
+ * Copyright (c) 2020, 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 
 package net.pwall.pipeline.codec;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 
 import net.pwall.pipeline.TestIntAcceptor;
@@ -93,6 +94,29 @@ public class UTF8CodePointTest {
         assertFalse(pipe.isComplete());
         IllegalStateException e = assertThrows(IllegalStateException.class, pipe::getResult);
         assertEquals("Sequence is not complete", e.getMessage());
+    }
+
+    @Test
+    public void shouldReadByteBuffer() throws Exception {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(256);
+        byteBuffer.put((byte)'A');
+        byteBuffer.put((byte)' ');
+        byteBuffer.put((byte)0xE2);
+        byteBuffer.put((byte)0x80);
+        byteBuffer.put((byte)0x94);
+        byteBuffer.put((byte)' ');
+        byteBuffer.put((byte)'B');
+        byteBuffer.flip();
+        UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new TestIntAcceptor());
+        pipe.accept(byteBuffer);
+        assertTrue(pipe.isComplete());
+        List<Integer> result = pipe.getResult();
+        assertEquals(5, result.size());
+        assertEquals(Integer.valueOf('A'), result.get(0));
+        assertEquals(Integer.valueOf(' '), result.get(1));
+        assertEquals(Integer.valueOf(0x2014), result.get(2));
+        assertEquals(Integer.valueOf(' '), result.get(3));
+        assertEquals(Integer.valueOf('B'), result.get(4));
     }
 
 }
