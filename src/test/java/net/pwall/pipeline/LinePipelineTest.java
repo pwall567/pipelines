@@ -73,4 +73,22 @@ public class LinePipelineTest {
         assertEquals("de", list.get(1));
     }
 
+    @Test
+    public void shouldApplyMaximumLength() {
+        String input = "abcdefghijklmnopqrstuvwxyz";
+        ListAcceptor<String> listAcceptor = new ListAcceptor<>();
+        try (LinePipeline<List<String>> pipeline = new LinePipeline<>(listAcceptor, 4)) {
+            pipeline.accept(input);
+        }
+        List<String> list = listAcceptor.getResult();
+        assertEquals(7, list.size());
+        assertEquals("abcd", list.get(0));
+        assertEquals("efgh", list.get(1));
+        assertEquals("ijkl", list.get(2));
+        assertEquals("mnop", list.get(3));
+        assertEquals("qrst", list.get(4));
+        assertEquals("uvwx", list.get(5));
+        assertEquals("yz", list.get(6));
+    }
+
 }

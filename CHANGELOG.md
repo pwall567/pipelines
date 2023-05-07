@@ -2,6 +2,13 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [4.1] - 2023-05-07
+### Added
+- `Base64Encoder`, `Base64Decoder`: new classes
+### Changed
+- `XMLDecoder`: made table public
+- `LinePipeline`: added maximum line length option
+
 ## [4.0] - 2023-04-25
 ### Added
 - `SchemaURIEncoder`: allows dollar sign as unencoded character

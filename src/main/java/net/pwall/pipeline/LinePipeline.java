@@ -33,16 +33,31 @@ package net.pwall.pipeline;
  */
 public class LinePipeline<R> extends AbstractIntObjectPipeline<String, R> {
 
+    private final int maxLength;
     private final StringBuilder line;
     private boolean crSeen;
 
     /**
+     * Construct a {@code LinePipeline} with the given downstream {@link Acceptor} amd the specified maximum line length.
+     *
+     * @param downstream    the {@link Acceptor}
+     * @param maxLength     the maximum line length
+     */
+    public LinePipeline(Acceptor<? super String, ? extends R> downstream, int maxLength) {
+        super(downstream);
+        this.maxLength = maxLength;
+        line = new StringBuilder();
+        crSeen = false;
+    }
+
+    /**
      * Construct a {@code LinePipeline} with the given downstream {@link Acceptor}.
      *
-     * @param downstream the {@link Acceptor}
+     * @param downstream    the {@link Acceptor}
      */
     public LinePipeline(Acceptor<? super String, ? extends R> downstream) {
         super(downstream);
+        maxLength = -1;
         line = new StringBuilder();
         crSeen = false;
     }
@@ -60,6 +75,8 @@ public class LinePipeline<R> extends AbstractIntObjectPipeline<String, R> {
         }
         else {
             line.append((char)value);
+            if (maxLength > 0 && line.length() >= maxLength)
+                emitLine();
             crSeen = false;
         }
     }

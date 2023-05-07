@@ -37,7 +37,7 @@ import net.pwall.pipeline.xxml.DecoderBase;
  */
 public class XMLDecoder<R> extends DecoderBase<R> {
 
-    private static final MappingEntry[] table = new MappingEntry[] {
+    public static final MappingEntry[] table = new MappingEntry[] {
             new MappingEntry('&', "amp"),
             new MappingEntry('\'', "apos"),
             new MappingEntry('>', "gt"),
