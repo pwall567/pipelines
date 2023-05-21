@@ -55,7 +55,7 @@ public class DynamicDecoderTest {
         pipeline.accept(utf8BOM, testString1);
         assertEquals(testString1, pipeline.getResult());
         assertEquals("DELEGATED", dd.state.name());
-        assertEquals("net.pwall.pipeline.codec.UTF8_CodePoint", dd.delegate.getClass().getName());
+        assertEquals("net.pwall.pipeline.codec.UTF8_UTF16", dd.delegate.getClass().getName());
     }
 
     @Test
@@ -65,7 +65,7 @@ public class DynamicDecoderTest {
         pipeline.accept(utf8EuroSign);
         assertEquals("Euros \u20AC200.00", pipeline.getResult());
         assertEquals("DELEGATED", dd.state.name());
-        assertEquals("net.pwall.pipeline.codec.UTF8_CodePoint", dd.delegate.getClass().getName());
+        assertEquals("net.pwall.pipeline.codec.UTF8_UTF16", dd.delegate.getClass().getName());
     }
 
     @Test
@@ -75,7 +75,7 @@ public class DynamicDecoderTest {
         pipeline.accept(windows1252EuroSign);
         assertEquals("Euros \u20AC200.00", pipeline.getResult());
         assertEquals("DELEGATED", dd.state.name());
-        assertEquals("net.pwall.pipeline.codec.Windows1252_CodePoint", dd.delegate.getClass().getName());
+        assertEquals("net.pwall.pipeline.codec.Windows1252_UTF16", dd.delegate.getClass().getName());
     }
 
     @Test
@@ -86,7 +86,7 @@ public class DynamicDecoderTest {
         pipeline.close();
         assertEquals(resume, pipeline.getResult());
         assertEquals("DELEGATED", dd.state.name());
-        assertEquals("net.pwall.pipeline.codec.Windows1252_CodePoint", dd.delegate.getClass().getName());
+        assertEquals("net.pwall.pipeline.codec.Windows1252_UTF16", dd.delegate.getClass().getName());
     }
 
     @Test

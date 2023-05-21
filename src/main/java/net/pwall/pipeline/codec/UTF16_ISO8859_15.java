@@ -1,8 +1,8 @@
 /*
- * @(#) URIEncoder.java
+ * @(#) UTF16_ISO8859_15.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021, 2022, 2023 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,46 +23,25 @@
  * SOFTWARE.
  */
 
-package net.pwall.pipeline.uri;
+package net.pwall.pipeline.codec;
 
 import net.pwall.pipeline.IntAcceptor;
-import net.pwall.pipeline.codec.EncoderBase;
-import static net.pwall.util.IntOutput.output2Hex;
+import net.pwall.pipeline.IntPipeline;
 
 /**
- * URI encoder - encode text using URI percent-encoding.
+ * An encoder {@link IntPipeline} to convert UTF-16 data to ISO-8859-15 encoding.
  *
  * @author  Peter Wall
  * @param   <R>     the pipeline result type
  */
-public class URIEncoder<R> extends EncoderBase<R> {
+public class UTF16_ISO8859_15<R> extends EncodingPipeline<R> {
 
-    private final boolean encodeSpaceAsPlus;
-
-    public URIEncoder(IntAcceptor<? extends R> downstream, boolean encodeSpaceAsPlus) {
-        super(downstream);
-        this.encodeSpaceAsPlus = encodeSpaceAsPlus;
+    public UTF16_ISO8859_15(IntAcceptor<? extends R> downstream, ErrorStrategy errorStrategy) {
+        super(downstream, errorStrategy, createReverseTable(ISO8859_15_UTF16.table));
     }
 
-    public URIEncoder(IntAcceptor<? extends R> downstream) {
-        this(downstream, false);
-    }
-
-    @Override
-    public void acceptInt(int value) {
-        if (value == ' ' && encodeSpaceAsPlus)
-            emit('+');
-        else if (!isUnreservedURI(value)) {
-            emit('%');
-            output2Hex(value, this::emit);
-        }
-        else
-            emit(value);
-    }
-
-    public static boolean isUnreservedURI(int ch) {
-        return ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z' || ch >= '0' && ch <= '9' ||
-                ch == '-' || ch == '.' || ch == '_' || ch == '~';
+    public UTF16_ISO8859_15(IntAcceptor<? extends R> downstream) {
+        this(downstream, ErrorStrategy.THROW_EXCEPTION);
     }
 
 }

@@ -25,26 +25,30 @@
 
 package net.pwall.pipeline.base64;
 
-import net.pwall.pipeline.AbstractIntPipeline;
 import net.pwall.pipeline.IntAcceptor;
+import net.pwall.pipeline.codec.ErrorStrategy;
+import net.pwall.pipeline.codec.ErrorStrategyBase;
 
 /**
- * Base64 decoder - decode text encoded in Base 64.  Accepts either conventional encoding or URL-safe encoding.
+ * Base64 decoder - decode text encoded in Base 64.  Accepts either conventional encoding or URL-safe encoding, and
+ * allows whitespace between groups of 4 characters.
  *
  * @author  Peter Wall
  * @param   <R>     the pipeline result type
  */
-public class Base64Decoder<R> extends AbstractIntPipeline<R> {
+public class Base64Decoder<R> extends ErrorStrategyBase<R> {
 
-    enum State { FIRST, SECOND, THIRD, FOURTH, EQUALS_EXPECTED, COMPLETE }
+    public enum State { FIRST, SECOND, THIRD, FOURTH, EQUALS_EXPECTED, COMPLETE }
 
-    private static final int INVALID_MARKER = 127;
-    private static final int EQUALS_SIGN_MARKER = 126;
-    private static final byte[] decodingArray = new byte[128];
+    public static final int INVALID_MARKER = 127;
+    public static final int EQUALS_SIGN_MARKER = 126;
+    public static final int WHITESPACE_MARKER = 125;
+    public static final int MAX_DECODED_VALUE = 63;
+    public static final byte[] decodingArray = new byte[128];
 
     static {
         for (int i = 0; i < 128; i++)
-            decodingArray[i] = 127;
+            decodingArray[i] = INVALID_MARKER;
 
         for (int i = 0; i < 26; i++)
             decodingArray['A' + i] = (byte)i;
@@ -62,43 +66,65 @@ public class Base64Decoder<R> extends AbstractIntPipeline<R> {
         decodingArray['_'] = (byte)63;
         decodingArray[','] = (byte)63; // RFC 3501
 
-        decodingArray['='] = (byte)126;
+        decodingArray['='] = (byte)EQUALS_SIGN_MARKER;
+        decodingArray[' '] = (byte)WHITESPACE_MARKER;
+        decodingArray['\n'] = (byte)WHITESPACE_MARKER;
+        decodingArray['\r'] = (byte)WHITESPACE_MARKER;
+        decodingArray['\t'] = (byte)WHITESPACE_MARKER;
     }
 
     private State state;
     private int saved;
 
-    public Base64Decoder(IntAcceptor<? extends R> downstream) {
-        super(downstream);
+    public Base64Decoder(IntAcceptor<? extends R> downstream, ErrorStrategy errorStrategy) {
+        super(downstream, errorStrategy);
         state = State.FIRST;
+    }
+
+    public Base64Decoder(IntAcceptor<? extends R> downstream) {
+        this(downstream, ErrorStrategy.DEFAULT);
     }
 
     @Override
     public void acceptInt(int value) {
-        if ((value & ~0x7F) != 0)
-            throw new RuntimeException("Illegal character in Base64");
+        if ((value & ~0x7F) != 0) {
+            handleError(value);
+            return;
+        }
         int decoded = decodingArray[value];
-        if (decoded == INVALID_MARKER)
-            throw new RuntimeException("Illegal character in Base64");
+        if (decoded == INVALID_MARKER) {
+            handleError(value);
+            return;
+        }
         switch (state) {
             case FIRST:
-                if (decoded == EQUALS_SIGN_MARKER)
-                    throw new RuntimeException("Misplaced '=' sign");
-                saved = decoded;
-                state = State.SECOND;
+                if (decoded != WHITESPACE_MARKER) {
+                    if (decoded == EQUALS_SIGN_MARKER) {
+                        handleError(value);
+                        break;
+                    }
+                    saved = decoded;
+                    state = State.SECOND;
+                }
                 break;
             case SECOND:
-                if (decoded == EQUALS_SIGN_MARKER)
-                    throw new RuntimeException("Misplaced '=' sign");
+                if (decoded > MAX_DECODED_VALUE) {
+                    handleError(value);
+                    state = State.FIRST;
+                    break;
+                }
                 emit(((saved << 2) & 0xFC) | ((decoded >> 4) & 0x03));
                 saved = decoded;
                 state = State.THIRD;
                 break;
             case THIRD:
-                if (decoded == EQUALS_SIGN_MARKER) {
-                    if ((saved & 0x0F) != 0)
-                        throw new RuntimeException("Misplaced '=' sign");
-                    state = State.EQUALS_EXPECTED;
+                if (decoded > MAX_DECODED_VALUE) {
+                    if (decoded == EQUALS_SIGN_MARKER && (saved & 0x0F) == 0)
+                        state = State.EQUALS_EXPECTED;
+                    else {
+                        handleError(value);
+                        state = State.FIRST;
+                    }
                 }
                 else {
                     emit(((saved << 4) & 0xF0) | ((decoded >> 2) & 0x0F));
@@ -107,10 +133,13 @@ public class Base64Decoder<R> extends AbstractIntPipeline<R> {
                 }
                 break;
             case FOURTH:
-                if (decoded == EQUALS_SIGN_MARKER) {
-                    if ((saved & 0x03) != 0)
-                        throw new RuntimeException("Misplaced '=' sign");
-                    state = State.COMPLETE;
+                if (decoded > MAX_DECODED_VALUE) {
+                    if (decoded == EQUALS_SIGN_MARKER && (saved & 0x03) == 0)
+                        state = State.COMPLETE;
+                    else {
+                        handleError(value);
+                        state = State.FIRST;
+                    }
                 }
                 else {
                     emit(((saved << 6) & 0xC0) | decoded);
@@ -119,11 +148,12 @@ public class Base64Decoder<R> extends AbstractIntPipeline<R> {
                 break;
             case EQUALS_EXPECTED:
                 if (decoded != EQUALS_SIGN_MARKER)
-                    throw new RuntimeException("Misplaced '=' sign");
+                    handleError(value);
                 state = State.COMPLETE;
                 break;
             case COMPLETE:
-                throw new RuntimeException("Illegal characters after end of Base64");
+                if (decoded != WHITESPACE_MARKER)
+                    handleError(value);
         }
     }
 

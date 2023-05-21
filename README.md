@@ -92,23 +92,26 @@ these classes.
 The library includes several character set encoding and decoding classes, all of them implementing the `IntPipeline`
 interface.
 
-| Class                   | Accepts             | Emits               |
-|-------------------------|---------------------|---------------------|
-| `UTF8_CodePoint`        | UTF-8               | Unicode code points |
-| `UTF16_CodePoint`       | UTF-16              | Unicode code points |
-| `ISO8859_1_CodePoint`   | ISO-8859-1          | Unicode code points |
-| `ISO8859_15_CodePoint`  | ISO-8859-15         | Unicode code points |
-| `Windows1252_CodePoint` | Windows-1252        | Unicode code points |
-| `ASCII_CodePoint`       | ASCII               | Unicode code points |
-| `CodePoint_UTF8`        | Unicode code points | UTF-8               |
-| `CodePoint_UTF16`       | Unicode code points | UTF-16              |
-| `CodePoint_ISO8859_1`   | Unicode code points | ISO-8859-1          |
-| `CodePoint_ISO8859_15`  | Unicode code points | ISO-8859-15         |
+| Class               | Accepts             | Emits               |
+|---------------------|---------------------|---------------------|
+| `UTF8_CodePoint`    | UTF-8               | Unicode code points |
+| `UTF16_CodePoint`   | UTF-16              | Unicode code points |
+| `ISO8859_1_UTF16`   | ISO-8859-1          | UTF-16              |
+| `ISO8859_15_UTF16`  | ISO-8859-15         | UTF-16              |
+| `Windows1252_UTF16` | Windows-1252        | UTF-16              |
+| `ASCII_UTF16`       | ASCII               | UTF-16              |
+| `CodePoint_UTF8`    | Unicode code points | UTF-8               |
+| `CodePoint_UTF16`   | Unicode code points | UTF-16              |
+| `UTF16_ISO8859_1`   | UTF-16              | ISO-8859-1          |
+| `UTF16_ISO8859_15`  | UTF-16              | ISO-8859-15         |
+| `UTF16_Windows1252` | UTF-16              | Windows-1252        |
+| `UTF16_ASCII`       | UTF-16              | ASCII               |
+| `UTF8_UTF16`        | UTF-8               | UTF-16              |
 
 Unicode code points are 32-bit quantities containing the full range of Unicode values; UTF-16 refers to the 16-bit
 version of Unicode, with pairs of surrogate characters representing characters outside the "Basic Multilingual Plane".
-Because Java mostly works with 16-bit characters, the `CodePoint_UTF16` pipeline will frequently be needed in
-combination with the other classes.
+Because Java mostly works with 16-bit characters, the `UTF-8_UTF16` decoder will generally be more useful for decoding
+streams of UTF-8 data.
 
 ### `SwitchableDecoder` and `DynamicDecoder`
 
@@ -190,7 +193,7 @@ To accept bytes in UTF-8 and aggregate them into a `String`:
 public class ReadString {
 
     public String read(InputStream inputStream) {
-        IntPipeline<String> pipe = new UTF8_CodePoint<>(new CodePoint_UTF16<>(new StringAcceptor()));
+        IntPipeline<String> pipe = new UTF8_UTF16<>(new StringAcceptor());
         while (!pipe.isClosed())
             pipe.accept(inputStream.read());
         return pipe.getResult();
@@ -215,7 +218,7 @@ Of course, all of this is also accessible from Kotlin:
 
 ```Kotlin
     fun readString(inputStream: InputStream): String {
-        val pipe = UTF8_CodePoint(CodePoint_UTF16(StringAcceptor()))
+        val pipe = UTF8_UTF16(StringAcceptor())
         while (!pipe.isClosed)
             pipe.accept(inputStream.read())
         return pipe.result
@@ -232,25 +235,25 @@ Of course, all of this is also accessible from Kotlin:
 
 ## Dependency Specification
 
-The latest version of the library is 4.1, and it may be obtained from the Maven Central repository.
+The latest version of the library is 5.0, and it may be obtained from the Maven Central repository.
 
 ### Maven
 ```xml
     <dependency>
       <groupId>net.pwall.util</groupId>
       <artifactId>pipelines</artifactId>
-      <version>4.1</version>
+      <version>5.0</version>
     </dependency>
 ```
 ### Gradle
 ```groovy
-    implementation 'net.pwall.util:pipelines:4.1'
+    implementation 'net.pwall.util:pipelines:5.0'
 ```
 ### Gradle (kts)
 ```kotlin
-    implementation("net.pwall.util:pipelines:4.1")
+    implementation("net.pwall.util:pipelines:5.0")
 ```
 
 Peter Wall
 
-2023-05-07
+2023-05-19

@@ -27,9 +27,11 @@ package net.pwall.pipeline.base64;
 
 import net.pwall.pipeline.ByteArrayAcceptor;
 import net.pwall.pipeline.StringAcceptor;
-import org.junit.Test;
 
+import net.pwall.pipeline.codec.EncoderException;
+import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 public class Base64DecoderTest {
 
@@ -60,6 +62,14 @@ public class Base64DecoderTest {
         assertEquals((byte)0xFB, result[0]);
         assertEquals((byte)0xFF, result[1]);
         assertEquals((byte)0xBF, result[2]);
+    }
+
+    @Test
+    public void shouldThrowExceptionOnInvalidCharacter() {
+        Base64Decoder<byte[]> pipeline = new Base64Decoder<>(new ByteArrayAcceptor());
+        EncoderException e = assertThrows(EncoderException.class, () -> pipeline.accept('*'));
+        assertEquals("Illegal value 0x2A", e.getMessage());
+        assertEquals(0x2A, e.getErrorValue());
     }
 
 }

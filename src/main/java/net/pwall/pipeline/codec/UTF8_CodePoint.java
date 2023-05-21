@@ -27,7 +27,6 @@ package net.pwall.pipeline.codec;
 
 import java.util.function.IntConsumer;
 
-import net.pwall.pipeline.AbstractIntPipeline;
 import net.pwall.pipeline.IntAcceptor;
 import net.pwall.pipeline.IntPipeline;
 
@@ -37,18 +36,16 @@ import net.pwall.pipeline.IntPipeline;
  * @author  Peter Wall
  * @param   <R>     the pipeline result type
  */
-public class UTF8_CodePoint<R> extends AbstractIntPipeline<R> {
-
-    // TODO consider allowing a "lenient" mode - don't throw exception on invalid/incomplete sequence
+public class UTF8_CodePoint<R> extends ErrorStrategyBase<R> {
 
     private final IntConsumer threeByte1 = i -> intermediate(i, this::terminal);
     private final IntConsumer fourByte2 = i -> intermediate(i, this::terminal);
     private final IntConsumer fourByte1 = i -> intermediate(i, fourByte2);
     private final IntConsumer normal = i -> {
-        if (i == -1 || (i & 0x80) == 0)
+        if ((i & 0x80) == 0)
             emit(i);
         else if ((i & 0x40) == 0)
-            throw new IllegalArgumentException("Illegal character in UTF-8");
+            handleError(i);
         else if ((i & 0x20) == 0)
             startSequence(i & 0x1F, this::terminal);
         else if ((i & 0x10) == 0)
@@ -56,14 +53,19 @@ public class UTF8_CodePoint<R> extends AbstractIntPipeline<R> {
         else if ((i & 0x08) == 0)
             startSequence(i & 0x07, fourByte1);
         else
-            throw new IllegalArgumentException("Illegal character in UTF-8");
+            handleError(i);
     };
 
     private IntConsumer state;
     private int codePoint;
 
+    public UTF8_CodePoint(IntAcceptor<? extends R> downstream, ErrorStrategy errorStrategy) {
+        super(downstream, errorStrategy);
+        state = normal;
+    }
+
     public UTF8_CodePoint(IntAcceptor<? extends R> downstream) {
-        super(downstream);
+        super(downstream, ErrorStrategy.THROW_EXCEPTION);
         state = normal;
     }
 
@@ -83,20 +85,22 @@ public class UTF8_CodePoint<R> extends AbstractIntPipeline<R> {
     }
 
     private void intermediate(int i, IntConsumer nextState) {
-        checkTrailing(i);
-        codePoint = (codePoint << 6) | (i & 0x3F);
-        state = nextState;
+        if ((i & 0xC0) == 0x80) {
+            codePoint = (codePoint << 6) | (i & 0x3F);
+            state = nextState;
+        }
+        else {
+            handleError(i);
+            state = normal;
+        }
     }
 
     private void terminal(int i) {
-        checkTrailing(i);
-        emit((codePoint << 6) | (i & 0x3F));
+        if ((i & 0xC0) == 0x80)
+            emit((codePoint << 6) | (i & 0x3F));
+        else
+            handleError(i);
         state = normal;
-    }
-
-    private void checkTrailing(int i) {
-        if ((i & 0xC0) != 0x80)
-            throw new IllegalArgumentException("Illegal character in UTF-8");
     }
 
 }

@@ -27,7 +27,6 @@ package net.pwall.pipeline.codec;
 
 import java.util.Arrays;
 
-import net.pwall.pipeline.AbstractIntPipeline;
 import net.pwall.pipeline.IntAcceptor;
 
 /**
@@ -36,12 +35,12 @@ import net.pwall.pipeline.IntAcceptor;
  * @author  Peter Wall
  * @param   <R>     the pipeline result type
  */
-public class EncodingPipeline<R> extends AbstractIntPipeline<R> {
+public class EncodingPipeline<R> extends ErrorStrategyBase<R> {
 
     private final int[] reverseTable;
 
-    public EncodingPipeline(IntAcceptor<? extends R> downstream, int[] reverseTable) {
-        super(downstream);
+    public EncodingPipeline(IntAcceptor<? extends R> downstream, ErrorStrategy errorStrategy, int[] reverseTable) {
+        super(downstream, errorStrategy);
         this.reverseTable = reverseTable;
     }
 
@@ -65,7 +64,7 @@ public class EncodingPipeline<R> extends AbstractIntPipeline<R> {
                     return;
                 }
             }
-            throw new IllegalArgumentException("Illegal Character");
+            handleError(value);
         }
     }
 

@@ -1,8 +1,8 @@
 /*
- * @(#) CodePoint_Windows1252.java
+ * @(#) ASCII_UTF16.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2020, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,11 +26,30 @@
 package net.pwall.pipeline.codec;
 
 import net.pwall.pipeline.IntAcceptor;
+import net.pwall.pipeline.IntPipeline;
 
-public class CodePoint_Windows1252<R> extends EncodingPipeline<R> {
+/**
+ * A decoder {@link IntPipeline} to convert ASCII encoding to UTF-16 data.
+ *
+ * @author  Peter Wall
+ * @param   <R>     the pipeline result type
+ */
+public class ASCII_UTF16<R> extends ErrorStrategyBase<R> {
 
-    public CodePoint_Windows1252(IntAcceptor<? extends R> downstream) {
-        super(downstream, createReverseTable(Windows1252_CodePoint.table));
+    public ASCII_UTF16(IntAcceptor<? extends R> downstream, ErrorStrategy errorStrategy) {
+        super(downstream, errorStrategy);
+    }
+
+    public ASCII_UTF16(IntAcceptor<? extends R> downstream) {
+        super(downstream, ErrorStrategy.THROW_EXCEPTION);
+    }
+
+    @Override
+    public void acceptInt(int value) {
+        if (value >= 0 && value <= 0x7F)
+            emit(value);
+        else
+            handleError(value);
     }
 
 }

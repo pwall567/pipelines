@@ -55,10 +55,10 @@ public class URIEncoderTest {
 
     @Test
     public void shouldEncodeSpaceAsPlusWhenSelected() {
-        IntPipeline<String> pipeline1 = new URIEncoder<>(true, new StringAcceptor());
+        IntPipeline<String> pipeline1 = new URIEncoder<>(new StringAcceptor(), true);
         pipeline1.accept("Hello, World!");
         assertEquals("Hello%2C+World%21", pipeline1.getResult());
-        IntPipeline<String> pipeline2 = new URIEncoder<>(true, new StringAcceptor());
+        IntPipeline<String> pipeline2 = new URIEncoder<>(new StringAcceptor(), true);
         pipeline2.accept("a more-complicated string: a/b+c%e.(???)");
         assertEquals("a+more-complicated+string%3A+a%2Fb%2Bc%25e.%28%3F%3F%3F%29", pipeline2.getResult());
     }

@@ -25,8 +25,9 @@
 
 package net.pwall.pipeline.uri;
 
-import net.pwall.pipeline.AbstractIntPipeline;
 import net.pwall.pipeline.IntAcceptor;
+import net.pwall.pipeline.codec.ErrorStrategy;
+import net.pwall.pipeline.codec.ErrorStrategyBase;
 
 /**
  * URI decoder - decode text using URI percent-encoding.
@@ -34,16 +35,20 @@ import net.pwall.pipeline.IntAcceptor;
  * @author  Peter Wall
  * @param   <R>     the pipeline result type
  */
-public class URIDecoder<R> extends AbstractIntPipeline<R> {
+public class URIDecoder<R> extends ErrorStrategyBase<R> {
 
     enum State { NORMAL, FIRST, SECOND }
 
     private State state;
     private int character;
 
-    public URIDecoder(IntAcceptor<? extends R> downstream) {
-        super(downstream);
+    public URIDecoder(IntAcceptor<? extends R> downstream, ErrorStrategy errorStrategy) {
+        super(downstream, errorStrategy);
         state = State.NORMAL;
+    }
+
+    public URIDecoder(IntAcceptor<? extends R> downstream) {
+        this(downstream, ErrorStrategy.DEFAULT);
     }
 
     @Override

@@ -115,25 +115,25 @@ public class DynamicDecoder<R> extends SwitchableDecoder<R> {
             if (value == 0)
                 state = State.FIRST_TWO_00_00;
             else
-                switchTo(new UTF16BE_UTF16<>(new UTF16_CodePoint<>(getDownstream())));
+                switchTo(new UTF16BE_UTF16<>(getDownstream()));
             break;
         case FIRST_TWO_00_00:
             if (value == 0xFE)
                 state = State.FIRST_THREE_00_00_FE;
             else {
-                switchTo(new UTF32BE_CodePoint<>(getDownstream()));
+                switchTo(new UTF32BE_CodePoint<>(new CodePoint_UTF16<>(getDownstream())));
                 delegate.accept(value);
             }
             break;
         case FIRST_THREE_00_00_FE:
             if (value == 0xFF) {
-                switchTo(new UTF32BE_CodePoint<>(getDownstream()));
+                switchTo(new UTF32BE_CodePoint<>(new CodePoint_UTF16<>(getDownstream())));
                 delegate.accept(0xFE);
                 delegate.accept(value);
             }
             else {
                 index = 0;
-                switchTo(new UTF32BE_CodePoint<>(getDownstream()));
+                switchTo(new UTF32BE_CodePoint<>(new CodePoint_UTF16<>(getDownstream())));
             }
             break;
         case FIRST_FF:
@@ -151,18 +151,18 @@ public class DynamicDecoder<R> extends SwitchableDecoder<R> {
             }
             else {
                 index = 0;
-                switchTo(new UTF16LE_UTF16<>(new UTF16_CodePoint<>(getDownstream())));
+                switchTo(new UTF16LE_UTF16<>(getDownstream()));
                 delegate.accept(value);
             }
             break;
         case FIRST_THREE_FF_FE_00:
             if (value == 0) {
                 index = 0;
-                switchTo(new UTF32LE_CodePoint<>(getDownstream()));
+                switchTo(new UTF32LE_CodePoint<>(new CodePoint_UTF16<>(getDownstream())));
             }
             else {
                 index = 0;
-                switchTo(new UTF16LE_UTF16<>(new UTF16_CodePoint<>(getDownstream())));
+                switchTo(new UTF16LE_UTF16<>(getDownstream()));
                 delegate.accept(buffer[2]);
                 delegate.accept(value);
             }
@@ -171,7 +171,7 @@ public class DynamicDecoder<R> extends SwitchableDecoder<R> {
         case FIRST_FE:
             if (value == 0xFF) {
                 index = 0;
-                switchTo(new UTF16BE_UTF16<>(new UTF16_CodePoint<>(getDownstream())));
+                switchTo(new UTF16BE_UTF16<>(getDownstream()));
             }
             else
                 delegateToWindows1252(value);
@@ -189,7 +189,7 @@ public class DynamicDecoder<R> extends SwitchableDecoder<R> {
         case FIRST_TWO_EF_BB:
             if (value == 0xBF) {
                 index = 0;
-                switchTo(new UTF8_CodePoint<>(getDownstream()));
+                switchTo(new UTF8_UTF16<>(getDownstream()));
             }
             else if ((value & 0xC0) == 0x80)
                 delegateToUTF8(value);
@@ -245,13 +245,13 @@ public class DynamicDecoder<R> extends SwitchableDecoder<R> {
                 state = State.FIRST_THREE_ANY_00_00;
             }
             else {
-                switchTo(new UTF16LE_UTF16<>(new UTF16_CodePoint<>(getDownstream())));
+                switchTo(new UTF16LE_UTF16<>(getDownstream()));
                 delegate.accept(value);
             }
             break;
         case FIRST_THREE_ANY_00_00:
-            switchTo(value == 0 ? new UTF32LE_CodePoint<>(getDownstream()) :
-                    new UTF16LE_UTF16<>(new UTF16_CodePoint<>(getDownstream())));
+            switchTo(value == 0 ? new UTF32LE_CodePoint<>(new CodePoint_UTF16<>(getDownstream())) :
+                    new UTF16LE_UTF16<>(getDownstream()));
             delegate.accept(value);
             break;
         case UNDETERMINED:
@@ -327,7 +327,7 @@ public class DynamicDecoder<R> extends SwitchableDecoder<R> {
             case POSSIBLE_UTF8:
             case POSSIBLE_UTF8_3BYTE:
             case POSSIBLE_UTF8_4BYTE:
-                switchTo(new Windows1252_CodePoint<>(getDownstream()));
+                switchTo(new Windows1252_UTF16<>(getDownstream()));
                 break;
             case DELEGATED:
                 delegate.safeClose();
@@ -387,12 +387,12 @@ public class DynamicDecoder<R> extends SwitchableDecoder<R> {
     }
 
     private void delegateToUTF8(int value) {
-        switchTo(new UTF8_CodePoint<>(getDownstream()));
+        switchTo(new UTF8_UTF16<>(getDownstream()));
         delegate.accept(value);
     }
 
     private void delegateToWindows1252(int value) {
-        switchTo(new Windows1252_CodePoint<>(getDownstream()));
+        switchTo(new Windows1252_UTF16<>(getDownstream()));
         delegate.accept(value);
     }
 

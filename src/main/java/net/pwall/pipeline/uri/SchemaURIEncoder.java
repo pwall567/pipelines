@@ -39,13 +39,22 @@ import static net.pwall.util.IntOutput.output2Hex;
  */
 public class SchemaURIEncoder<R> extends EncoderBase<R> {
 
-    public SchemaURIEncoder(IntAcceptor<? extends R> downstream) {
+    private final boolean encodeSpaceAsPlus;
+
+    public SchemaURIEncoder(IntAcceptor<? extends R> downstream, boolean encodeSpaceAsPlus) {
         super(downstream);
+        this.encodeSpaceAsPlus = encodeSpaceAsPlus;
+    }
+
+    public SchemaURIEncoder(IntAcceptor<? extends R> downstream) {
+        this(downstream, false);
     }
 
     @Override
     public void acceptInt(int value) {
-        if (!(isUnreservedURI(value) || value == '$')) {
+        if (value == ' ' && encodeSpaceAsPlus)
+            emit('+');
+        else if (!(isUnreservedURI(value) || value == '$')) {
             emit('%');
             output2Hex(value, this::emit);
         }

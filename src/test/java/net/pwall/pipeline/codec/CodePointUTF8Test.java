@@ -31,6 +31,7 @@ import net.pwall.pipeline.TestIntAcceptor;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 public class CodePointUTF8Test {
@@ -81,6 +82,14 @@ public class CodePointUTF8Test {
         assertEquals(Integer.valueOf(0xE2), result.get(0));
         assertEquals(Integer.valueOf(0x80), result.get(1));
         assertEquals(Integer.valueOf(0x94), result.get(2));
+    }
+
+    @Test
+    public void shouldThrowExceptionOnInvalidCodePoint() {
+        CodePoint_UTF8<List<Integer>> pipe = new CodePoint_UTF8<>(new TestIntAcceptor());
+        EncoderException e = assertThrows(EncoderException.class, () -> pipe.accept(0x11ABCD));
+        assertEquals("Illegal value 0x11ABCD", e.getMessage());
+        assertEquals(0x11ABCD, e.getErrorValue());
     }
 
 }

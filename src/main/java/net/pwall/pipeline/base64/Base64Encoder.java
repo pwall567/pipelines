@@ -25,21 +25,22 @@
 
 package net.pwall.pipeline.base64;
 
-import net.pwall.pipeline.AbstractIntPipeline;
 import net.pwall.pipeline.IntAcceptor;
+import net.pwall.pipeline.codec.ErrorStrategy;
+import net.pwall.pipeline.codec.ErrorStrategyBase;
 
 /**
- * Base64 encoder - encode text using Base 64.
+ * Base64 encoder - encode bytes using Base 64.
  *
  * @author  Peter Wall
  * @param   <R>     the pipeline result type
  */
-public class Base64Encoder<R> extends AbstractIntPipeline<R> {
+public class Base64Encoder<R> extends ErrorStrategyBase<R> {
 
-    enum State { FIRST, SECOND, THIRD }
+    public enum State { FIRST, SECOND, THIRD }
 
-    private static final byte[] encodingArrayMain = new byte[64];
-    private static final byte[] encodingArrayURL = new byte[64];
+    public static final byte[] encodingArrayMain = new byte[64];
+    public static final byte[] encodingArrayURL = new byte[64];
 
     static {
         for (int i = 0; i < 26; i++) {
@@ -69,19 +70,31 @@ public class Base64Encoder<R> extends AbstractIntPipeline<R> {
     private State state;
     private int saved;
 
-    public Base64Encoder(IntAcceptor<? extends R> downstream, boolean urlSafe) {
-        super(downstream);
+    public Base64Encoder(IntAcceptor<? extends R> downstream, boolean urlSafe, ErrorStrategy errorStrategy) {
+        super(downstream, errorStrategy);
         state = State.FIRST;
         encodingArray = urlSafe ? encodingArrayURL : encodingArrayMain;
         this.urlSafe = urlSafe;
     }
 
+    public Base64Encoder(IntAcceptor<? extends R> downstream, ErrorStrategy errorStrategy) {
+        this(downstream, false, errorStrategy);
+    }
+
+    public Base64Encoder(IntAcceptor<? extends R> downstream, boolean urlSafe) {
+        this(downstream, urlSafe, ErrorStrategy.DEFAULT);
+    }
+
     public Base64Encoder(IntAcceptor<? extends R> downstream) {
-        this(downstream, false);
+        this(downstream, false, ErrorStrategy.DEFAULT);
     }
 
     @Override
     public void acceptInt(int value) {
+        if (value > 0xFF) {
+            handleError(value);
+            return;
+        }
         switch (state) {
             case FIRST:
                 emit(encodingArray[(value >> 2) & 0x3F]);
@@ -102,7 +115,7 @@ public class Base64Encoder<R> extends AbstractIntPipeline<R> {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         switch (state) {
             case FIRST:
                 break;

@@ -1,8 +1,8 @@
 /*
- * @(#) URIEncoder.java
+ * @(#) ErrorStrategyBase.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021, 2022, 2023 Peter Wall
+ * Copyright (c) 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,46 +23,32 @@
  * SOFTWARE.
  */
 
-package net.pwall.pipeline.uri;
+package net.pwall.pipeline.codec;
 
+import net.pwall.pipeline.AbstractIntPipeline;
 import net.pwall.pipeline.IntAcceptor;
-import net.pwall.pipeline.codec.EncoderBase;
-import static net.pwall.util.IntOutput.output2Hex;
 
 /**
- * URI encoder - encode text using URI percent-encoding.
+ * Base class for encoder and decoder classes to implement the error strategy.
  *
  * @author  Peter Wall
  * @param   <R>     the pipeline result type
  */
-public class URIEncoder<R> extends EncoderBase<R> {
+public abstract class ErrorStrategyBase<R> extends AbstractIntPipeline<R> {
 
-    private final boolean encodeSpaceAsPlus;
+    private final ErrorStrategy errorStrategy;
 
-    public URIEncoder(IntAcceptor<? extends R> downstream, boolean encodeSpaceAsPlus) {
+    protected ErrorStrategyBase(IntAcceptor<? extends R> downstream, ErrorStrategy errorStrategy) {
         super(downstream);
-        this.encodeSpaceAsPlus = encodeSpaceAsPlus;
+        this.errorStrategy = errorStrategy;
     }
 
-    public URIEncoder(IntAcceptor<? extends R> downstream) {
-        this(downstream, false);
-    }
-
-    @Override
-    public void acceptInt(int value) {
-        if (value == ' ' && encodeSpaceAsPlus)
-            emit('+');
-        else if (!isUnreservedURI(value)) {
-            emit('%');
-            output2Hex(value, this::emit);
-        }
-        else
-            emit(value);
-    }
-
-    public static boolean isUnreservedURI(int ch) {
-        return ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z' || ch >= '0' && ch <= '9' ||
-                ch == '-' || ch == '.' || ch == '_' || ch == '~';
+    protected void handleError(int value) {
+        if (errorStrategy instanceof ErrorStrategy.ThrowException)
+            throw new EncoderException(value);
+        if (errorStrategy instanceof ErrorStrategy.Substitute)
+            emit(((ErrorStrategy.Substitute)errorStrategy).getSubstitute());
+        // IGNORE will simply drop through
     }
 
 }

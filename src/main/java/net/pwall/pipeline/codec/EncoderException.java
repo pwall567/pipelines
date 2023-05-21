@@ -1,8 +1,8 @@
 /*
- * @(#) ASCII_CodePoint.java
+ * @(#) EncoderException.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020, 2023 Peter Wall
+ * Copyright (c) 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,28 +25,32 @@
 
 package net.pwall.pipeline.codec;
 
-import net.pwall.pipeline.AbstractIntPipeline;
-import net.pwall.pipeline.IntAcceptor;
-import net.pwall.pipeline.IntPipeline;
+import java.io.IOException;
 
-/**
- * A decoder {@link IntPipeline} to convert ASCII encoding to Unicode code points.
- *
- * @author  Peter Wall
- * @param   <R>     the pipeline result type
- */
-public class ASCII_CodePoint<R> extends AbstractIntPipeline<R> {
+import net.pwall.util.IntOutput;
 
-    public ASCII_CodePoint(IntAcceptor<? extends R> downstream) {
-        super(downstream);
+public class EncoderException extends RuntimeException {
+
+    private final int errorValue;
+
+    public EncoderException(int errorValue) {
+        super(createMessage(errorValue));
+        this.errorValue = errorValue;
     }
 
-    @Override
-    public void acceptInt(int value) {
-        if (value >= 0 && value <= 0x7F)
-            emit(value);
-        else
-            throw new IllegalArgumentException("Illegal character");
+    public int getErrorValue() {
+        return errorValue;
+    }
+
+    private static String createMessage(int errorValue) {
+        StringBuilder sb = new StringBuilder("Illegal value 0x");
+        try {
+            IntOutput.appendIntHex(sb, errorValue);
+        }
+        catch (IOException e) {
+            // can't happen
+        }
+        return sb.toString();
     }
 
 }

@@ -25,20 +25,24 @@
 
 package net.pwall.pipeline.codec;
 
-import net.pwall.pipeline.AbstractIntPipeline;
 import net.pwall.pipeline.IntAcceptor;
 import net.pwall.pipeline.IntPipeline;
 
 /**
- * An encoder {@link IntPipeline} to convert Unicode code points to UTF-8.
+ * An encoder {@link IntPipeline} to convert Unicode code points to UTF-8.  Note that this encoder will convert
+ * surrogate characters to 3-byte sequences without reporting an error, so it may be used as a UTF-16 to UTF-8 encoder.
  *
  * @author  Peter Wall
  * @param   <R>     the pipeline result type
  */
-public class CodePoint_UTF8<R> extends AbstractIntPipeline<R> {
+public class CodePoint_UTF8<R> extends ErrorStrategyBase<R> {
+
+    public CodePoint_UTF8(IntAcceptor<? extends R> downstream, ErrorStrategy errorStrategy) {
+        super(downstream, errorStrategy);
+    }
 
     public CodePoint_UTF8(IntAcceptor<? extends R> downstream) {
-        super(downstream);
+        super(downstream, ErrorStrategy.THROW_EXCEPTION);
     }
 
     @Override
@@ -61,7 +65,7 @@ public class CodePoint_UTF8<R> extends AbstractIntPipeline<R> {
             emit(0x80 | (value & 0x3F));
         }
         else
-            throw new IllegalArgumentException("Illegal code point");
+            handleError(value);
     }
 
 }

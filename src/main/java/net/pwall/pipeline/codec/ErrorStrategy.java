@@ -1,8 +1,8 @@
 /*
- * @(#) CodePoint_ISO8859_15.java
+ * @(#) ErrorStrategy.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,12 +25,38 @@
 
 package net.pwall.pipeline.codec;
 
-import net.pwall.pipeline.IntAcceptor;
+/**
+ * The error strategy to be adopted when invalid characters or bytes are encountered in the encoding or decoding data
+ * stream.
+ *
+ * @author  Peter Wall
+ */
+public interface ErrorStrategy {
 
-public class CodePoint_ISO8859_15<R> extends EncodingPipeline<R> {
+    ErrorStrategy THROW_EXCEPTION = new ThrowException();
+    ErrorStrategy IGNORE = new Ignore();
+    ErrorStrategy DEFAULT = THROW_EXCEPTION;
 
-    public CodePoint_ISO8859_15(IntAcceptor<? extends R> downstream) {
-        super(downstream, createReverseTable(ISO8859_15_CodePoint.table));
+    class ThrowException implements ErrorStrategy {}
+
+    class Ignore implements ErrorStrategy {}
+
+    class Substitute implements ErrorStrategy {
+
+        private final int substitute;
+
+        public Substitute(int substitute) {
+            this.substitute = substitute;
+        }
+
+        public Substitute() {
+            this(0xBF);
+        }
+
+        public int getSubstitute() {
+            return substitute;
+        }
+
     }
 
 }

@@ -25,7 +25,6 @@
 
 package net.pwall.pipeline.codec;
 
-import net.pwall.pipeline.AbstractIntPipeline;
 import net.pwall.pipeline.IntAcceptor;
 import net.pwall.pipeline.IntPipeline;
 
@@ -35,12 +34,12 @@ import net.pwall.pipeline.IntPipeline;
  * @author  Peter Wall
  * @param   <R>     the pipeline result type
  */
-public class DecodingPipeline<R> extends AbstractIntPipeline<R> {
+public class DecodingPipeline<R> extends ErrorStrategyBase<R> {
 
     private final String table;
 
-    public DecodingPipeline(IntAcceptor<? extends R> downstream, String table) {
-        super(downstream);
+    public DecodingPipeline(IntAcceptor<? extends R> downstream, ErrorStrategy errorStrategy, String table) {
+        super(downstream, errorStrategy);
         this.table = table;
     }
 
@@ -51,7 +50,7 @@ public class DecodingPipeline<R> extends AbstractIntPipeline<R> {
         else if (value >= 0x80 && value <= 0xFF)
             emit(table.charAt(value - 0x80));
         else
-            throw new IllegalArgumentException("Illegal character");
+            handleError(value);
     }
 
 }

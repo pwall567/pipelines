@@ -1,8 +1,8 @@
 /*
- * @(#) CodePoint_ISO8859_1.java
+ * @(#) UTF16_ISO8859_1.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021 Peter Wall
+ * Copyright (c) 2021, 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,11 +26,22 @@
 package net.pwall.pipeline.codec;
 
 import net.pwall.pipeline.IntAcceptor;
+import net.pwall.pipeline.IntPipeline;
 
-public class CodePoint_ISO8859_1<R> extends EncodingPipeline<R> {
+/**
+ * An encoder {@link IntPipeline} to convert UTF-16 data to ISO-8859-1 encoding.
+ *
+ * @author  Peter Wall
+ * @param   <R>     the pipeline result type
+ */
+public class UTF16_ISO8859_1<R> extends EncodingPipeline<R> {
 
-    public CodePoint_ISO8859_1(IntAcceptor<? extends R> downstream) {
-        super(downstream, createReverseTable(ISO8859_1_CodePoint.table));
+    public UTF16_ISO8859_1(IntAcceptor<? extends R> downstream, ErrorStrategy errorStrategy) {
+        super(downstream, errorStrategy, createReverseTable(ISO8859_1_UTF16.table));
+    }
+
+    public UTF16_ISO8859_1(IntAcceptor<? extends R> downstream) {
+        this(downstream, ErrorStrategy.THROW_EXCEPTION);
     }
 
 }

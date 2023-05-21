@@ -27,7 +27,14 @@ package net.pwall.pipeline.codec;
 
 import net.pwall.pipeline.AbstractIntPipeline;
 import net.pwall.pipeline.IntAcceptor;
+import net.pwall.pipeline.IntPipeline;
 
+/**
+ * A converter {@link IntPipeline} to convert UTF-16LE encoding to UTF-16 encoding.
+ *
+ * @author  Peter Wall
+ * @param   <R>     the pipeline result type
+ */
 public class UTF16LE_UTF16<R> extends AbstractIntPipeline<R> {
 
     private boolean midCharacter;

@@ -124,7 +124,7 @@ public class DynamicReaderTest {
     private static byte[] convertToWindows1252(String str) throws Exception {
         System.out.println(str);
         CharSequencePipeline<byte[]> win1252 =
-                new CharSequencePipeline<>(new CodePoint_Windows1252<>(new ByteArrayAcceptor()));
+                new CharSequencePipeline<>(new UTF16_Windows1252<>(new ByteArrayAcceptor()));
         win1252.accept(str);
         win1252.close();
         return win1252.getResult();

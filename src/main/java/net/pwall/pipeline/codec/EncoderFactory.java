@@ -1,8 +1,8 @@
 /*
- * @(#) DecoderFactory.java
+ * @(#) EncoderFactory.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020, 2023 Peter Wall
+ * Copyright (c) 2023 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,20 +25,20 @@
 
 package net.pwall.pipeline.codec;
 
-import java.nio.charset.Charset;
-
 import net.pwall.pipeline.AbstractIntPipeline;
 import net.pwall.pipeline.IntAcceptor;
 
+import java.nio.charset.Charset;
+
 /**
- * Factory class to get decoder pipeline objects for a given encoding.
+ * Factory class to get encoder pipeline objects for a given encoding.
  *
  * @author  Peter Wall
  */
-public class DecoderFactory {
+public class EncoderFactory {
 
     /**
-     * Get a decoder pipeline for the given character set name.
+     * Get an encoder pipeline for the given character set name.
      *
      * @param   charsetName     the character set name
      * @param   downstream      the downstream {@link IntAcceptor}
@@ -46,40 +46,43 @@ public class DecoderFactory {
      * @param   <R>             the pipeline result type
      * @return  a pipeline (with UTF-8 as the default)
      */
-    public static <R> AbstractIntPipeline<R> getDecoder(
+    public static <R> AbstractIntPipeline<R> getEncoder(
             String charsetName,
             IntAcceptor<? extends R> downstream,
             ErrorStrategy errorStrategy
     ) {
         if (charsetName.equalsIgnoreCase("windows-1252"))
-            return new Windows1252_UTF16<>(downstream, errorStrategy);
+            return new UTF16_Windows1252<>(downstream, errorStrategy);
 
         if (charsetName.equalsIgnoreCase("ISO-8859-1"))
-            return new ISO8859_1_UTF16<>(downstream, errorStrategy);
+            return new UTF16_ISO8859_1<>(downstream, errorStrategy);
 
         if (charsetName.equalsIgnoreCase("ISO-8859-15"))
-            return new ISO8859_15_UTF16<>(downstream, errorStrategy);
+            return new UTF16_ISO8859_15<>(downstream, errorStrategy);
 
         if (charsetName.equalsIgnoreCase("US-ASCII"))
-            return new ASCII_UTF16<>(downstream, errorStrategy);
+            return new UTF16_ASCII<>(downstream, errorStrategy);
 
-        return new UTF8_UTF16<>(downstream, errorStrategy);
+        return new CodePoint_UTF8<>(downstream, errorStrategy);
     }
 
     /**
-     * Get a decoder pipeline for the given character set name.
+     * Get an encoder pipeline for the given character set name.
      *
      * @param   charsetName     the character set name
      * @param   downstream      the downstream {@link IntAcceptor}
      * @param   <R>             the pipeline result type
      * @return  a pipeline (with UTF-8 as the default)
      */
-    public static <R> AbstractIntPipeline<R> getDecoder(String charsetName, IntAcceptor<? extends R> downstream) {
-        return getDecoder(charsetName, downstream, ErrorStrategy.THROW_EXCEPTION);
+    public static <R> AbstractIntPipeline<R> getEncoder(
+            String charsetName,
+            IntAcceptor<? extends R> downstream
+    ) {
+        return getEncoder(charsetName, downstream, ErrorStrategy.DEFAULT);
     }
 
     /**
-     * Get a decoder pipeline for the given {@link Charset}.
+     * Get an encoder pipeline for the given {@link Charset}.
      *
      * @param   charset         the character set name
      * @param   downstream      the downstream {@link IntAcceptor}
@@ -87,24 +90,27 @@ public class DecoderFactory {
      * @param   <R>             the pipeline result type
      * @return  a pipeline (with UTF-8 as the default)
      */
-    public static <R> AbstractIntPipeline<R> getDecoder(
+    public static <R> AbstractIntPipeline<R> getEncoder(
             Charset charset,
             IntAcceptor<? extends R> downstream,
             ErrorStrategy errorStrategy
     ) {
-        return getDecoder(charset.name(), downstream, errorStrategy);
+        return getEncoder(charset.name(), downstream, errorStrategy);
     }
 
     /**
-     * Get a decoder pipeline for the given {@link Charset}.
+     * Get an encoder pipeline for the given {@link Charset}.
      *
      * @param   charset         the character set name
      * @param   downstream      the downstream {@link IntAcceptor}
      * @param   <R>             the pipeline result type
      * @return  a pipeline (with UTF-8 as the default)
      */
-    public static <R> AbstractIntPipeline<R> getDecoder(Charset charset, IntAcceptor<? extends R> downstream) {
-        return getDecoder(charset.name(), downstream, ErrorStrategy.THROW_EXCEPTION);
+    public static <R> AbstractIntPipeline<R> getEncoder(
+            Charset charset,
+            IntAcceptor<? extends R> downstream
+    ) {
+        return getEncoder(charset.name(), downstream, ErrorStrategy.DEFAULT);
     }
 
 }

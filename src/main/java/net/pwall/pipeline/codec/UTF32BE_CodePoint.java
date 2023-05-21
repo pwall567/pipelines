@@ -27,7 +27,14 @@ package net.pwall.pipeline.codec;
 
 import net.pwall.pipeline.AbstractIntPipeline;
 import net.pwall.pipeline.IntAcceptor;
+import net.pwall.pipeline.IntPipeline;
 
+/**
+ * A decoder {@link IntPipeline} to convert UTF-32BE encoding to Unicode code points.
+ *
+ * @author  Peter Wall
+ * @param   <R>     the pipeline result type
+ */
 public class UTF32BE_CodePoint<R> extends AbstractIntPipeline<R> {
 
     private int index;

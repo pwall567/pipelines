@@ -24,9 +24,11 @@
  */
 
 /**
- * <h1>Unicode code point encoding and decoding classes</h1>
+ * <h1>UTF-16 encoding and decoding classes</h1>
  *
- * <p>Classes that encode Unicode code points to a byte encodings, or decode such encodings to Unicode.</p>
+ * <p>Classes that encode UTF-16 data (<i>e.g.</i> Java strings) to a byte encoding, or decode such encodings to
+ * UTF-16.
+ * Also included are classes to encode / decode to or from Unicode code points.</p>
  *
  * <p>These classes all use the {@link net.pwall.pipeline.IntPipeline IntPipeline} interface, which includes methods for
  * accepting characters (as {@code int}) and emitting converted characters (one-to-one, one-to-many or many-to one).</p>

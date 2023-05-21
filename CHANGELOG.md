@@ -2,6 +2,15 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [5.0] - 2023-05-19
+### Added
+- `ErrorStrategy`, `ErrorStrategyBase`, `EncoderFactory`: new classes
+### Changed
+- `codec` classes: added error handling using `ErrorStrategy`
+- `codec` classes: renamed classes to reflect the fact that encoding and decoding primarily uses UTF-16
+  (breaking change)
+- `URIEncoder`, `SchemaURIEncoder`: changed constructor parameter order (also breaking change)
+
 ## [4.1] - 2023-05-07
 ### Added
 - `Base64Encoder`, `Base64Decoder`: new classes
