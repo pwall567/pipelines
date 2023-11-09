@@ -2,6 +2,10 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [5.1] - 2023-11-10
+### Changed
+- `pom.xml`: updated dependency and plugin versions
+
 ## [5.0] - 2023-05-19
 ### Added
 - `ErrorStrategy`, `ErrorStrategyBase`, `EncoderFactory`: new classes

@@ -235,25 +235,25 @@ Of course, all of this is also accessible from Kotlin:
 
 ## Dependency Specification
 
-The latest version of the library is 5.0, and it may be obtained from the Maven Central repository.
+The latest version of the library is 5.1, and it may be obtained from the Maven Central repository.
 
 ### Maven
 ```xml
     <dependency>
       <groupId>net.pwall.util</groupId>
       <artifactId>pipelines</artifactId>
-      <version>5.0</version>
+      <version>5.1</version>
     </dependency>
 ```
 ### Gradle
 ```groovy
-    implementation 'net.pwall.util:pipelines:5.0'
+    implementation 'net.pwall.util:pipelines:5.1'
 ```
 ### Gradle (kts)
 ```kotlin
-    implementation("net.pwall.util:pipelines:5.0")
+    implementation("net.pwall.util:pipelines:5.1")
 ```
 
 Peter Wall
 
-2023-05-19
+2023-11-10
