@@ -2,6 +2,10 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [6.1] - 2025-10-30
+### Changed
+- `HTMLEncoder`: changed encoder to pass through NL, CR, HT and BS unmodified
+
 ## [6.0] - 2025-01-29
 ### Added
 - `build.yml`, `deploy.yml`: converted project to GitHub Actions

@@ -223,7 +223,7 @@ public class HTMLEncoder<R> extends EncoderBase<R> {
             emit("&lt;");
         else if (value == '>')
             emit("&gt;");
-        else if (value >= ' ' && value < 0x7F)
+        else if (value >= ' ' && value < 0x7F || value == '\n' || value == '\t' || value == '\r' || value == '\b')
             emit(value);
         else if (value >= 0xA0 && value <= 0xFF) {
             emit('&');

@@ -73,4 +73,11 @@ public class HTMLEncoderTest {
         assertEquals("&#xFEFF;BOM &#x2E19; &#x20A4;", pipeline2.getResult());
     }
 
+    @Test
+    public void shouldEncodePlainStringWithNewlineTabEtc() {
+        IntPipeline<String> pipeline1 = new HTMLEncoder<>(new StringAcceptor());
+        pipeline1.accept("alpha\nbeta\rgamma\tdelta");
+        assertEquals("alpha\nbeta\rgamma\tdelta", pipeline1.getResult());
+    }
+
 }

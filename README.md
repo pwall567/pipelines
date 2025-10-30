@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/pwall567/pipelines/actions/workflows/build.yml/badge.svg)](https://github.com/pwall567/pipelines/actions/workflows/build.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Maven Central](https://img.shields.io/maven-central/v/io.jstuff/pipelines?label=Maven%20Central)](https://search.maven.org/search?q=g:%22io.jstuff%22%20AND%20a:%22pipelines%22)
+[![Maven Central](https://img.shields.io/maven-central/v/io.jstuff/pipelines?label=Maven%20Central)](https://central.sonatype.com/artifact/io.jstuff/pipelines)
 
 Pipeline library for Java.
 
@@ -235,25 +235,25 @@ Of course, all of this is also accessible from Kotlin:
 
 ## Dependency Specification
 
-The latest version of the library is 6.0, and it may be obtained from the Maven Central repository.
+The latest version of the library is 6.1, and it may be obtained from the Maven Central repository.
 
 ### Maven
 ```xml
     <dependency>
       <groupId>io.jstuff</groupId>
       <artifactId>pipelines</artifactId>
-      <version>6.0</version>
+      <version>6.1</version>
     </dependency>
 ```
 ### Gradle
 ```groovy
-    implementation 'io.jstuff:pipelines:6.0'
+    implementation 'io.jstuff:pipelines:6.1'
 ```
 ### Gradle (kts)
 ```kotlin
-    implementation("io.jstuff:pipelines:6.0")
+    implementation("io.jstuff:pipelines:6.1")
 ```
 
 Peter Wall
 
-2025-01-29
+2025-10-30
