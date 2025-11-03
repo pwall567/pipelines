@@ -6,8 +6,8 @@
 
 Pipeline library for Java.
 
-This library enables the construction of "pipelines", in which data (frequently in the form of `int` values) is pumped
-in at one end and values are emitted at the other.
+This library enables the construction of &ldquo;pipelines&rdquo;, in which data (frequently in the form of `int` values)
+is pumped in at one end and values are emitted at the other.
 The conversion may be one-to-one, one-to-many or many-to-one.
 
 A frequent use is for character encoding (conversion of bytes to characters and _vice versa_) and several classes are
@@ -48,8 +48,8 @@ The classes and interfaces use the following naming convention for their paramet
 
 - `<A>`: the type that the class/interface accepts
 - `<E>`: the type that the class/interface emits
-- `<R>`: the "result" type (the pipeline may have a result type which gets propagated to the first element of the
-pipeline; instances that don't need a result can use `Void` &ndash; `Unit` in Kotlin)
+- `<R>`: the &ldquo;result&rdquo; type (the pipeline may have a result type which gets propagated to the first element
+of the pipeline; instances that don&rsquo;t need a result can use `Void` &ndash; `Unit` in Kotlin)
 
 ### Acceptor interface
 
@@ -109,7 +109,8 @@ interface.
 | `UTF8_UTF16`        | UTF-8               | UTF-16              |
 
 Unicode code points are 32-bit quantities containing the full range of Unicode values; UTF-16 refers to the 16-bit
-version of Unicode, with pairs of surrogate characters representing characters outside the "Basic Multilingual Plane".
+version of Unicode, with pairs of surrogate characters representing characters outside the &ldquo;Basic Multilingual
+Plane&rdquo;.
 Because Java mostly works with 16-bit characters, the `UTF-8_UTF16` decoder will generally be more useful for decoding
 streams of UTF-8 data.
 
@@ -150,16 +151,19 @@ To simplify the use of `DynamicDecoder`, `DynamicReader` implements the `Reader`
 
 ## Escaping Strings
 
-The library also includes functions for "escaping" strings for use in HTML, XML _etc_.
+The library also includes functions for &ldquo;escaping&rdquo; strings for use in HTML, XML _etc_.
 The following pipeline classes are available, all of them taking Unicode characters and emitting a sanitised form of the
-input:
+input (but note that URIs should be piped through a UTF8 encoder before URI encoding):
 
 - `HTMLEncoder`: encodes `<` as `&amp;lt;`, `&amp;` as `&amp;amp;` _etc._
 - `XMLEncoder`: as above, but for the more limited set of XML escaped characters
 - `URIEncoder`: encodes special characters, _e.g._ `&amp;` as `%26`, for use in a URI
 - `SchemaURIEncoder`: as above, but allows `$` to pass through unencoded (for encoding JSON Schema URI fragments)
+- `FullURIEncoder`: as above, but allows URI syntax characters (&ldquo;`:`&rdquo;, &ldquo;`/`&rdquo; _etc._) to pass
+  through unencoded
 
-And the following classes perform the reverse function, taking the "escaped" form and converting back to the original:
+And the following classes perform the reverse function, taking the &ldquo;escaped&rdquo; form and converting back to the
+original:
 
 - `HTMLDecoder`
 - `XMLDecoder`
@@ -235,25 +239,25 @@ Of course, all of this is also accessible from Kotlin:
 
 ## Dependency Specification
 
-The latest version of the library is 6.1, and it may be obtained from the Maven Central repository.
+The latest version of the library is 6.2, and it may be obtained from the Maven Central repository.
 
 ### Maven
 ```xml
     <dependency>
       <groupId>io.jstuff</groupId>
       <artifactId>pipelines</artifactId>
-      <version>6.1</version>
+      <version>6.2</version>
     </dependency>
 ```
 ### Gradle
 ```groovy
-    implementation 'io.jstuff:pipelines:6.1'
+    implementation 'io.jstuff:pipelines:6.2'
 ```
 ### Gradle (kts)
 ```kotlin
-    implementation("io.jstuff:pipelines:6.1")
+    implementation("io.jstuff:pipelines:6.2")
 ```
 
 Peter Wall
 
-2025-10-30
+2025-11-03

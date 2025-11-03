@@ -2,6 +2,10 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [6.2] - 2025-11-03
+### Added
+- `FullURIEncoder`: encodes full URI (doesn't escape :, / etc.)
+
 ## [6.1] - 2025-10-30
 ### Changed
 - `HTMLEncoder`: changed encoder to pass through NL, CR, HT and BS unmodified

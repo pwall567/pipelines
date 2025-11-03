@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>pipelines</artifactId>
-  <version>6.1</version>
+  <version>6.2</version>
   <name>Pipelines Library</name>
   <description>Pipelines Library for Java</description>
   <packaging>jar</packaging>
