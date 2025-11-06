@@ -165,9 +165,9 @@ The library also includes functions for &ldquo;escaping&rdquo; strings for use i
 The following pipeline classes are available, all of them taking Unicode characters and emitting a sanitised form of the
 input (but note that URIs should be piped through a UTF8 encoder before URI encoding):
 
-- `HTMLEncoder`: encodes `<` as `&amp;lt;`, `&amp;` as `&amp;amp;` _etc._
+- `HTMLEncoder`: encodes `<` as `&lt;`, `&` as `&amp;` _etc._
 - `XMLEncoder`: as above, but for the more limited set of XML escaped characters
-- `URIEncoder`: encodes special characters, _e.g._ `&amp;` as `%26`, for use in a URI
+- `URIEncoder`: encodes special characters, _e.g._ `&` as `%26`, for use in a URI
 - `SchemaURIEncoder`: as above, but allows `$` to pass through unencoded (for encoding JSON Schema URI fragments)
 - `FullURIEncoder`: as above, but allows URI syntax characters (&ldquo;`:`&rdquo;, &ldquo;`/`&rdquo; _etc._) to pass
   through unencoded
