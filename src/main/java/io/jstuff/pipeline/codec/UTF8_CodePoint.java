@@ -2,7 +2,7 @@
  * @(#) UTF8_CodePoint.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020, 2021, 2023 Peter Wall
+ * Copyright (c) 2020, 2021, 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,10 +25,12 @@
 
 package io.jstuff.pipeline.codec;
 
+import java.util.List;
 import java.util.function.IntConsumer;
 
 import io.jstuff.pipeline.IntAcceptor;
 import io.jstuff.pipeline.IntPipeline;
+import io.jstuff.pipeline.ListIntAcceptor;
 
 /**
  * A decoder {@link IntPipeline} to convert UTF-8 to Unicode code points.
@@ -36,7 +38,7 @@ import io.jstuff.pipeline.IntPipeline;
  * @author  Peter Wall
  * @param   <R>     the pipeline result type
  */
-public class UTF8_CodePoint<R> extends ErrorStrategyBase<R> {
+public class UTF8_CodePoint<R> extends ErrorHandlingIntPipeline<R> {
 
     private final IntConsumer threeByte1 = i -> intermediate(i, this::terminal);
     private final IntConsumer fourByte2 = i -> intermediate(i, this::terminal);
@@ -101,6 +103,30 @@ public class UTF8_CodePoint<R> extends ErrorStrategyBase<R> {
         else
             handleError(i);
         state = normal;
+    }
+
+    /**
+     * Convert a byte array to a {@code List<Integer>} using the {@code UTF8_CodePoint} converter.
+     *
+     * @param   input           the input as a byte array
+     * @param   errorStrategy   the {@link ErrorStrategy}
+     * @return                  the converted data as a {@code List<Integer>}
+     */
+    public static List<Integer> convert(byte[] input, ErrorStrategy errorStrategy) {
+        IntPipeline<List<Integer>> pipe = new UTF8_CodePoint<>(new ListIntAcceptor(), errorStrategy);
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
+    }
+
+    /**
+     * Convert a byte array to a {@code List<Integer>} using the {@code UTF8_CodePoint} converter.
+     *
+     * @param   input   the input as a byte array
+     * @return          the converted data as a {@code List<Integer>}
+     */
+    public static List<Integer> convert(byte[] input) {
+        return convert(input, ErrorStrategy.THROW_EXCEPTION);
     }
 
 }

@@ -25,10 +25,14 @@
 
 package io.jstuff.pipeline.uri;
 
+import java.util.List;
+
 import io.jstuff.pipeline.IntPipeline;
 import io.jstuff.pipeline.StringAcceptor;
-import org.junit.Test;
+import io.jstuff.pipeline.codec.CodePoint_UTF16;
+import io.jstuff.pipeline.codec.UTF16_CodePoint;
 
+import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class FullURIEncoderTest {
@@ -45,6 +49,20 @@ public class FullURIEncoderTest {
         IntPipeline<String> pipeline1 = new FullURIEncoder<>(new StringAcceptor());
         pipeline1.accept("https://example.com/?q=\"test data 100%\"");
         assertEquals("https://example.com/?q=%22test%20data%20100%25%22", pipeline1.getResult());
+    }
+
+    @Test
+    public void shouldConvertStringUsingConvertFunction() {
+        String input = "https://example.com/?q=\"test data 100%\"";
+        assertEquals("https://example.com/?q=%22test%20data%20100%25%22", FullURIEncoder.convert(input));
+    }
+
+    @Test
+    public void shouldConvertListUsingConvertFunction() {
+        String input = "https://example.com/?q=\"test data 100%\"";
+        List<Integer> inputList = UTF16_CodePoint.convert(input);
+        List<Integer> outputList = FullURIEncoder.convert(inputList);
+        assertEquals("https://example.com/?q=%22test%20data%20100%25%22", CodePoint_UTF16.convert(outputList));
     }
 
 }

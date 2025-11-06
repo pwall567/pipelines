@@ -25,7 +25,12 @@
 
 package io.jstuff.pipeline.xml;
 
+import java.util.List;
+
 import io.jstuff.pipeline.IntAcceptor;
+import io.jstuff.pipeline.IntPipeline;
+import io.jstuff.pipeline.ListIntAcceptor;
+import io.jstuff.pipeline.StringAcceptor;
 import io.jstuff.pipeline.codec.EncoderBase;
 
 /**
@@ -59,6 +64,32 @@ public class XMLEncoder<R> extends EncoderBase<R> {
             emitHex(value);
             emit(';');
         }
+    }
+
+    /**
+     * Convert a {@code String} using the {@code XMLEncoder} converter.
+     *
+     * @param   input   the input as a {@code String}
+     * @return          the converted data as a {@code String}
+     */
+    public static String convert(String input) {
+        IntPipeline<String> pipe = new XMLEncoder<>(new StringAcceptor());
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
+    }
+
+    /**
+     * Convert a {@code List<Integer>} (Unicode code points) using the {@code XMLEncoder} converter.
+     *
+     * @param   input   the input as a {@code String}
+     * @return          the converted data as a {@code String}
+     */
+    public static List<Integer> convert(List<Integer> input) {
+        IntPipeline<List<Integer>> pipe = new XMLEncoder<>(new ListIntAcceptor());
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
     }
 
 }

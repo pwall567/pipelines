@@ -2,7 +2,7 @@
  * @(#) IntAcceptor.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020, 2023 Peter Wall
+ * Copyright (c) 2020, 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,10 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.function.IntConsumer;
+import java.util.stream.Stream;
 
 /**
  * An acceptor that takes an integer value.  Includes default functions to cater for the common cases of strings or byte
@@ -47,6 +50,44 @@ public interface IntAcceptor<R> extends BaseAcceptor<R>, IntConsumer {
      * @param   value       the value to be processed
      */
     void accept(int value);
+
+    /**
+     * Accept a set of values from an {@link Iterator}.
+     *
+     * @param   iterator    the {@link Iterator}
+     */
+    default void accept(Iterator<Integer> iterator) {
+        while (iterator.hasNext())
+            accept(iterator.next());
+    }
+
+    /**
+     * Accept a set of values from an {@link Enumeration}.
+     *
+     * @param   enumeration the {@link Enumeration}
+     */
+    default void accept(Enumeration<Integer> enumeration) {
+        while (enumeration.hasMoreElements())
+            accept(enumeration.nextElement());
+    }
+
+    /**
+     * Accept a set of values from an {@link Iterable}.
+     *
+     * @param   iterable    the {@link Iterable}
+     */
+    default void accept(Iterable<Integer> iterable) {
+        accept(iterable.iterator());
+    }
+
+    /**
+     * Accept a set of values from a {@link Stream}.
+     *
+     * @param   stream      the {@link Stream}
+     */
+    default void accept(Stream<Integer> stream) {
+        accept(stream.iterator());
+    }
 
     /**
      * Accept a {@link CharSequence} (e.g. {@link String}) as a sequence of integer values.

@@ -2,7 +2,7 @@
  * @(#) HTMLDecoderTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021, 2023 Peter Wall
+ * Copyright (c) 2021, 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,11 +25,15 @@
 
 package io.jstuff.pipeline.html;
 
+import java.util.List;
+
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 import io.jstuff.pipeline.IntPipeline;
 import io.jstuff.pipeline.StringAcceptor;
+import io.jstuff.pipeline.codec.CodePoint_UTF16;
+import io.jstuff.pipeline.codec.UTF16_CodePoint;
 
 public class HTMLDecoderTest {
 
@@ -71,6 +75,20 @@ public class HTMLDecoderTest {
         IntPipeline<String> pipeline2 = new HTMLDecoder<>(new StringAcceptor());
         pipeline2.accept("&#xFEFF;BOM &#x2E19; &#x20A4;");
         assertEquals("\uFEFFBOM \u2E19 \u20A4", pipeline2.getResult());
+    }
+
+    @Test
+    public void shouldConvertStringUsingConvertFunction() {
+        String input = "&lt;div class=&quot;test&quot;&gt;It's OK &amp;amp; working&lt;/div&gt;";
+        assertEquals("<div class=\"test\">It's OK &amp; working</div>", HTMLDecoder.convert(input));
+    }
+
+    @Test
+    public void shouldConvertListUsingConvertFunction() {
+        String input = "&lt;div class=&quot;test&quot;&gt;It's OK &amp;amp; working&lt;/div&gt;";
+        List<Integer> inputList = UTF16_CodePoint.convert(input);
+        List<Integer> outputList = HTMLDecoder.convert(inputList);
+        assertEquals("<div class=\"test\">It's OK &amp; working</div>", CodePoint_UTF16.convert(outputList));
     }
 
 }

@@ -2,7 +2,7 @@
  * @(#) SchemaURIEncoder.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2022, 2023 Peter Wall
+ * Copyright (c) 2022, 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,11 +25,15 @@
 
 package io.jstuff.pipeline.uri;
 
+import java.util.List;
+
 import static io.jstuff.util.IntOutput.output2Hex;
 
 import io.jstuff.pipeline.IntAcceptor;
+import io.jstuff.pipeline.IntPipeline;
+import io.jstuff.pipeline.ListIntAcceptor;
+import io.jstuff.pipeline.StringAcceptor;
 import io.jstuff.pipeline.codec.EncoderBase;
-import static io.jstuff.pipeline.uri.URIEncoder.isUnreservedURI;
 
 /**
  * URI encoder for use with JSON Schema URI fragment - encode text using URI percent-encoding, leaving dollar sign
@@ -55,12 +59,38 @@ public class SchemaURIEncoder<R> extends EncoderBase<R> {
     public void acceptInt(int value) {
         if (value == ' ' && encodeSpaceAsPlus)
             emit('+');
-        else if (!(isUnreservedURI(value) || value == '$')) {
+        else if (!(URIEncoder.isUnreservedURI(value) || value == '$')) {
             emit('%');
             output2Hex(value, this::emit);
         }
         else
             emit(value);
+    }
+
+    /**
+     * Convert a {@code String} using the {@code SchemaURIEncoder} converter.
+     *
+     * @param   input   the input as a {@code String}
+     * @return          the converted data as a {@code String}
+     */
+    public static String convert(String input) {
+        IntPipeline<String> pipe = new SchemaURIEncoder<>(new StringAcceptor());
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
+    }
+
+    /**
+     * Convert a {@code List<Integer>} (Unicode code points) using the {@code SchemaURIEncoder} converter.
+     *
+     * @param   input   the input as a {@code String}
+     * @return          the converted data as a {@code String}
+     */
+    public static List<Integer> convert(List<Integer> input) {
+        IntPipeline<List<Integer>> pipe = new SchemaURIEncoder<>(new ListIntAcceptor());
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
     }
 
 }

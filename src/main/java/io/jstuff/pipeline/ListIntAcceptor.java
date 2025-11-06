@@ -1,8 +1,8 @@
 /*
- * @(#) DecodingPipeline.java
+ * @(#) ListIntAcceptor.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020, 2023 Peter Wall
+ * Copyright (c) 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,34 +23,48 @@
  * SOFTWARE.
  */
 
-package io.jstuff.pipeline.codec;
+package io.jstuff.pipeline;
 
-import io.jstuff.pipeline.IntAcceptor;
-import io.jstuff.pipeline.IntPipeline;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
- * An {@link IntPipeline} to convert one-to-one mapping character encodings to Unicode code points.
+ * An {@link Acceptor} that creates a {@link List} from a sequence of integer values.  This can be useful as the last
+ * item in a pipeline that creates Unicode code points.
  *
  * @author  Peter Wall
- * @param   <R>     the pipeline result type
  */
-public class DecodingPipeline<R> extends ErrorHandlingIntPipeline<R> {
+public class ListIntAcceptor extends AbstractIntAcceptor<List<Integer>> {
 
-    private final String table;
+    public static final int DEFAULT_INITIAL_CAPACITY = 10;
 
-    public DecodingPipeline(IntAcceptor<? extends R> downstream, ErrorStrategy errorStrategy, String table) {
-        super(downstream, errorStrategy);
-        this.table = table;
+    private final List<Integer> list;
+
+    public ListIntAcceptor(int initialCapacity) {
+        list = new ArrayList<>(initialCapacity);
+    }
+
+    public ListIntAcceptor() {
+        this(DEFAULT_INITIAL_CAPACITY);
+    }
+
+    public ListIntAcceptor(List<Integer> list) {
+        this.list = list;
     }
 
     @Override
     public void acceptInt(int value) {
-        if (value >= 0 && value <= 0x7F)
-            emit(value);
-        else if (value >= 0x80 && value <= 0xFF)
-            emit(table.charAt(value - 0x80));
-        else
-            handleError(value);
+        list.add(value);
+    }
+
+    @Override
+    public List<Integer> getResult() {
+        return Collections.unmodifiableList(list);
+    }
+
+    public int getSize() {
+        return list.size();
     }
 
 }

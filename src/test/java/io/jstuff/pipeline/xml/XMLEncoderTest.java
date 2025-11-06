@@ -2,7 +2,7 @@
  * @(#) XMLEncoderTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021, 2023 Peter Wall
+ * Copyright (c) 2021, 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,11 +25,15 @@
 
 package io.jstuff.pipeline.xml;
 
+import java.util.List;
+
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 import io.jstuff.pipeline.IntPipeline;
 import io.jstuff.pipeline.StringAcceptor;
+import io.jstuff.pipeline.codec.CodePoint_UTF16;
+import io.jstuff.pipeline.codec.UTF16_CodePoint;
 
 public class XMLEncoderTest {
 
@@ -62,6 +66,20 @@ public class XMLEncoderTest {
         IntPipeline<String> pipeline2 = new XMLEncoder<>(new StringAcceptor());
         pipeline2.accept("<div>Even \u2014 more</div>");
         assertEquals("&lt;div&gt;Even &#x2014; more&lt;/div&gt;", pipeline2.getResult());
+    }
+
+    @Test
+    public void shouldConvertStringUsingConvertFunction() {
+        String input = "<div>\u00A1hol\u00E1!</div>";
+        assertEquals("&lt;div&gt;&#xA1;hol&#xE1;!&lt;/div&gt;", XMLEncoder.convert(input));
+    }
+
+    @Test
+    public void shouldConvertListUsingConvertFunction() {
+        String input = "<div>\u00A1hol\u00E1!</div>";
+        List<Integer> inputList = UTF16_CodePoint.convert(input);
+        List<Integer> outputList = XMLEncoder.convert(inputList);
+        assertEquals("&lt;div&gt;&#xA1;hol&#xE1;!&lt;/div&gt;", CodePoint_UTF16.convert(outputList));
     }
 
 }

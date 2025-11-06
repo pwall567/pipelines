@@ -2,7 +2,7 @@
  * @(#) UTF8CodePointTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020, 2021, 2023 Peter Wall
+ * Copyright (c) 2020, 2021, 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,18 +29,19 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
-import io.jstuff.pipeline.TestIntAcceptor;
+import io.jstuff.pipeline.ListIntAcceptor;
 
 public class UTF8CodePointTest {
 
     @Test
     public void shouldPassThroughSingleChar() {
-        UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new TestIntAcceptor());
+        UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new ListIntAcceptor());
         pipe.accept('A');
         assertTrue(pipe.isComplete());
         List<Integer> result = pipe.getResult();
@@ -50,7 +51,7 @@ public class UTF8CodePointTest {
 
     @Test
     public void shouldPassThroughSingleCharPlusTerminator() {
-        UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new TestIntAcceptor());
+        UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new ListIntAcceptor());
         pipe.accept('A');
         pipe.accept(-1);
         assertTrue(pipe.isComplete());
@@ -62,7 +63,7 @@ public class UTF8CodePointTest {
 
     @Test
     public void shouldPassThroughTwoByteChars() {
-        UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new TestIntAcceptor());
+        UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new ListIntAcceptor());
         pipe.accept(0xC2);
         assertFalse(pipe.isComplete());
         pipe.accept(0xA9);
@@ -77,7 +78,7 @@ public class UTF8CodePointTest {
 
     @Test
     public void shouldPassThroughThreeByteChars() {
-        UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new TestIntAcceptor());
+        UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new ListIntAcceptor());
         pipe.accept(0xE2);
         pipe.accept(0x80);
         pipe.accept(0x94);
@@ -89,7 +90,7 @@ public class UTF8CodePointTest {
 
     @Test
     public void shouldFailOnGetResultWhenPipelineNotComplete() {
-        UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new TestIntAcceptor());
+        UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new ListIntAcceptor());
         pipe.accept(0xE2);
         assertFalse(pipe.isComplete());
         IllegalStateException e = assertThrows(IllegalStateException.class, pipe::getResult);
@@ -107,7 +108,7 @@ public class UTF8CodePointTest {
         byteBuffer.put((byte)' ');
         byteBuffer.put((byte)'B');
         byteBuffer.flip();
-        UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new TestIntAcceptor());
+        UTF8_CodePoint<List<Integer>> pipe = new UTF8_CodePoint<>(new ListIntAcceptor());
         pipe.accept(byteBuffer);
         assertTrue(pipe.isComplete());
         List<Integer> result = pipe.getResult();
@@ -117,6 +118,18 @@ public class UTF8CodePointTest {
         assertEquals(Integer.valueOf(0x2014), result.get(2));
         assertEquals(Integer.valueOf(' '), result.get(3));
         assertEquals(Integer.valueOf('B'), result.get(4));
+    }
+
+    @Test
+    public void shouldConvertUsingConvertFunction() {
+        byte[] byteArray = new byte[] { 'A', 'B', 'C', (byte)0xC2, (byte)0xA9, (byte)0xC3, (byte)0xB7 };
+        List<Integer> result = UTF8_CodePoint.convert(byteArray);
+        assertEquals(5, result.size());
+        assertEquals('A', (int)result.get(0));
+        assertEquals('B', (int)result.get(1));
+        assertEquals('C', (int)result.get(2));
+        assertEquals(0xA9, (int)result.get(3));
+        assertEquals(0xF7, (int)result.get(4));
     }
 
 }

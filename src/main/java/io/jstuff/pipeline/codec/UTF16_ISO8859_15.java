@@ -2,7 +2,7 @@
  * @(#) UTF16_ISO8859_15.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021, 2023 Peter Wall
+ * Copyright (c) 2021, 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 
 package io.jstuff.pipeline.codec;
 
+import io.jstuff.pipeline.ByteArrayAcceptor;
 import io.jstuff.pipeline.IntAcceptor;
 import io.jstuff.pipeline.IntPipeline;
 
@@ -42,6 +43,30 @@ public class UTF16_ISO8859_15<R> extends EncodingPipeline<R> {
 
     public UTF16_ISO8859_15(IntAcceptor<? extends R> downstream) {
         this(downstream, ErrorStrategy.THROW_EXCEPTION);
+    }
+
+    /**
+     * Convert a {@code String} to a byte array using the {@code UTF16_ISO8859_15} converter.
+     *
+     * @param   input           the input as a {@code String}
+     * @param   errorStrategy   the {@link ErrorStrategy}
+     * @return                  the converted data as a byte array
+     */
+    public static byte[] convert(String input, ErrorStrategy errorStrategy) {
+        IntPipeline<byte[]> pipe = new UTF16_ISO8859_15<>(new ByteArrayAcceptor(), errorStrategy);
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
+    }
+
+    /**
+     * Convert a {@code String} to a byte array using the {@code UTF16_ISO8859_15} converter.
+     *
+     * @param   input   the input as a {@code String}
+     * @return          the converted data as a byte array
+     */
+    public static byte[] convert(String input) {
+        return convert(input, ErrorStrategy.THROW_EXCEPTION);
     }
 
 }

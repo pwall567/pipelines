@@ -2,6 +2,16 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [7.0] - 2025-11-06
+### Added
+- `ListIntAcceptor`: terminal for a pipeline that outputs 32-bit values (_e.g._ Unicode code points)
+- `ErrorHandlingIntPipeline`: renamed from `ErrorStrategyBase` (name better reflects purpose)
+### Changed
+- `IntAcceptor`: added `accept()` functions taking collections of `Integer`
+- `base64`, `codec`, `html`, `uri` and `xml` classes: added `convert()` functions
+### Removed
+- `ErrorStrategyBase`: renamed to `ErrorHandlingIntPipeline`
+
 ## [6.2] - 2025-11-03
 ### Added
 - `FullURIEncoder`: encodes full URI (doesn't escape :, / etc.)

@@ -2,7 +2,7 @@
  * @(#) UTF16_ASCII.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2023 Peter Wall
+ * Copyright (c) 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 
 package io.jstuff.pipeline.codec;
 
+import io.jstuff.pipeline.ByteArrayAcceptor;
 import io.jstuff.pipeline.IntAcceptor;
 import io.jstuff.pipeline.IntPipeline;
 
@@ -34,7 +35,7 @@ import io.jstuff.pipeline.IntPipeline;
  * @author  Peter Wall
  * @param   <R>     the pipeline result type
  */
-public class UTF16_ASCII<R> extends ErrorStrategyBase<R> {
+public class UTF16_ASCII<R> extends ErrorHandlingIntPipeline<R> {
 
     public UTF16_ASCII(IntAcceptor<? extends R> downstream, ErrorStrategy errorStrategy) {
         super(downstream, errorStrategy);
@@ -50,6 +51,30 @@ public class UTF16_ASCII<R> extends ErrorStrategyBase<R> {
             emit(value);
         else
             throw new IllegalArgumentException("Illegal character");
+    }
+
+    /**
+     * Convert a {@code String} to a byte array using the {@code UTF16_ASCII} converter.
+     *
+     * @param   input           the input as a {@code String}
+     * @param   errorStrategy   the {@link ErrorStrategy}
+     * @return                  the converted data as a byte array
+     */
+    public static byte[] convert(String input, ErrorStrategy errorStrategy) {
+        IntPipeline<byte[]> pipe = new UTF16_ASCII<>(new ByteArrayAcceptor(), errorStrategy);
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
+    }
+
+    /**
+     * Convert a {@code String} to a byte array using the {@code UTF16_ASCII} converter.
+     *
+     * @param   input   the input as a {@code String}
+     * @return          the converted data as a byte array
+     */
+    public static byte[] convert(String input) {
+        return convert(input, ErrorStrategy.THROW_EXCEPTION);
     }
 
 }

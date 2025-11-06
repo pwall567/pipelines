@@ -2,7 +2,7 @@
  * @(#) UTF16_CodePoint.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020, 2021, 2023 Peter Wall
+ * Copyright (c) 2020, 2021, 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,10 +25,12 @@
 
 package io.jstuff.pipeline.codec;
 
+import java.util.List;
 import java.util.function.IntConsumer;
 
 import io.jstuff.pipeline.IntAcceptor;
 import io.jstuff.pipeline.IntPipeline;
+import io.jstuff.pipeline.ListIntAcceptor;
 
 /**
  * A decoder {@link IntPipeline} to convert UTF-16 to Unicode code points.
@@ -36,7 +38,7 @@ import io.jstuff.pipeline.IntPipeline;
  * @author  Peter Wall
  * @param   <R>     the pipeline result type
  */
-public class UTF16_CodePoint<R> extends ErrorStrategyBase<R> {
+public class UTF16_CodePoint<R> extends ErrorHandlingIntPipeline<R> {
 
     private IntConsumer state;
     private int highSurrogate;
@@ -76,6 +78,30 @@ public class UTF16_CodePoint<R> extends ErrorStrategyBase<R> {
             handleError(i);
         emit(Character.toCodePoint((char)highSurrogate, (char)i));
         state = normal;
+    }
+
+    /**
+     * Convert a {@code String} to a {@code List<Integer>} using the {@code UTF16_CodePoint} converter.
+     *
+     * @param   input           the input as a {@code String}
+     * @param   errorStrategy   the {@link ErrorStrategy}
+     * @return                  the converted data as a {@code List<Integer>}
+     */
+    public static List<Integer> convert(String input, ErrorStrategy errorStrategy) {
+        IntPipeline<List<Integer>> pipe = new UTF16_CodePoint<>(new ListIntAcceptor(), errorStrategy);
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
+    }
+
+    /**
+     * Convert a {@code String} to a {@code List<Integer>} using the {@code UTF16_CodePoint} converter.
+     *
+     * @param   input   the input as a {@code String}
+     * @return          the converted data as a {@code List<Integer>}
+     */
+    public static List<Integer> convert(String input) {
+        return convert(input, ErrorStrategy.THROW_EXCEPTION);
     }
 
 }

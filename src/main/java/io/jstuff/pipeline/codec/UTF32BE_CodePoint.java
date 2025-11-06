@@ -2,7 +2,7 @@
  * @(#) UTF32BE_CodePoint.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021, 2023 Peter Wall
+ * Copyright (c) 2021, 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,9 +25,12 @@
 
 package io.jstuff.pipeline.codec;
 
+import java.util.List;
+
 import io.jstuff.pipeline.AbstractIntPipeline;
 import io.jstuff.pipeline.IntAcceptor;
 import io.jstuff.pipeline.IntPipeline;
+import io.jstuff.pipeline.ListIntAcceptor;
 
 /**
  * A decoder {@link IntPipeline} to convert UTF-32BE encoding to Unicode code points.
@@ -67,6 +70,19 @@ public class UTF32BE_CodePoint<R> extends AbstractIntPipeline<R> {
     @Override
     public boolean isStageComplete() {
         return index == 0;
+    }
+
+    /**
+     * Convert a byte array to a {@code List<Integer>} using the {@code UTF32BE_CodePoint} converter.
+     *
+     * @param   input   the input as a byte array
+     * @return          the converted data as a {@code List<Integer>}
+     */
+    public static List<Integer> convert(byte[] input) {
+        IntPipeline<List<Integer>> pipe = new UTF32BE_CodePoint<>(new ListIntAcceptor());
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
     }
 
 }

@@ -2,7 +2,7 @@
  * @(#) UTF16CodePointTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020, 2023 Peter Wall
+ * Copyright (c) 2020, 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,14 +32,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import io.jstuff.pipeline.TestIntAcceptor;
+import io.jstuff.pipeline.IntPipeline;
+import io.jstuff.pipeline.ListIntAcceptor;
 
 public class UTF16CodePointTest {
 
     @Test
     public void shouldPassThroughBMPCodePoint() {
-        TestIntAcceptor testIntPipeline = new TestIntAcceptor();
-        UTF16_CodePoint<List<Integer>> pipe = new UTF16_CodePoint<>(testIntPipeline);
+        IntPipeline<List<Integer>> pipe = new UTF16_CodePoint<>(new ListIntAcceptor());
         pipe.accept('A');
         assertTrue(pipe.isComplete());
         List<Integer> result = pipe.getResult();
@@ -49,8 +49,7 @@ public class UTF16CodePointTest {
 
     @Test
     public void shouldConvertSurrogatePair() {
-        TestIntAcceptor testIntPipeline = new TestIntAcceptor();
-        UTF16_CodePoint<List<Integer>> pipe = new UTF16_CodePoint<>(testIntPipeline);
+        IntPipeline<List<Integer>> pipe = new UTF16_CodePoint<>(new ListIntAcceptor());
         pipe.accept(0xD83D);
         assertFalse(pipe.isComplete());
         pipe.accept(0xDE02);
@@ -58,6 +57,19 @@ public class UTF16CodePointTest {
         List<Integer> result = pipe.getResult();
         assertEquals(1, result.size());
         assertEquals(Integer.valueOf(0x1F602), result.get(0));
+    }
+
+    @Test
+    public void shouldConvertUsingConvertFunction() {
+        String string = "ABC\u00A9\u00F7\uD83D\uDE02";
+        List<Integer> result = UTF16_CodePoint.convert(string);
+        assertEquals(6, result.size());
+        assertEquals('A', (int)result.get(0));
+        assertEquals('B', (int)result.get(1));
+        assertEquals('C', (int)result.get(2));
+        assertEquals(0xA9, (int)result.get(3));
+        assertEquals(0xF7, (int)result.get(4));
+        assertEquals(0x1F602, (int)result.get(5));
     }
 
 }

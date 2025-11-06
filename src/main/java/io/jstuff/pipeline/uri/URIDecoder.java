@@ -2,7 +2,7 @@
  * @(#) URIDecoder.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021, 2023 Peter Wall
+ * Copyright (c) 2021, 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,9 +25,14 @@
 
 package io.jstuff.pipeline.uri;
 
+import java.util.List;
+
 import io.jstuff.pipeline.IntAcceptor;
+import io.jstuff.pipeline.IntPipeline;
+import io.jstuff.pipeline.ListIntAcceptor;
+import io.jstuff.pipeline.StringAcceptor;
 import io.jstuff.pipeline.codec.ErrorStrategy;
-import io.jstuff.pipeline.codec.ErrorStrategyBase;
+import io.jstuff.pipeline.codec.ErrorHandlingIntPipeline;
 
 /**
  * URI decoder - decode text using URI percent-encoding.
@@ -35,7 +40,7 @@ import io.jstuff.pipeline.codec.ErrorStrategyBase;
  * @author  Peter Wall
  * @param   <R>     the pipeline result type
  */
-public class URIDecoder<R> extends ErrorStrategyBase<R> {
+public class URIDecoder<R> extends ErrorHandlingIntPipeline<R> {
 
     enum State { NORMAL, FIRST, SECOND }
 
@@ -81,6 +86,32 @@ public class URIDecoder<R> extends ErrorStrategyBase<R> {
         if (ch >= 'a' && ch <= 'z')
             return ch - 'a' + 10;
         throw new IllegalArgumentException("Illegal hex character - " + (char)ch);
+    }
+
+    /**
+     * Convert a {@code String} using the {@code URIDecoder} converter.
+     *
+     * @param   input   the input as a {@code String}
+     * @return          the converted data as a {@code String}
+     */
+    public static String convert(String input) {
+        IntPipeline<String> pipe = new URIDecoder<>(new StringAcceptor());
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
+    }
+
+    /**
+     * Convert a {@code List<Integer>} (Unicode code points) using the {@code URIDecoder} converter.
+     *
+     * @param   input   the input as a {@code String}
+     * @return          the converted data as a {@code String}
+     */
+    public static List<Integer> convert(List<Integer> input) {
+        IntPipeline<List<Integer>> pipe = new URIDecoder<>(new ListIntAcceptor());
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
     }
 
 }

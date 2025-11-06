@@ -25,11 +25,15 @@
 
 package io.jstuff.pipeline.uri;
 
+import java.util.List;
+
 import static io.jstuff.util.IntOutput.output2Hex;
 
 import io.jstuff.pipeline.IntAcceptor;
+import io.jstuff.pipeline.IntPipeline;
+import io.jstuff.pipeline.ListIntAcceptor;
+import io.jstuff.pipeline.StringAcceptor;
 import io.jstuff.pipeline.codec.EncoderBase;
-import static io.jstuff.pipeline.uri.URIEncoder.isUnreservedURI;
 
 /**
  * URI encoder for use with full URI &ndash; encode text using URI percent-encoding, not including characters used in
@@ -58,7 +62,7 @@ public class FullURIEncoder<R> extends EncoderBase<R> {
     public void acceptInt(int value) {
         if (value == ' ' && encodeSpaceAsPlus)
             emit('+');
-        else if (!(isUnreservedURI(value) || isSyntaxURI(value))) {
+        else if (!(URIEncoder.isUnreservedURI(value) || isSyntaxURI(value))) {
             emit('%');
             output2Hex(value, this::emit);
         }
@@ -69,6 +73,32 @@ public class FullURIEncoder<R> extends EncoderBase<R> {
     public static boolean isSyntaxURI(int ch) {
         return ch == '!' || ch == '#' || ch == '$' || ch >= '&' && ch <= '/' || ch == ':' || ch == ';' || ch == '=' ||
                 ch == '?' || ch == '@';
+    }
+
+    /**
+     * Convert a {@code String} using the {@code FullURIEncoder} converter.
+     *
+     * @param   input   the input as a {@code String}
+     * @return          the converted data as a {@code String}
+     */
+    public static String convert(String input) {
+        IntPipeline<String> pipe = new FullURIEncoder<>(new StringAcceptor());
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
+    }
+
+    /**
+     * Convert a {@code List<Integer>} (Unicode code points) using the {@code FullURIEncoder} converter.
+     *
+     * @param   input   the input as a {@code String}
+     * @return          the converted data as a {@code String}
+     */
+    public static List<Integer> convert(List<Integer> input) {
+        IntPipeline<List<Integer>> pipe = new FullURIEncoder<>(new ListIntAcceptor());
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
     }
 
 }

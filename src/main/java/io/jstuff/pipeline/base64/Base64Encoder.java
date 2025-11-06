@@ -25,9 +25,15 @@
 
 package io.jstuff.pipeline.base64;
 
+import java.util.List;
+
+import io.jstuff.pipeline.ByteArrayAcceptor;
 import io.jstuff.pipeline.IntAcceptor;
+import io.jstuff.pipeline.IntPipeline;
+import io.jstuff.pipeline.ListIntAcceptor;
+import io.jstuff.pipeline.StringAcceptor;
 import io.jstuff.pipeline.codec.ErrorStrategy;
-import io.jstuff.pipeline.codec.ErrorStrategyBase;
+import io.jstuff.pipeline.codec.ErrorHandlingIntPipeline;
 
 /**
  * Base64 encoder - encode bytes using Base 64.
@@ -35,7 +41,7 @@ import io.jstuff.pipeline.codec.ErrorStrategyBase;
  * @author  Peter Wall
  * @param   <R>     the pipeline result type
  */
-public class Base64Encoder<R> extends ErrorStrategyBase<R> {
+public class Base64Encoder<R> extends ErrorHandlingIntPipeline<R> {
 
     public enum State { FIRST, SECOND, THIRD }
 
@@ -132,6 +138,147 @@ public class Base64Encoder<R> extends ErrorStrategyBase<R> {
                     emit('=');
                 break;
         }
+    }
+
+    /**
+     * Convert a byte array using the {@code Base64Encoder} converter.
+     *
+     * @param   input           the input as a byte array
+     * @param   urlSafe         {@code true} to use the URL-safe encoding characters
+     * @param   errorStrategy   the {@link ErrorStrategy}
+     * @return                  the converted data as a {@code String}
+     */
+    public static byte[] convert(byte[] input, boolean urlSafe, ErrorStrategy errorStrategy) {
+        IntPipeline<byte[]> pipe = new Base64Encoder<>(new ByteArrayAcceptor(), urlSafe, errorStrategy);
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
+    }
+
+    /**
+     * Convert a byte array using the {@code Base64Encoder} converter.
+     *
+     * @param   input           the input as a byte array
+     * @param   errorStrategy   the {@link ErrorStrategy}
+     * @return                  the converted data as a {@code String}
+     */
+    public static byte[] convert(byte[] input, ErrorStrategy errorStrategy) {
+        return convert(input, false, errorStrategy);
+    }
+
+    /**
+     * Convert a byte array using the {@code Base64Encoder} converter.
+     *
+     * @param   input           the input as a byte array
+     * @param   urlSafe         {@code true} to use the URL-safe encoding characters
+     * @return                  the converted data as a {@code String}
+     */
+    public static byte[] convert(byte[] input, boolean urlSafe) {
+        return convert(input, urlSafe, ErrorStrategy.THROW_EXCEPTION);
+    }
+
+    /**
+     * Convert a byte array using the {@code Base64Encoder} converter.
+     *
+     * @param   input   the input as a byte array
+     * @return          the converted data as a {@code String}
+     */
+    public static byte[] convert(byte[] input) {
+        return convert(input, false, ErrorStrategy.THROW_EXCEPTION);
+    }
+
+    /**
+     * Convert a {@code String} using the {@code Base64Encoder} converter.
+     *
+     * @param   input           the input as a {@code String}
+     * @param   urlSafe         {@code true} to use the URL-safe encoding characters
+     * @param   errorStrategy   the {@link ErrorStrategy}
+     * @return                  the converted data as a {@code String}
+     */
+    public static String convert(String input, boolean urlSafe, ErrorStrategy errorStrategy) {
+        IntPipeline<String> pipe = new Base64Encoder<>(new StringAcceptor(), urlSafe, errorStrategy);
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
+    }
+
+    /**
+     * Convert a {@code String} using the {@code Base64Encoder} converter.
+     *
+     * @param   input           the input as a {@code String}
+     * @param   errorStrategy   the {@link ErrorStrategy}
+     * @return                  the converted data as a {@code String}
+     */
+    public static String convert(String input, ErrorStrategy errorStrategy) {
+        return convert(input, false, errorStrategy);
+    }
+
+    /**
+     * Convert a {@code String} using the {@code Base64Encoder} converter.
+     *
+     * @param   input           the input as a {@code String}
+     * @param   urlSafe         {@code true} to use the URL-safe encoding characters
+     * @return                  the converted data as a {@code String}
+     */
+    public static String convert(String input, boolean urlSafe) {
+        return convert(input, urlSafe, ErrorStrategy.THROW_EXCEPTION);
+    }
+
+    /**
+     * Convert a {@code String} using the {@code Base64Encoder} converter.
+     *
+     * @param   input           the input as a {@code String}
+     * @return                  the converted data as a {@code String}
+     */
+    public static String convert(String input) {
+        return convert(input, false, ErrorStrategy.THROW_EXCEPTION);
+    }
+
+    /**
+     * Convert a {@code List<Integer>} (Unicode code points) using the {@code Base64Encoder} converter.
+     *
+     * @param   input           the input as a {@code List<Integer>}
+     * @param   urlSafe         {@code true} to use the URL-safe encoding characters
+     * @param   errorStrategy   the {@link ErrorStrategy}
+     * @return                  the converted data as a {@code String}
+     */
+    public static List<Integer> convert(List<Integer> input, boolean urlSafe, ErrorStrategy errorStrategy) {
+        IntPipeline<List<Integer>> pipe = new Base64Encoder<>(new ListIntAcceptor(), urlSafe, errorStrategy);
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
+    }
+
+    /**
+     * Convert a {@code List<Integer>} (Unicode code points) using the {@code Base64Encoder} converter.
+     *
+     * @param   input           the input as a {@code List<Integer>}
+     * @param   errorStrategy   the {@link ErrorStrategy}
+     * @return                  the converted data as a {@code String}
+     */
+    public static List<Integer> convert(List<Integer> input, ErrorStrategy errorStrategy) {
+        return convert(input, false, errorStrategy);
+    }
+
+    /**
+     * Convert a {@code List<Integer>} (Unicode code points) using the {@code Base64Encoder} converter.
+     *
+     * @param   input           the input as a {@code List<Integer>}
+     * @param   urlSafe         {@code true} to use the URL-safe encoding characters
+     * @return                  the converted data as a {@code String}
+     */
+    public static List<Integer> convert(List<Integer> input, boolean urlSafe) {
+        return convert(input, urlSafe, ErrorStrategy.THROW_EXCEPTION);
+    }
+
+    /**
+     * Convert a {@code List<Integer>} (Unicode code points) using the {@code Base64Encoder} converter.
+     *
+     * @param   input           the input as a {@code List<Integer>}
+     * @return                  the converted data as a {@code String}
+     */
+    public static List<Integer> convert(List<Integer> input) {
+        return convert(input, false, ErrorStrategy.THROW_EXCEPTION);
     }
 
 }

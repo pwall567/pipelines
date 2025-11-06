@@ -2,7 +2,7 @@
  * @(#) CodePointUTF8Test.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020, 2023 Peter Wall
+ * Copyright (c) 2020, 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,20 +25,24 @@
 
 package io.jstuff.pipeline.codec;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
-import io.jstuff.pipeline.TestIntAcceptor;
+import io.jstuff.pipeline.IntPipeline;
+import io.jstuff.pipeline.ListIntAcceptor;
 
 public class CodePointUTF8Test {
 
     @Test
     public void shouldPassThroughASCII() {
-        CodePoint_UTF8<List<Integer>> pipe = new CodePoint_UTF8<>(new TestIntAcceptor());
+        IntPipeline<List<Integer>> pipe = new CodePoint_UTF8<>(new ListIntAcceptor());
         pipe.accept('A');
         assertTrue(pipe.isComplete());
         List<Integer> result = pipe.getResult();
@@ -48,7 +52,7 @@ public class CodePointUTF8Test {
 
     @Test
     public void shouldPassThroughMultipleASCII() {
-        CodePoint_UTF8<List<Integer>> pipe = new CodePoint_UTF8<>(new TestIntAcceptor());
+        IntPipeline<List<Integer>> pipe = new CodePoint_UTF8<>(new ListIntAcceptor());
         pipe.accept("ABC");
         assertTrue(pipe.isComplete());
         List<Integer> result = pipe.getResult();
@@ -60,7 +64,7 @@ public class CodePointUTF8Test {
 
     @Test
     public void shouldPassThroughTwoByteChars() {
-        CodePoint_UTF8<List<Integer>> pipe = new CodePoint_UTF8<>(new TestIntAcceptor());
+        IntPipeline<List<Integer>> pipe = new CodePoint_UTF8<>(new ListIntAcceptor());
         pipe.accept(0xA9);
         pipe.accept(0xF7);
         assertTrue(pipe.isComplete());
@@ -74,7 +78,7 @@ public class CodePointUTF8Test {
 
     @Test
     public void shouldPassThroughThreeByteChars() {
-        CodePoint_UTF8<List<Integer>> pipe = new CodePoint_UTF8<>(new TestIntAcceptor());
+        IntPipeline<List<Integer>> pipe = new CodePoint_UTF8<>(new ListIntAcceptor());
         pipe.accept(0x2014);
         assertTrue(pipe.isComplete());
         List<Integer> result = pipe.getResult();
@@ -86,10 +90,22 @@ public class CodePointUTF8Test {
 
     @Test
     public void shouldThrowExceptionOnInvalidCodePoint() {
-        CodePoint_UTF8<List<Integer>> pipe = new CodePoint_UTF8<>(new TestIntAcceptor());
+        IntPipeline<List<Integer>> pipe = new CodePoint_UTF8<>(new ListIntAcceptor());
         EncoderException e = assertThrows(EncoderException.class, () -> pipe.accept(0x11ABCD));
         assertEquals("Illegal value 0x11ABCD", e.getMessage());
         assertEquals(0x11ABCD, e.getErrorValue());
+    }
+
+    @Test
+    public void shouldConvertUsingConvertFunction() {
+        List<Integer> list = new ArrayList<>();
+        list.add((int)'A');
+        list.add((int)'B');
+        list.add((int)'C');
+        list.add(0xA9);
+        list.add(0xF7);
+        byte[] result = CodePoint_UTF8.convert(list);
+        assertArrayEquals(new byte[] { 'A', 'B', 'C', (byte)0xC2, (byte)0xA9, (byte)0xC3, (byte)0xB7 }, result);
     }
 
 }

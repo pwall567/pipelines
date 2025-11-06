@@ -2,7 +2,7 @@
  * @(#) URIEncoderTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021, 2023 Peter Wall
+ * Copyright (c) 2021, 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,11 +25,15 @@
 
 package io.jstuff.pipeline.uri;
 
+import java.util.List;
+
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 import io.jstuff.pipeline.IntPipeline;
 import io.jstuff.pipeline.StringAcceptor;
+import io.jstuff.pipeline.codec.CodePoint_UTF16;
+import io.jstuff.pipeline.codec.UTF16_CodePoint;
 
 public class URIEncoderTest {
 
@@ -49,8 +53,8 @@ public class URIEncoderTest {
         pipeline1.accept("Hello, World!");
         assertEquals("Hello%2C%20World%21", pipeline1.getResult());
         IntPipeline<String> pipeline2 = new URIEncoder<>(new StringAcceptor());
-        pipeline2.accept("a more-complicated string: a/b+c%e.(???)");
-        assertEquals("a%20more-complicated%20string%3A%20a%2Fb%2Bc%25e.%28%3F%3F%3F%29", pipeline2.getResult());
+        pipeline2.accept("a more-complicated string: $a/b+c%e.(???)");
+        assertEquals("a%20more-complicated%20string%3A%20%24a%2Fb%2Bc%25e.%28%3F%3F%3F%29", pipeline2.getResult());
     }
 
     @Test
@@ -59,8 +63,23 @@ public class URIEncoderTest {
         pipeline1.accept("Hello, World!");
         assertEquals("Hello%2C+World%21", pipeline1.getResult());
         IntPipeline<String> pipeline2 = new URIEncoder<>(new StringAcceptor(), true);
-        pipeline2.accept("a more-complicated string: a/b+c%e.(???)");
-        assertEquals("a+more-complicated+string%3A+a%2Fb%2Bc%25e.%28%3F%3F%3F%29", pipeline2.getResult());
+        pipeline2.accept("a more-complicated string: $a/b+c%e.(???)");
+        assertEquals("a+more-complicated+string%3A+%24a%2Fb%2Bc%25e.%28%3F%3F%3F%29", pipeline2.getResult());
+    }
+
+    @Test
+    public void shouldConvertStringUsingConvertFunction() {
+        String input = "a more-complicated string: $a/b+c%e.(???)";
+        assertEquals("a%20more-complicated%20string%3A%20%24a%2Fb%2Bc%25e.%28%3F%3F%3F%29", URIEncoder.convert(input));
+    }
+
+    @Test
+    public void shouldConvertListUsingConvertFunction() {
+        String input = "a more-complicated string: $a/b+c%e.(???)";
+        List<Integer> inputList = UTF16_CodePoint.convert(input);
+        List<Integer> outputList = URIEncoder.convert(inputList);
+        assertEquals("a%20more-complicated%20string%3A%20%24a%2Fb%2Bc%25e.%28%3F%3F%3F%29",
+                CodePoint_UTF16.convert(outputList));
     }
 
 }

@@ -25,9 +25,14 @@
 
 package io.jstuff.pipeline.uri;
 
+import java.util.List;
+
 import static io.jstuff.util.IntOutput.output2Hex;
 
 import io.jstuff.pipeline.IntAcceptor;
+import io.jstuff.pipeline.IntPipeline;
+import io.jstuff.pipeline.ListIntAcceptor;
+import io.jstuff.pipeline.StringAcceptor;
 import io.jstuff.pipeline.codec.EncoderBase;
 
 /**
@@ -64,6 +69,32 @@ public class URIEncoder<R> extends EncoderBase<R> {
     public static boolean isUnreservedURI(int ch) {
         return ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z' || ch >= '0' && ch <= '9' ||
                 ch == '-' || ch == '.' || ch == '_' || ch == '~';
+    }
+
+    /**
+     * Convert a {@code String} using the {@code URIEncoder} converter.
+     *
+     * @param   input   the input as a {@code String}
+     * @return          the converted data as a {@code String}
+     */
+    public static String convert(String input) {
+        IntPipeline<String> pipe = new URIEncoder<>(new StringAcceptor());
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
+    }
+
+    /**
+     * Convert a {@code List<Integer>} (Unicode code points) using the {@code URIEncoder} converter.
+     *
+     * @param   input   the input as a {@code String}
+     * @return          the converted data as a {@code String}
+     */
+    public static List<Integer> convert(List<Integer> input) {
+        IntPipeline<List<Integer>> pipe = new URIEncoder<>(new ListIntAcceptor());
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
     }
 
 }

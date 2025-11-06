@@ -2,7 +2,7 @@
  * @(#) CodePoint_UTF8.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020, 2023 Peter Wall
+ * Copyright (c) 2020, 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,9 @@
 
 package io.jstuff.pipeline.codec;
 
+import java.util.List;
+
+import io.jstuff.pipeline.ByteArrayAcceptor;
 import io.jstuff.pipeline.IntAcceptor;
 import io.jstuff.pipeline.IntPipeline;
 
@@ -35,7 +38,7 @@ import io.jstuff.pipeline.IntPipeline;
  * @author  Peter Wall
  * @param   <R>     the pipeline result type
  */
-public class CodePoint_UTF8<R> extends ErrorStrategyBase<R> {
+public class CodePoint_UTF8<R> extends ErrorHandlingIntPipeline<R> {
 
     public CodePoint_UTF8(IntAcceptor<? extends R> downstream, ErrorStrategy errorStrategy) {
         super(downstream, errorStrategy);
@@ -66,6 +69,30 @@ public class CodePoint_UTF8<R> extends ErrorStrategyBase<R> {
         }
         else
             handleError(value);
+    }
+
+    /**
+     * Convert a {@code List<Integer>} to a byte array using the {@code CodePoint_UTF8} converter.
+     *
+     * @param   input           the input as a {@code List<Integer>}
+     * @param   errorStrategy   the {@link ErrorStrategy}
+     * @return                  the converted data as a byte array
+     */
+    public static byte[] convert(List<Integer> input, ErrorStrategy errorStrategy) {
+        IntPipeline<byte[]> pipe = new CodePoint_UTF8<>(new ByteArrayAcceptor(), errorStrategy);
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
+    }
+
+    /**
+     * Convert a {@code List<Integer>} to a byte array using the {@code CodePoint_UTF8} converter.
+     *
+     * @param   input   the input as a {@code List<Integer>}
+     * @return          the converted data as a byte array
+     */
+    public static byte[] convert(List<Integer> input) {
+        return convert(input, ErrorStrategy.THROW_EXCEPTION);
     }
 
 }

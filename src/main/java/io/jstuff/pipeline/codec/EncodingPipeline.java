@@ -35,7 +35,7 @@ import io.jstuff.pipeline.IntAcceptor;
  * @author  Peter Wall
  * @param   <R>     the pipeline result type
  */
-public class EncodingPipeline<R> extends ErrorStrategyBase<R> {
+public class EncodingPipeline<R> extends ErrorHandlingIntPipeline<R> {
 
     private final int[] reverseTable;
 

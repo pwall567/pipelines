@@ -1,8 +1,8 @@
 /*
- * @(#) TestIntAcceptor.java
+ * @(#) ErrorHandlingIntPipeline.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020 Peter Wall
+ * Copyright (c) 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,28 +23,33 @@
  * SOFTWARE.
  */
 
-package io.jstuff.pipeline;
+package io.jstuff.pipeline.codec;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import io.jstuff.pipeline.AbstractIntPipeline;
+import io.jstuff.pipeline.IntAcceptor;
+import io.jstuff.pipeline.IntPipeline;
 
-public class TestIntAcceptor extends AbstractIntAcceptor<List<Integer>> {
+/**
+ * Base class for encoder and decoder {@link IntPipeline} classes to implement the error strategy.
+ *
+ * @author  Peter Wall
+ * @param   <R>     the pipeline result type
+ */
+public abstract class ErrorHandlingIntPipeline<R> extends AbstractIntPipeline<R> {
 
-    private final List<Integer> list;
+    private final ErrorStrategy errorStrategy;
 
-    public TestIntAcceptor() {
-        list = new ArrayList<>();
+    protected ErrorHandlingIntPipeline(IntAcceptor<? extends R> downstream, ErrorStrategy errorStrategy) {
+        super(downstream);
+        this.errorStrategy = errorStrategy;
     }
 
-    @Override
-    public void acceptInt(int value) {
-        list.add(value);
-    }
-
-    @Override
-    public List<Integer> getResult() {
-        return Collections.unmodifiableList(list);
+    protected void handleError(int value) {
+        if (errorStrategy instanceof ErrorStrategy.ThrowException)
+            throw new EncoderException(value);
+        if (errorStrategy instanceof ErrorStrategy.Substitute)
+            emit(((ErrorStrategy.Substitute)errorStrategy).getSubstitute());
+        // IGNORE will simply drop through
     }
 
 }

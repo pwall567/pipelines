@@ -1,8 +1,8 @@
 /*
- * @(#) ErrorStrategyBase.java
+ * @(#) ListIntAcceptorTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2023 Peter Wall
+ * Copyright (c) 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,32 +23,24 @@
  * SOFTWARE.
  */
 
-package io.jstuff.pipeline.codec;
+package io.jstuff.pipeline;
 
-import io.jstuff.pipeline.AbstractIntPipeline;
-import io.jstuff.pipeline.IntAcceptor;
+import java.util.List;
 
-/**
- * Base class for encoder and decoder classes to implement the error strategy.
- *
- * @author  Peter Wall
- * @param   <R>     the pipeline result type
- */
-public abstract class ErrorStrategyBase<R> extends AbstractIntPipeline<R> {
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
-    private final ErrorStrategy errorStrategy;
+public class ListIntAcceptorTest {
 
-    protected ErrorStrategyBase(IntAcceptor<? extends R> downstream, ErrorStrategy errorStrategy) {
-        super(downstream);
-        this.errorStrategy = errorStrategy;
-    }
-
-    protected void handleError(int value) {
-        if (errorStrategy instanceof ErrorStrategy.ThrowException)
-            throw new EncoderException(value);
-        if (errorStrategy instanceof ErrorStrategy.Substitute)
-            emit(((ErrorStrategy.Substitute)errorStrategy).getSubstitute());
-        // IGNORE will simply drop through
+    @Test
+    public void shouldBuildListFromSequence() {
+        ListIntAcceptor listAcceptor = new ListIntAcceptor();
+        listAcceptor.accept(123, 456);
+        listAcceptor.safeClose();
+        assertEquals(2, listAcceptor.getSize());
+        List<Integer> list = listAcceptor.getResult();
+        assertEquals(123, (int)list.get(0));
+        assertEquals(456, (int)list.get(1));
     }
 
 }

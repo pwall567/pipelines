@@ -2,7 +2,7 @@
  * @(#) Base64DecoderTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2023 Peter Wall
+ * Copyright (c) 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,13 +25,18 @@
 
 package io.jstuff.pipeline.base64;
 
+import java.util.List;
+
 import org.junit.Test;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
 import io.jstuff.pipeline.ByteArrayAcceptor;
 import io.jstuff.pipeline.StringAcceptor;
+import io.jstuff.pipeline.codec.CodePoint_UTF16;
 import io.jstuff.pipeline.codec.EncoderException;
+import io.jstuff.pipeline.codec.UTF16_CodePoint;
 
 public class Base64DecoderTest {
 
@@ -46,22 +51,14 @@ public class Base64DecoderTest {
     public void shouldDecodeSpecialCharacters() {
         Base64Decoder<byte[]> pipeline = new Base64Decoder<>(new ByteArrayAcceptor());
         pipeline.accept("+/+/");
-        byte[] result = pipeline.getResult();
-        assertEquals(3, result.length);
-        assertEquals((byte)0xFB, result[0]);
-        assertEquals((byte)0xFF, result[1]);
-        assertEquals((byte)0xBF, result[2]);
+        assertArrayEquals(new byte[] { (byte)0xFB, (byte)0xFF, (byte)0xBF }, pipeline.getResult());
     }
 
     @Test
     public void shouldDecodeURLSpecialCharacters() {
         Base64Decoder<byte[]> pipeline = new Base64Decoder<>(new ByteArrayAcceptor());
         pipeline.accept("-_-_");
-        byte[] result = pipeline.getResult();
-        assertEquals(3, result.length);
-        assertEquals((byte)0xFB, result[0]);
-        assertEquals((byte)0xFF, result[1]);
-        assertEquals((byte)0xBF, result[2]);
+        assertArrayEquals(new byte[] { (byte)0xFB, (byte)0xFF, (byte)0xBF }, pipeline.getResult());
     }
 
     @Test
@@ -70,6 +67,26 @@ public class Base64DecoderTest {
         EncoderException e = assertThrows(EncoderException.class, () -> pipeline.accept('*'));
         assertEquals("Illegal value 0x2A", e.getMessage());
         assertEquals(0x2A, e.getErrorValue());
+    }
+
+    @Test
+    public void shouldConvertByteArrayUsingConvertFunction() {
+        byte[] input = new byte[] { 'Q', 'U', 'J', 'D', 'R', 'A', '=', '=' };
+        assertArrayEquals(new byte[] { 'A', 'B', 'C', 'D' }, Base64Decoder.convert(input));
+    }
+
+    @Test
+    public void shouldConvertStringUsingConvertFunction() {
+        String input = "QUJDRA==";
+        assertEquals("ABCD", Base64Decoder.convert(input));
+    }
+
+    @Test
+    public void shouldConvertListUsingConvertFunction() {
+        String input = "QUJDRA==";
+        List<Integer> inputList = UTF16_CodePoint.convert(input);
+        List<Integer> outputList = Base64Decoder.convert(inputList);
+        assertEquals("ABCD", CodePoint_UTF16.convert(outputList));
     }
 
 }

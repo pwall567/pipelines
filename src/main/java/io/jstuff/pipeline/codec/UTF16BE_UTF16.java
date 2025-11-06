@@ -2,7 +2,7 @@
  * @(#) UTF16BE_UTF16.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2021, 2023 Peter Wall
+ * Copyright (c) 2021, 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@ package io.jstuff.pipeline.codec;
 import io.jstuff.pipeline.AbstractIntPipeline;
 import io.jstuff.pipeline.IntAcceptor;
 import io.jstuff.pipeline.IntPipeline;
+import io.jstuff.pipeline.StringAcceptor;
 
 /**
  * A converter {@link IntPipeline} to convert UTF-16BE encoding to UTF-16 encoding.
@@ -66,6 +67,19 @@ public class UTF16BE_UTF16<R> extends AbstractIntPipeline<R> {
     @Override
     public boolean isStageComplete() {
         return !midCharacter;
+    }
+
+    /**
+     * Convert a byte array to a {@code String} using the {@code UTF16BE_UTF16} converter.
+     *
+     * @param   input   the input as a byte array
+     * @return          the converted data as a {@code String}
+     */
+    public static String convert(byte[] input) {
+        IntPipeline<String> pipe = new UTF16BE_UTF16<>(new StringAcceptor());
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
     }
 
 }

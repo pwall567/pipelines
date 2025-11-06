@@ -2,7 +2,7 @@
  * @(#) CodePointUTF16Test.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020, 2023 Peter Wall
+ * Copyright (c) 2020, 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,19 +25,21 @@
 
 package io.jstuff.pipeline.codec;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import io.jstuff.pipeline.TestIntAcceptor;
+import io.jstuff.pipeline.IntPipeline;
+import io.jstuff.pipeline.ListIntAcceptor;
 
 public class CodePointUTF16Test {
 
     @Test
     public void shouldPassThroughBMPCodePoint() {
-        CodePoint_UTF16<List<Integer>> pipe = new CodePoint_UTF16<>(new TestIntAcceptor());
+        IntPipeline<List<Integer>> pipe = new CodePoint_UTF16<>(new ListIntAcceptor());
         pipe.accept('A');
         assertTrue(pipe.isComplete());
         List<Integer> result = pipe.getResult();
@@ -47,13 +49,25 @@ public class CodePointUTF16Test {
 
     @Test
     public void shouldExpandHighCodePointToSurrogates() {
-        CodePoint_UTF16<List<Integer>> pipe = new CodePoint_UTF16<>(new TestIntAcceptor());
+        IntPipeline<List<Integer>> pipe = new CodePoint_UTF16<>(new ListIntAcceptor());
         pipe.accept(0x1F602);
         assertTrue(pipe.isComplete());
         List<Integer> result = pipe.getResult();
         assertEquals(2, result.size());
         assertEquals(Integer.valueOf(0xD83D), result.get(0));
         assertEquals(Integer.valueOf(0xDE02), result.get(1));
+    }
+
+    @Test
+    public void shouldConvertUsingConvertFunction() {
+        List<Integer> list = new ArrayList<>();
+        list.add((int)'A');
+        list.add((int)'B');
+        list.add((int)'C');
+        list.add(0xA9);
+        list.add(0xF7);
+        list.add(0x1F602);
+        assertEquals("ABC\u00A9\u00F7\uD83D\uDE02", CodePoint_UTF16.convert(list));
     }
 
 }

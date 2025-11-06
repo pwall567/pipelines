@@ -2,7 +2,7 @@
  * @(#) ErrorStrategyTest.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2023 Peter Wall
+ * Copyright (c) 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,13 +31,13 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
-import io.jstuff.pipeline.TestIntAcceptor;
+import io.jstuff.pipeline.ListIntAcceptor;
 
 public class ErrorStrategyTest {
 
     @Test
     public void shouldThrowExceptionAsDefaultErrorStrategy() {
-        CodePoint_UTF8<List<Integer>> pipe = new CodePoint_UTF8<>(new TestIntAcceptor());
+        CodePoint_UTF8<List<Integer>> pipe = new CodePoint_UTF8<>(new ListIntAcceptor());
         EncoderException e = assertThrows(EncoderException.class, () -> pipe.accept(0x11ABCD));
         assertEquals("Illegal value 0x11ABCD", e.getMessage());
         assertEquals(0x11ABCD, e.getErrorValue());
@@ -45,7 +45,7 @@ public class ErrorStrategyTest {
 
     @Test
     public void shouldIgnoreErrorCharactersWhenIgnoreSelected() {
-        CodePoint_UTF8<List<Integer>> pipe = new CodePoint_UTF8<>(new TestIntAcceptor(), ErrorStrategy.IGNORE);
+        CodePoint_UTF8<List<Integer>> pipe = new CodePoint_UTF8<>(new ListIntAcceptor(), ErrorStrategy.IGNORE);
         pipe.accept(0x4F);
         pipe.accept(0x11ABCD);
         pipe.accept(0x4B);
@@ -58,7 +58,7 @@ public class ErrorStrategyTest {
     @Test
     public void shouldSubstituteDefaultCharacterWhenSelected() {
         CodePoint_UTF8<List<Integer>> pipe =
-                new CodePoint_UTF8<>(new TestIntAcceptor(), new ErrorStrategy.Substitute());
+                new CodePoint_UTF8<>(new ListIntAcceptor(), new ErrorStrategy.Substitute());
         pipe.accept(0x4F);
         pipe.accept(0x11ABCD);
         pipe.accept(0x4B);
@@ -72,7 +72,7 @@ public class ErrorStrategyTest {
     @Test
     public void shouldSubstituteNominatedCharacterWhenSelected() {
         CodePoint_UTF8<List<Integer>> pipe =
-                new CodePoint_UTF8<>(new TestIntAcceptor(), new ErrorStrategy.Substitute(0xA5));
+                new CodePoint_UTF8<>(new ListIntAcceptor(), new ErrorStrategy.Substitute(0xA5));
         pipe.accept(0x4F);
         pipe.accept(0x11ABCD);
         pipe.accept(0x4B);

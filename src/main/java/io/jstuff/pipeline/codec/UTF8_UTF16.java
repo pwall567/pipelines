@@ -2,7 +2,7 @@
  * @(#) UTF8_UTF16.java
  *
  * pipelines   Pipeline conversion library for Java
- * Copyright (c) 2020, 2021, 2023 Peter Wall
+ * Copyright (c) 2020, 2021, 2023, 2025 Peter Wall
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ import java.util.function.IntConsumer;
 
 import io.jstuff.pipeline.IntAcceptor;
 import io.jstuff.pipeline.IntPipeline;
+import io.jstuff.pipeline.StringAcceptor;
 
 /**
  * A decoder {@link IntPipeline} to convert UTF-8 to UTF-16.
@@ -36,7 +37,7 @@ import io.jstuff.pipeline.IntPipeline;
  * @author  Peter Wall
  * @param   <R>     the pipeline result type
  */
-public class UTF8_UTF16<R> extends ErrorStrategyBase<R> {
+public class UTF8_UTF16<R> extends ErrorHandlingIntPipeline<R> {
 
     private final IntConsumer threeByte1 = i -> intermediate(i, this::terminal);
     private final IntConsumer fourByte2 = i -> intermediate(i, this::terminal);
@@ -108,6 +109,30 @@ public class UTF8_UTF16<R> extends ErrorStrategyBase<R> {
         else
             handleError(i);
         state = normal;
+    }
+
+    /**
+     * Convert a byte array to a {@code String} using the {@code UTF8_UTF16} converter.
+     *
+     * @param   input           the input as a byte array
+     * @param   errorStrategy   the {@link ErrorStrategy}
+     * @return                  the converted data as a {@code String}
+     */
+    public static String convert(byte[] input, ErrorStrategy errorStrategy) {
+        IntPipeline<String> pipe = new UTF8_UTF16<>(new StringAcceptor(), errorStrategy);
+        pipe.accept(input);
+        pipe.safeClose();
+        return pipe.getResult();
+    }
+
+    /**
+     * Convert a byte array to a {@code String} using the {@code UTF8_UTF16} converter.
+     *
+     * @param   input   the input as a byte array
+     * @return          the converted data as a {@code String}
+     */
+    public static String convert(byte[] input) {
+        return convert(input, ErrorStrategy.THROW_EXCEPTION);
     }
 
 }

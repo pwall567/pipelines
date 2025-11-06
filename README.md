@@ -111,8 +111,18 @@ interface.
 Unicode code points are 32-bit quantities containing the full range of Unicode values; UTF-16 refers to the 16-bit
 version of Unicode, with pairs of surrogate characters representing characters outside the &ldquo;Basic Multilingual
 Plane&rdquo;.
-Because Java mostly works with 16-bit characters, the `UTF-8_UTF16` decoder will generally be more useful for decoding
-streams of UTF-8 data.
+Because the JVM uses 16-bit characters to represent strings, the `UTF8_UTF16` decoder will generally be the most useful
+class for decoding streams of UTF-8 data.
+
+The terminal element in an encoding or decoding pipeline will often be an acceptor that stores the data and returns the
+entire sequence as its result.
+For 8-bit data, the `ByteArrayAcceptor` will return a `byte[]`; for 16-bit data a `StringAcceptor` will return a
+`String` and for 32-bit data a `ListIntAcceptor` will return a `List<Integer>`.
+
+The encoder / decoder classes also contain a `convert()` function, which takes an array / string / list and converts it
+to the appropriate form.
+This provides a simple way of using the conversion functions in cases where the full pipeline functionality is not
+required.
 
 ### `SwitchableDecoder` and `DynamicDecoder`
 
@@ -167,7 +177,10 @@ original:
 
 - `HTMLDecoder`
 - `XMLDecoder`
-- `URIDecoder` (there is no need for a separate `SchemaURIDecoder`)
+- `URIDecoder` (there is no need for a separate `SchemaURIDecoder` or `FullURIDecoder`)
+
+Like the character set encode / decode functions, these escaping classes also contain a `convert()` function, providing
+a simple means of performing these conversions without the complexity of the pipeline functionality.
 
 ## Class Diagram
 
@@ -239,25 +252,25 @@ Of course, all of this is also accessible from Kotlin:
 
 ## Dependency Specification
 
-The latest version of the library is 6.2, and it may be obtained from the Maven Central repository.
+The latest version of the library is 7.0, and it may be obtained from the Maven Central repository.
 
 ### Maven
 ```xml
     <dependency>
       <groupId>io.jstuff</groupId>
       <artifactId>pipelines</artifactId>
-      <version>6.2</version>
+      <version>7.0</version>
     </dependency>
 ```
 ### Gradle
 ```groovy
-    implementation 'io.jstuff:pipelines:6.2'
+    implementation 'io.jstuff:pipelines:7.0'
 ```
 ### Gradle (kts)
 ```kotlin
-    implementation("io.jstuff:pipelines:6.2")
+    implementation("io.jstuff:pipelines:7.0")
 ```
 
 Peter Wall
 
-2025-11-03
+2025-11-06
